@@ -26,12 +26,12 @@
 typedef int TokenType;
 
 typedef enum {Statement, Expressao, Nenhum} TipoNo;
-typedef enum {IfT, WhileT, RetornoINT, RetornoVOIDT, Nulo, DeclVarT, DeclVetorT, DeclFuncT, VarParametroT, VetorParametroT, ParametroVOIDT } StatementTipo;
+typedef enum {IfT, WhileT, RetornoINT, RetornoVOIDT, NuloDecl, DeclVarT, DeclVetorT, DeclFuncT, VarParametroT, VetorParametroT, ParametroVOIDT } StatementTipo;
 typedef enum {OperandoT, ConstanteT, IdT, VarDeclT, FunCallT, VetorParamT, AtribuicaoT, NuloEXP, OperadorRelacionalT} ExpressaoTipo;
 struct noArvore {
 
-    struct treeNode * filho[3];
-    struct treeNode * irmao;
+    struct noArvore * filho[3];
+    struct noArvore * irmao;
 
     int linha;
     char lexema[25];

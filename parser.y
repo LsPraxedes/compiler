@@ -12,6 +12,8 @@ extern int linha;
 
 int yyerror(char *message);
 
+NoArvore AST;
+
 %}
 
 %start programa
@@ -49,21 +51,31 @@ int yyerror(char *message);
 
 %%
 
-programa : declaracao_lista
-         ;
+programa : declaracao_lista {
+            AST = $1;
+        };
 
-declaracao_lista 
-    : declaracao_lista declaracao
-    | declaracao
+declaracao_lista : declaracao_lista declaracao  {
+                    if ($1 != NULL){
+                        $$ = $1;
+                        addIrmao($$, $2);
+                    } 
+                    else {
+                        $$ = $2;
+                    }
+                    }
+    | declaracao {$$ = $1;}
     ;
 
-declaracao
-    : var_declaracao
-    | fun_declaracao
-    ;
+declaracao  : var_declaracao {$$ = $1;}
+            | fun_declaracao {$$ = $1;}
+            ;
 
-var_declaracao
-    : tipo_especificador TK_ID TK_PONTO_VIRGULA
+var_declaracao  : tipo_especificador TK_ID TK_PONTO_VIRGULA {
+                    $$ = $1;
+                    $$->tipono = Statement;
+                    $$->tipoDecl
+}
     | tipo_especificador TK_ID TK_ABRE_COLCHETES TK_NUM TK_FECHA_COLCHETES TK_PONTO_VIRGULA
     ;
 

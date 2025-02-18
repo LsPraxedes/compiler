@@ -35,3 +35,77 @@ void printToken( TokenType token, const char* lexema ) { switch (token)
        fprintf(stdout,"Token Desconhecido: %d\n",token);
    }
 }
+
+NoArvore* novoNo (){
+
+    NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
+
+    novoNo->filho[0] = NULL;
+    novoNo->filho[1] = NULL;
+    novoNo->filho[2] = NULL;
+
+    novoNo->irmao = NULL;
+
+    bzero(novoNo->lexema, MAXLEXEMA);
+
+    novoNo->linha = 0;
+
+    novoNo->tipono = Nenhum;
+
+    novoNo->statement = NuloDecl;
+
+    novoNo->expressao = NuloEXP;
+
+    return novoNo;
+}
+
+NoArvore* addIrmao(NoArvore* raiz, NoArvore* no){
+
+    NoArvore* aux = raiz;
+
+    if(aux == NULL){
+        return NULL;
+    }
+
+    while(aux->irmao != NULL){
+        aux = aux->irmao;
+    }
+
+    aux->irmao = no;
+
+    return raiz;
+}
+
+NoArvore* addFilho(NoArvore* raiz, NoArvore* no){
+
+    NoArvore* aux = raiz;
+
+    int i;
+
+    if(aux == NULL){
+        return NULL;
+    }
+
+    for (i=0; i < 3 && aux->filho[i] != NULL; i++);
+        aux->filho[i] = no;
+
+    return raiz;
+}
+
+void printArvore(NoArvore* raiz, int num){
+
+    int i;
+    if(raiz == NULL){
+        return;
+    }
+
+    for(i = 0; i < num; i++){
+        fprintf(yyout, "\t");
+    }
+    fprintf(yyout, "%s\n", raiz->lexema);
+
+    for (i=0; i < 3; i++){
+        printArvore(raiz->filho[i], num++);
+    }
+    printArvore(raiz->irmao, num);
+}
