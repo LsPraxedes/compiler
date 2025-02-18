@@ -1,30 +1,27 @@
 %{
+    #define YYPARSER
 
-#define YYPARSER
+    #include "global.h"
+    #include "flex.h"
+    #include "util.h"
 
-#include "global.h"
-#include "flex.h"
-#include "util.h"
+    #define YYSTYPE NoArvore*
+    #define MAX_NOS 1000
 
+    static int yylex();
+    extern int linha;
 
-#define YYSTYPE NoArvore*
-#define MAX_NOS 1000
+    int yyparse(void);
+    int yyerror(char *message);
 
-static int yylex();
+    void printArvore(NoArvore* raiz, int num);
 
-int yyparse(void);
-extern int linha;
+    int qntNos = 0;
 
-int yyerror(char *message);
+    char auxLexema[MAXLEXEMA];
 
-NoArvore* AST;
-
-void printArvore(NoArvore* raiz, int num);
-
-char auxLexema[MAXLEXEMA];
-NoArvore* nos[MAX_NOS];
-int qntNos = 0;
-
+    NoArvore* AST;
+    NoArvore* nos[MAX_NOS];
 %}
 
 %start programa
@@ -81,8 +78,12 @@ declaracao_lista    : declaracao_lista declaracao  {
                     | declaracao {$$ = $1;}
                     ;
 
-declaracao  : var_declaracao {$$ = $1;}
-            | fun_declaracao {$$ = $1;}
+declaracao  : var_declaracao {
+                $$ = $1;
+            }
+            | fun_declaracao {
+                $$ = $1;
+            }
             ;
 
 var_declaracao  : tipo_especificador TK_ID TK_PONTO_VIRGULA {
@@ -163,7 +164,6 @@ fun_id  : TK_ID {
             strcpy($$->lexema, pilha[indPilha]);
             indPilha--;
 
-            //strcpy($$->lexema, auxNome);
             $$->linha = linhas;
 
             nos[qntNos] = $$;
@@ -230,7 +230,6 @@ param   : tipo_especificador TK_ID {
             strcpy(aux->lexema, pilha[indPilha]);
             indPilha--;
 
-            //strcpy(aux->lexema, id);
             addFilho($$, aux);		
 
             nos[qntNos] = aux;
@@ -587,7 +586,8 @@ arg_lista   : arg_lista TK_VIRGULA expressao {
 
 int yyerror(char *message) {
 
-    if (yychar == -2) return 0;
+    if (yychar == -2) 
+        return 0;
 
     Error = TRUE;
 
@@ -596,8 +596,8 @@ int yyerror(char *message) {
     else
         printf("Erro sintático na linha %d. Token: ", linha-1);
 
-
     switch (yychar) {
+
         case TK_IF: printf("%s\n", lexema); break;
         case TK_ELSE: printf("%s\n", lexema); break;
         case TK_VIRGULA: printf("%s\n", lexema); break;
@@ -629,6 +629,7 @@ int yyerror(char *message) {
         case TK_WHILE: printf("%s\n", lexema); break;
         case ERROR: printf("%s\n", lexema); break;
         case ENDFILE: printf("\n"); break;
+
         default: printf("Token desconhecido: %d\n", yychar);
     }
 
@@ -636,7 +637,6 @@ int yyerror(char *message) {
 }
 
 static int yylex(void) {
-    
     return getToken();
 }
 

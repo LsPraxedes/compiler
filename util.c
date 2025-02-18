@@ -82,12 +82,12 @@ NoArvore* addFilho(NoArvore* raiz, NoArvore* no){
 
     int i;
 
-    if(aux == NULL){
+    if(aux == NULL)
         return NULL;
-    }
 
     for (i=0; i < 3 && aux->filho[i] != NULL; i++);
-        aux->filho[i] = no;
+    
+    aux->filho[i] = no;
 
     return raiz;
 }
@@ -95,18 +95,18 @@ NoArvore* addFilho(NoArvore* raiz, NoArvore* no){
 void printArvore(NoArvore* raiz, int num){
 
     int i;
-    if(raiz == NULL){
+    
+    if(raiz == NULL)
         return;
-    }
 
     fprintf(stdout,"|");
-    for(i = 0; i < num; i++){
+    for(i = 0; i < num; i++)
         fprintf(stdout, "----");
-    }
+
     fprintf(stdout, "%s\n", raiz->lexema);
 
-    for (i=0; i < 3; i++){
+    for (i=0; i < 3; i++)
         printArvore(raiz->filho[i], num +1);
-    }
+    
     printArvore(raiz->irmao, num);
 }

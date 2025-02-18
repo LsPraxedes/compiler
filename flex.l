@@ -1,18 +1,16 @@
 %{
-#include "global.h"
-#include "flex.h"
-#include "util.h"
 
-char lexema[MAXTOKENLEN+1];
-char id[MAXTOKENLEN+1];
+    #include "global.h"
+    #include "flex.h"
+    #include "util.h"
 
-extern int yylex(void);
+    char lexema[MAXTOKENLEN+1];
 
-static int firstTime = TRUE;
-int indPilha = -1;
-char pilha[4][MAXLEXEMA];
+    extern int yylex(void);
 
-static int isEOF = 0;
+    static int firstTime = TRUE;
+    int indPilha = -1;
+    char pilha[4][MAXLEXEMA];
 %}
 
 %option noyywrap
@@ -23,6 +21,7 @@ LETTER [a-zA-Z]
 DIGIT [0-9]
 
 %%
+
 "if"      { fprintf(yyout, "TK_IF "); return TK_IF; }
 "else"    { fprintf(yyout, "TK_ELSE "); return TK_ELSE; }
 "int"     { fprintf(yyout, "TK_INT "); return TK_INT; }
@@ -66,17 +65,21 @@ DIGIT [0-9]
 "]"       { fprintf(yyout, "] "); return TK_FECHA_COLCHETES; }
 "("       { fprintf(yyout, "( "); return TK_ABRE_PARENTESES; }
 ")"       { fprintf(yyout, ") "); return TK_FECHA_PARENTESES; }
-
 "/*"      { fprintf(yyout, "TK_ABRE_COMENTARIO "); return TK_ABRE_COMENTARIO; }
 "*/"      { fprintf(yyout, "TK_FECHA_COMENTARIO "); return TK_FECHA_COMENTARIO; }
 
 <<EOF>> { return ENDFILE; }
+
 ({LETTER}|{DIGIT})+ { fprintf(yyout, "ERROR(%s) ", yytext); return ERROR; }
+
 {NEWLINE}   {linha++;}
+
 {TAB}+ { }
+
 [ ]* { }
 
 .         { fprintf(yyout, "ERROR(%s) ", yytext); return ERROR; }
+
 %%
 
 TokenType getToken(void) { 
@@ -84,22 +87,15 @@ TokenType getToken(void) {
     TokenType currentToken;
     
     if (firstTime) {
+        
         firstTime = FALSE;
         yyin = source;
 
-        for (int i = 0; i < 5; i++){
-            bzero(pilha, MAXLEXEMA);	
-        }
-
+        for (int i = 0; i < 5; i++)
+            bzero(pilha[i], MAXLEXEMA);	
     }
     
     currentToken = yylex();
-
-    /* if(currentToken == ENDFILE) 
-        return; */
-
-    /* if(currentToken == TK_ID) 
-        strncpy(id,yytext,MAXTOKENLEN); */
     
     strncpy(lexema,yytext,MAXTOKENLEN);
     
