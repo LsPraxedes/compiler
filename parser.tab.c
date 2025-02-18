@@ -1466,25 +1466,25 @@ yyreduce:
   case 20: /* composto_decl: TK_ABRE_CHAVES local_declaracoes statement_lista TK_FECHA_CHAVES  */
 #line 241 "parser.y"
                                                                                    {
-        if(yyvsp[-2] != NULL) {
-            yyval = yyvsp[-2];
-            addIrmao(yyval, yyvsp[-1]);
-        } else {
-            yyval = yyvsp[-1];
-        }
-    }
+                    if(yyvsp[-2] != NULL) {
+                        yyval = yyvsp[-2];
+                        addIrmao(yyval, yyvsp[-1]);
+                    } else {
+                        yyval = yyvsp[-1];
+                    }
+                }
 #line 1477 "parser.tab.c"
     break;
 
   case 21: /* local_declaracoes: local_declaracoes var_declaracao  */
 #line 251 "parser.y"
                                                        {
-                    if(yyvsp[-1] != NULL) {
-                        yyval = yyvsp[-1];
-                        addIrmao(yyval, yyvsp[0]);
-                    } else {
-                        yyval = yyvsp[0];
-                    }
+                        if(yyvsp[-1] != NULL) {
+                            yyval = yyvsp[-1];
+                            addIrmao(yyval, yyvsp[0]);
+                        } else {
+                            yyval = yyvsp[0];
+                        }
                     }
 #line 1490 "parser.tab.c"
     break;

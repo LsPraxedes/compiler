@@ -99,13 +99,14 @@ void printArvore(NoArvore* raiz, int num){
         return;
     }
 
+    fprintf(stdout,"|");
     for(i = 0; i < num; i++){
-        fprintf(stdout, " -|");
+        fprintf(stdout, "----");
     }
     fprintf(stdout, "%s\n", raiz->lexema);
 
     for (i=0; i < 3; i++){
-        printArvore(raiz->filho[i], num++);
+        printArvore(raiz->filho[i], num +1);
     }
     printArvore(raiz->irmao, num);
 }

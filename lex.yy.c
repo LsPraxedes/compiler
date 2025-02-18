@@ -494,7 +494,7 @@ extern int yylex(void);
 
 static int firstTime = TRUE;
 int indPilha = -1;
-char pilha[20][MAXLEXEMA];
+char pilha[4][MAXLEXEMA];
 
 static int isEOF = 0;
 #line 501 "lex.yy.c"

@@ -30,7 +30,7 @@ typedef int TokenType;
 extern int linhas;
 extern int indPilha;
 extern int linha; 
-extern char pilha[20][MAXLEXEMA];
+extern char pilha[4][MAXLEXEMA];
 
 typedef enum {Statement, Expressao, Nenhum} TipoNo;
 typedef enum {IfT, WhileT, RetornoINTT, RetornoVOIDT, NuloDecl, DeclVarT, DeclVetorT, DeclFuncT, VarParametroT, VetorParametroT, ParametroVOIDT } StatementTipo;

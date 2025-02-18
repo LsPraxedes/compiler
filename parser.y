@@ -239,22 +239,22 @@ param   : tipo_especificador TK_ID {
         ;
 
 composto_decl   : TK_ABRE_CHAVES local_declaracoes statement_lista TK_FECHA_CHAVES {
-        if($2 != NULL) {
-            $$ = $2;
-            addIrmao($$, $3);
-        } else {
-            $$ = $3;
-        }
-    }
-    ;
+                    if($2 != NULL) {
+                        $$ = $2;
+                        addIrmao($$, $3);
+                    } else {
+                        $$ = $3;
+                    }
+                }
+                ;
 
 local_declaracoes   : local_declaracoes var_declaracao {
-                    if($1 != NULL) {
-                        $$ = $1;
-                        addIrmao($$, $2);
-                    } else {
-                        $$ = $2;
-                    }
+                        if($1 != NULL) {
+                            $$ = $1;
+                            addIrmao($$, $2);
+                        } else {
+                            $$ = $2;
+                        }
                     }
                     | %empty {
                         $$ = NULL;
