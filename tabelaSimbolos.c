@@ -114,7 +114,9 @@ void percorrerArvore(NoArvore* arvoreSintatica, SimboloTabela** tabela, char* es
 
 /* Função que imprime a mensagem de erro semântico */
 void mostrarErroSemantico(erroSemantico erro, char* nome, int linha) {
+
     teveErroSemantico++;
+    
     printf("ERRO SEMÂNTICO, LINHA: %d: ", linha);
     switch (erro) {
         case DeclVoidVar:
@@ -277,4 +279,13 @@ void percorrerArvore(NoArvore* arvoreSintatica, SimboloTabela** tabela, char* es
         percorrerArvore(arvoreSintatica->irmao, tabela, escopo);
     else
         percorrerArvore(arvoreSintatica->irmao, tabela, auxEscopo);
+}
+
+int verificarMain(SimboloTabela** tabela) {
+    if (buscarSimbolo(tabela, "main", "global") == -1) {
+        /* Aqui, usamos 0 como valor da linha; você pode ajustar para o valor que julgar adequado */
+        mostrarErroSemantico(FuncMainNaoDeclarada, "main", 0);
+        return -1;
+    }
+    return 0;
 }

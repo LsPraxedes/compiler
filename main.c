@@ -44,6 +44,11 @@ int main(int argc, char **argv){
     inserirSimbolo(tabela, "input", "global", DeclFuncT, TIPO_INT, 0);
     inserirSimbolo(tabela, "output", "global", DeclFuncT, TIPO_VOID, 0);
 
+    if (verificarMain(tabela) == -1 ){
+        printf("Encerrando o programa...\n");
+        return 1;
+    }
+
     percorrerArvore(AST, tabela, escopo);
     printTabela(tabela);
 

@@ -46,4 +46,6 @@ void liberarTabela(SimboloTabela** tabela);
 void percorrerArvore(NoArvore* arvoreSintatica, SimboloTabela** tabela, char* escopo);
 void mostrarErroSemantico(erroSemantico erro, char* nome, int linha);
 
+int verificarMain(SimboloTabela** tabela);
+
 #endif
