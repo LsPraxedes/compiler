@@ -6,6 +6,9 @@
 #include "flex.h"
 #include "util.h"
 
+#define YYSTYPE NoArvore*
+#define MAX_NOS 1000
+
 static int yylex();
 
 extern int linha;
@@ -13,6 +16,10 @@ extern int linha;
 int yyerror(char *message);
 
 NoArvore AST;
+
+char auxLexema[MAXLEXEMA];
+PONTEIRONO nos[MAX_NOS];
+int qntNos = 0;
 
 %}
 
@@ -74,10 +81,44 @@ declaracao  : var_declaracao {$$ = $1;}
 var_declaracao  : tipo_especificador TK_ID TK_PONTO_VIRGULA {
                     $$ = $1;
                     $$->tipono = Statement;
-                    $$->tipoDecl
-}
-    | tipo_especificador TK_ID TK_ABRE_COLCHETES TK_NUM TK_FECHA_COLCHETES TK_PONTO_VIRGULA
-    ;
+                    $$->statement = DeclVarT;
+                    $$->linha = linhas;
+
+                    NoArvore* aux = novoNo();
+
+                    strcpy(aux->lexema, pilha[indPilha]);
+                    indPilha--;
+
+                    addFilho($$, aux);
+
+                    nos[qntNos] = aux;
+                    qntNos++;
+                }
+                | tipo_especificador TK_ID TK_ABRE_COLCHETES TK_NUM TK_FECHA_COLCHETES TK_PONTO_VIRGULA {
+                    $$ = $1;
+                    $$->tipono = Declaracao;
+                    $$->statement = DeclVetorT;
+                    $$->linha = linhas;
+
+                    NoArvore* aux = novoNo();
+                    NoArvore* aux2 = novoNo();
+                    
+                    strcpy(aux->lexema, pilha[indPilha]);
+                    indPilha--;
+
+                    nos[qntNos] = aux;
+                    qntNos++;
+
+                    strcpy(aux2->lexema, pilha[indPilha]);
+                    indPilha--;
+                    
+                    addFilho($$, aux2);
+                    addFilho($$, aux);
+
+                    nos[qntNos] = aux2;
+                    qntNos++;
+                }
+                ;
 
 tipo_especificador
     : TK_INT
@@ -135,79 +176,263 @@ selecao_decl
     | TK_IF TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement TK_ELSE statement
     ;
 
-iteracao_decl
-    : TK_WHILE TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement
+iteracao_decl   : TK_WHILE TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement {
+                    $$ = novoNo();
+                    strcpy($$->lexema, "WHILE");
+                    $$->tipono = statement;
+                    $$->linha = linhas;
+                    $$->statement = WhileT;
+
+                    addFilho($$, $3);
+                    addFilho($$, $5);
+
+                    nos[qntNos] = $$;
+                    qntNos++;
+                }
+                ;
+
+retorno_decl    : TK_RETORNO TK_PONTO_VIRGULA {
+                    $$ = novoNo();
+                    $$->tipono = Statement;
+                    $$->linha = linhas;
+                    $$->statement = RetornoVOIDT;
+                    strcpy($$->lexema, "RetornoVOID");
+
+                    nos[qntNos] = $$;
+                    qntNos++;
+                }
+                | TK_RETORNO expressao TK_PONTO_VIRGULA {
+                    $$ = novoNo();
+                    $$->tipono = Statement;
+                    $$->linha = linhas;
+                    $$->statement = RetornoINTT;
+                    strcpy($$->lexema, "RetornoINT");
+
+                    addFilho($$, $2);
+
+                    nos[qntNos] = $$;
+                    qntNos++;
+                }
+                ;
+
+expressao   : var TK_ATRIBUICAO expressao {
+                $$ = novoNo();
+                strcpy($$->lexema, "=");
+                $$-tipono = Expressao;
+                $$->linha = linhas;
+                $$->expressao = AtribuicaoT;
+            
+                addFilho($$, $1);
+                addFilho($$, $3);
+
+                nos[qntNos] = $$;
+                qntNos++;
+            }
+            | simples_expressao {
+                $$ = $1;
+
+            }
+            ;
+
+var : TK_ID {
+        $$ = novoNo();
+        $$->tipono = Expressao;
+        $$->linha = linhas;
+        $$->expressao = IdT;
+
+        strcpy($$->lexema, pilha[indPilha]);
+
+        indPilha--;
+        nos[qntNos] = $$;
+        qntNos++;
+
+    }
+    | TK_ID TK_ABRE_COLCHETES expressao TK_FECHA_COLCHETES {
+        $$ = novoNo();
+        $$->tipono = Expressao;
+        $$->linha = linhas;
+        $$->expressao = VetorParamT;
+
+        strcpy($$->lexema, pilha[indPilha]);
+        indPilha--;
+
+        addFilho($$, $3);
+
+        nos[qntNos] = $$;
+        qntNos++;
+    }
     ;
 
-retorno_decl
-    : TK_RETORNO TK_PONTO_VIRGULA
-    | TK_RETORNO expressao TK_PONTO_VIRGULA
-    ;
+simples_expressao   : soma_expressao relacional soma_expressao {
+                        $$ = $2;
+                        $$->tipo = Expressao;
+                        $$->linha = linhas;
+                        $$->expressao = OperadorRelacionalT;
 
-expressao
-    : var TK_ATRIBUICAO expressao
-    | simples_expressao
-    ;
+                        addFilho($$, $1);
+                        addFilho($$, $3);
+                    }
+                    | soma_expressao {
+                        $$ = $1;
+                    }
+                    ;
 
-var
-    : TK_ID
-    | TK_ID TK_ABRE_COLCHETES expressao TK_FECHA_COLCHETES
-    ;
+relacional  : TK_MENOR_IGUAL {
+                $$ = novoNo();
+                strcpy($$->lexema, "<=");
 
-simples_expressao
-    : soma_expressao relacional soma_expressao
-    | soma_expressao
-    ;
+                nos[qntNos] = $$;
+                qntNos++;
+            }
+            | TK_MENOR {
+                $$ = novoNo();
+                strcpy($$->lexema, "<");
 
-relacional
-    : TK_MENOR_IGUAL
-    | TK_MENOR
-    | TK_MAIOR
-    | TK_MAIOR_IGUAL
-    | TK_IGUALDADE
-    | TK_DIFERENTE
-    ;
+                nos[qntNos] = $$;
+                qntNos++;
+            }
+            | TK_MAIOR {
+                $$ = novoNo();
+                strcpy($$->lexema, ">");
 
-soma_expressao
-    : soma_expressao soma termo
-    | termo
-    ;
+                nos[qntNos] = $$;
+                qntNos++;
+            }
+            | TK_MAIOR_IGUAL {
+                $$ = novoNo();
+                strcpy($$->lexema, ">=");
 
-soma
-    : TK_MAIS
-    | TK_MENOS
-    ;
+                nos[qntNos] = $$;
+                qntNos++;
+            }
+            | TK_IGUALDADE {
+                $$ = novoNo();
+                strcpy($$->lexema, "==");
 
-termo
-    : termo mult fator
-    | fator
-    ;
+                nos[qntNos] = $$;
+                qntNos++;
+            }
+            | TK_DIFERENTE {
+                $$ = novoNo();
+                strcpy($$->lexema, "!=");
 
-mult
-    : TK_MULTIPLICACAO
-    | TK_DIVISAO
-    ;
+                nos[qntNos] = $$;
+                qntNos++;
+            }
+            ;
 
-fator
-    : TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES
-    | var
-    | ativacao
-    | TK_NUM
-    ;
+soma_expressao  : soma_expressao soma termo {
+                    $$ = $2;
+                    $$->tipono = Expressao;
+                    $$->linha = linhas;
+                    $$->expressao = OperandoT;
 
-ativacao
-    : TK_ID TK_ABRE_PARENTESES args TK_FECHA_PARENTESES
-    ;
+                    addFilho($$ = $1);
+                    addFilho($$ = $3);
+                }
+                | termo {
+                    $$ = $1;
+                }
+                ;
 
-args
-    : arg_lista
-    | TK_VOID
-    ;
+soma    : TK_MAIS {
+            $$ = novoNo();
+            strcpy($$->lexema, "+");
 
-arg_lista
-    : arg_lista TK_VIRGULA expressao
-    | expressao
-    ;
+            nos[qntNos] = $$;
+            qntNos++;
+        }
+        | TK_MENOS {
+            $$ = novoNo();
+            strcpy($$->lexema, "-");
+
+            nos[qntNos] = $$;
+            qntNos++;
+        }
+        ;
+
+termo   : termo mult fator {
+            $$ = $2;
+            $$->tipono = Expressao;
+            $$->linha = linhas;
+            $$->expressao = OperandoT;
+
+            addFilho($$, $1);
+            addFilho($$, $3);
+        }
+        | fator {
+            $$ = $1;
+        }
+        ;
+
+mult    : TK_MULTIPLICACAO {
+            $$ = novoNo();
+            strcpy($$->lexema, "*");
+        
+            nos[qntNos] = $$;
+            qntNos++;
+        }
+        | TK_DIVISAO {
+            $$ = novoNo();
+            strcpy($$->lexema, "/");
+
+            nos[qntNos] = $$;
+            qntNos++;
+        }
+        ;
+
+fator   : TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES {
+            $$ = $2;
+        }
+        | var {
+            $$ = $1;
+        }
+        | ativacao {
+            $$ = $1;
+        }
+        | TK_NUM {
+            $$ = novoNO();
+            $$->tipono = Expressao;
+            $$->linha = linhas;
+            $$->expressao = ContanteT;
+
+            strcpy($$->lexema, pilha[indPilha]);
+                        indPilha--;
+
+                        nos[qntNos] = $$;
+                        qntNos++;
+        }
+        ;
+
+ativacao    : TK_ID TK_ABRE_PARENTESES args TK_FECHA_PARENTESES {
+                $$ = $1;
+                $$->tipono = Expressao;
+                $$->linha = linhas;
+                $$->expressao = FunCallT;
+                addFilho($$, $3);
+            }
+            ;
+
+args    : arg_lista {
+            $$ = $1;
+        }
+        | TK_VOID {
+            %empty {$$ = NULL;}
+        }
+        ;
+
+arg_lista   : arg_lista TK_VIRGULA expressao {
+                if($1 != NULL){
+                    $$ = $1;
+                    addIrmao($$, $3);
+                } else {
+                    $$ = $3;
+                }
+            }
+            | expressao {
+                $$ = $1;
+            }
+            ;
 
 %%
 

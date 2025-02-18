@@ -23,10 +23,16 @@
 #define TRUE 1
 #endif
 
+#define MAXLEXEMA 25
+
 typedef int TokenType;
 
+extern int linhas;
+extern int indPilha;
+extern char pilha[4][MAXLEXEMA];
+
 typedef enum {Statement, Expressao, Nenhum} TipoNo;
-typedef enum {IfT, WhileT, RetornoINT, RetornoVOIDT, NuloDecl, DeclVarT, DeclVetorT, DeclFuncT, VarParametroT, VetorParametroT, ParametroVOIDT } StatementTipo;
+typedef enum {IfT, WhileT, RetornoINTT, RetornoVOIDT, NuloDecl, DeclVarT, DeclVetorT, DeclFuncT, VarParametroT, VetorParametroT, ParametroVOIDT } StatementTipo;
 typedef enum {OperandoT, ConstanteT, IdT, VarDeclT, FunCallT, VetorParamT, AtribuicaoT, NuloEXP, OperadorRelacionalT} ExpressaoTipo;
 struct noArvore {
 
