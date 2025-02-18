@@ -3,6 +3,8 @@
 
 #include "global.h"
 
+extern int teveErroSemantico;
+
 /* Enumeração para os tipos de erro semântico */
 typedef enum {
     DeclVoidVar,

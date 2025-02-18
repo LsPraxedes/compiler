@@ -9,6 +9,8 @@ int Error = FALSE;
 int linha = 1;
 int linhas = 1;
 
+int teveErroSemantico;
+
 FILE * source;
 
 int main(int argc, char **argv){
@@ -37,10 +39,15 @@ int main(int argc, char **argv){
         printArvore(AST, 0);
     }
 
-    printf("\nTABELA DE SIMBOLOS:\n\n");
+    printf("\nFIM_ANALISE_SINTATICA\n------------------------------------------\nINICIO_ANALISE_SEMANTICA\n\n");
 
     percorrerArvore(AST, tabela, escopo);
     printTabela(tabela);
+
+    if (teveErroSemantico > 0)
+        printf("Foram encontrados %d erro(s) semântico(s).\n", teveErroSemantico);
+    else
+        printf("Análise semântica concluída sem erros.\n");
 
     return 0;
 }

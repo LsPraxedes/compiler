@@ -79,7 +79,7 @@ int buscaIgual(SimboloTabela** tabela, char nomeID[MAXLEXEMA], char escopo[MAXLE
 
 /* Imprime a tabela de símbolos */
 void printTabela(SimboloTabela** tabela) {
-    printf("===================================================================================\n");
+    printf("\nTABELA DE SIMBOLOS\n\n===================================================================================\n");
     printf("| %-4s | %-20s | %-15s | %-10s | %-10s | %-5s |\n",
            "ID", "Nome", "Escopo", "Tipo", "Tipagem", "Linha");
     printf("===================================================================================\n");
@@ -109,7 +109,7 @@ void liberarTabela(SimboloTabela** tabela) {
 
 /* Enumeração para os tipos de erro semântico */
 
-int teveErroSemantico = 0;
+// int teveErroSemantico = 0;
 
 void percorrerArvore(NoArvore* arvoreSintatica, SimboloTabela** tabela, char* escopo);
 
@@ -271,34 +271,3 @@ void percorrerArvore(NoArvore* arvoreSintatica, SimboloTabela** tabela, char* es
  * e exibe a tabela de símbolos. A árvore sintática deve ser construída pelo seu
  * analisador sintático.
  */
-// int main() {
-//     /* Cria a tabela de símbolos */
-//     SimboloTabela** tabela = criarTabela();
-    
-//     /* Inicializa o escopo global */
-//     char escopo[MAXLEXEMA] = "global";
-    
-//     /* 
-//      * Aqui você deve construir sua árvore sintática (do tipo NoArvore*)
-//      * para exemplo, assumindo que "arvore" já foi construída.
-//      */
-//     NoArvore* arvore = NULL;
-//     /* ... construção da árvore ... */
-    
-//     /* Percorre a árvore para realizar a análise semântica */
-//     percorrerArvore(arvore, tabela, escopo);
-    
-//     /* Imprime a tabela de símbolos resultante */
-//     printTabela(tabela);
-    
-//     /* Libera a memória da tabela */
-//     liberarTabela(tabela);
-    
-//     /* Verifica se houve erros semânticos */
-//     if (teveErroSemantico > 0)
-//         printf("Foram encontrados %d erro(s) semântico(s).\n", teveErroSemantico);
-//     else
-//         printf("Análise semântica concluída sem erros.\n");
-    
-//     return 0;
-// }
