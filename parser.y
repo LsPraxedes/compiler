@@ -6,24 +6,29 @@
 #include "flex.h"
 #include "util.h"
 
+
 #define YYSTYPE NoArvore*
 #define MAX_NOS 1000
 
 static int yylex();
 
+int yyparse(void);
 extern int linha;
 
 int yyerror(char *message);
 
-NoArvore AST;
+NoArvore* AST;
+
+void printArvore(NoArvore* raiz, int num);
 
 char auxLexema[MAXLEXEMA];
-PONTEIRONO nos[MAX_NOS];
+NoArvore* nos[MAX_NOS];
 int qntNos = 0;
 
 %}
 
 %start programa
+%expect 1
 %token TK_IF
 %token TK_ELSE
 %token TK_VIRGULA
@@ -54,25 +59,27 @@ int qntNos = 0;
 %token TK_VOID
 %token TK_WHILE
 %token ERROR
+%token ENDFILE
 
 
 %%
 
-programa : declaracao_lista {
-            AST = $1;
-        };
+programa    : declaracao_lista {
+                AST = $1;
+            }
+            ;
 
-declaracao_lista : declaracao_lista declaracao  {
-                    if ($1 != NULL){
-                        $$ = $1;
-                        addIrmao($$, $2);
-                    } 
-                    else {
-                        $$ = $2;
+declaracao_lista    : declaracao_lista declaracao  {
+                        if ($1 != NULL){
+                            $$ = $1;
+                            addIrmao($$, $2);
+                        } 
+                        else {
+                            $$ = $2;
+                        }
                     }
-                    }
-    | declaracao {$$ = $1;}
-    ;
+                    | declaracao {$$ = $1;}
+                    ;
 
 declaracao  : var_declaracao {$$ = $1;}
             | fun_declaracao {$$ = $1;}
@@ -163,7 +170,11 @@ fun_id  : TK_ID {
             qntNos++;
         }
 
-params  : param_lista {
+params  : %empty {
+            $$ = novoNo();
+        }
+        |
+        param_lista {
             $$ = $1;
         }
         | TK_VOID {
@@ -288,7 +299,7 @@ expressao_decl  : expressao TK_PONTO_VIRGULA {
                 }
                 ;
 
-selecao_decl    : TK_IF TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement {
+selecao_decl    : TK_IF TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement fatoracao{
                     $$ = novoNo();
                     strcpy($$->lexema, "IF");
                     $$->tipono = Statement;
@@ -306,7 +317,7 @@ selecao_decl    : TK_IF TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES stateme
                 }
                 ;
 
-fatoracao   : ELSE statement {
+fatoracao   : TK_ELSE statement {
                 $$ = $2;
             }
             | %empty {
@@ -317,7 +328,7 @@ fatoracao   : ELSE statement {
 iteracao_decl   : TK_WHILE TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement {
                     $$ = novoNo();
                     strcpy($$->lexema, "WHILE");
-                    $$->tipono = statement;
+                    $$->tipono = Statement;
                     $$->linha = linhas;
                     $$->statement = WhileT;
 
@@ -356,7 +367,7 @@ retorno_decl    : TK_RETORNO TK_PONTO_VIRGULA {
 expressao   : var TK_ATRIBUICAO expressao {
                 $$ = novoNo();
                 strcpy($$->lexema, "=");
-                $$-tipono = Expressao;
+                $$->tipono = Expressao;
                 $$->linha = linhas;
                 $$->expressao = AtribuicaoT;
             
@@ -403,7 +414,7 @@ var : TK_ID {
 
 simples_expressao   : soma_expressao relacional soma_expressao {
                         $$ = $2;
-                        $$->tipo = Expressao;
+                        $$->tipono = Expressao;
                         $$->linha = linhas;
                         $$->expressao = OperadorRelacionalT;
 
@@ -465,8 +476,8 @@ soma_expressao  : soma_expressao soma termo {
                     $$->linha = linhas;
                     $$->expressao = OperandoT;
 
-                    addFilho($$ = $1);
-                    addFilho($$ = $3);
+                    addFilho($$, $1);
+                    addFilho($$, $3);
                 }
                 | termo {
                     $$ = $1;
@@ -529,10 +540,10 @@ fator   : TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES {
             $$ = $1;
         }
         | TK_NUM {
-            $$ = novoNO();
+            $$ = novoNo();
             $$->tipono = Expressao;
             $$->linha = linhas;
-            $$->expressao = ContanteT;
+            $$->expressao = ConstanteT;
 
             strcpy($$->lexema, pilha[indPilha]);
                         indPilha--;
@@ -617,6 +628,7 @@ int yyerror(char *message) {
         case TK_VOID: printf("%s\n", lexema); break;
         case TK_WHILE: printf("%s\n", lexema); break;
         case ERROR: printf("%s\n", lexema); break;
+        case ENDFILE: printf("\n"); break;
         default: printf("Token desconhecido: %d\n", yychar);
     }
 
@@ -624,5 +636,11 @@ int yyerror(char *message) {
 }
 
 static int yylex(void) {
+    
     return getToken();
+}
+
+NoArvore* parse(void) {
+    yyparse();
+    return AST;
 }

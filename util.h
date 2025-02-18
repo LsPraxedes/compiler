@@ -9,4 +9,6 @@ NoArvore* addIrmao(NoArvore*, NoArvore*);
 
 void printArvore(NoArvore*, int);
 
+NoArvore* parse(void);
+
 #endif

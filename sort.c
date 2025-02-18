@@ -37,7 +37,7 @@ void sort(int a[], int low, int high)
 
 void main()
 {
-    float i;
+    int i;
     i = 0;
     while (i < 10)
     {

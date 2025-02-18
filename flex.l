@@ -7,6 +7,12 @@ char lexema[MAXTOKENLEN+1];
 char id[MAXTOKENLEN+1];
 
 extern int yylex(void);
+
+static int firstTime = TRUE;
+int indPilha = -1;
+char pilha[20][MAXLEXEMA];
+
+static int isEOF = 0;
 %}
 
 %option noyywrap
@@ -24,9 +30,22 @@ DIGIT [0-9]
 "void"    { fprintf(yyout, "TK_VOID "); return TK_VOID; }
 "while"   { fprintf(yyout, "TK_WHILE "); return TK_WHILE; }
 
-{DIGIT}+ { yylval = atoi(yytext); fprintf(yyout, "TK_NUM(%d) ", yylval); return TK_NUM; }
+{DIGIT}{DIGIT}* { 
+    
+    indPilha++;
+    strcpy(pilha[indPilha], yytext);
+    yylval = atoi(yytext); fprintf(yyout, "TK_NUM(%d) ", yylval); return TK_NUM; 
 
-{LETTER}+ { fprintf(yyout, "TK_ID(%s) ", yytext); return TK_ID; }
+}
+
+{LETTER}({LETTER}|{DIGIT})* { 
+
+    indPilha++;
+    bzero(pilha[indPilha], MAXLEXEMA);
+    strcpy(pilha[indPilha], yytext);
+    fprintf(yyout, "TK_ID(%s) ", yytext); return TK_ID; 
+
+}
 
 "+"       { fprintf(yyout, "+ "); return TK_MAIS; }
 "-"       { fprintf(yyout, "- "); return TK_MENOS; }
@@ -51,7 +70,7 @@ DIGIT [0-9]
 "/*"      { fprintf(yyout, "TK_ABRE_COMENTARIO "); return TK_ABRE_COMENTARIO; }
 "*/"      { fprintf(yyout, "TK_FECHA_COMENTARIO "); return TK_FECHA_COMENTARIO; }
 
-<<EOF>> { return EOF; }
+<<EOF>> { return ENDFILE; }
 ({LETTER}|{DIGIT})+ { fprintf(yyout, "ERROR(%s) ", yytext); return ERROR; }
 {NEWLINE}   {linha++;}
 {TAB}+ { }
@@ -62,26 +81,30 @@ DIGIT [0-9]
 
 TokenType getToken(void) { 
 
-    static int firstTime = TRUE;
-
     TokenType currentToken;
     
     if (firstTime) {
         firstTime = FALSE;
         yyin = source;
+
+        for (int i = 0; i < 5; i++){
+            bzero(pilha, MAXLEXEMA);	
+        }
+
     }
     
     currentToken = yylex();
 
-    if(currentToken == EOF) return ENDFILE;
+    /* if(currentToken == ENDFILE) 
+        return; */
 
-    if(currentToken == TK_ID) 
-        strncpy(id,yytext,MAXTOKENLEN);
+    /* if(currentToken == TK_ID) 
+        strncpy(id,yytext,MAXTOKENLEN); */
     
     strncpy(lexema,yytext,MAXTOKENLEN);
     
     fprintf(stdout,"\t%d: ",linha);
     printToken(currentToken,lexema);
 
-  return currentToken;
+    return currentToken;
 }

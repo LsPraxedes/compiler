@@ -83,7 +83,8 @@ extern int yydebug;
     TK_RETORNO = 284,              /* TK_RETORNO  */
     TK_VOID = 285,                 /* TK_VOID  */
     TK_WHILE = 286,                /* TK_WHILE  */
-    ERROR = 287                    /* ERROR  */
+    ERROR = 287,                   /* ERROR  */
+    ENDFILE = 288                  /* ENDFILE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif

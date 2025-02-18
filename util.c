@@ -27,7 +27,7 @@ void printToken( TokenType token, const char* lexema ) { switch (token)
      case TK_MENOS: fprintf(stdout,"-\n"); break;
      case TK_MULTIPLICACAO: fprintf(stdout,"*\n"); break;
      case TK_DIVISAO: fprintf(stdout,"/\n"); break;
-    //  case FIM: fprintf(stdout,"EOF\n"); break;
+     case ENDFILE: fprintf(stdout,"EOF\n"); break;
      case TK_NUM: fprintf(stdout,"NUM, val = %s\n",lexema);break;
      case TK_ID:  fprintf(stdout,"ID, nome = %s\n",lexema);break;
      case ERROR:  fprintf(stdout,"%s\n",lexema); break;
@@ -100,9 +100,9 @@ void printArvore(NoArvore* raiz, int num){
     }
 
     for(i = 0; i < num; i++){
-        fprintf(yyout, "\t");
+        fprintf(stdout, " -|");
     }
-    fprintf(yyout, "%s\n", raiz->lexema);
+    fprintf(stdout, "%s\n", raiz->lexema);
 
     for (i=0; i < 3; i++){
         printArvore(raiz->filho[i], num++);
