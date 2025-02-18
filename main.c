@@ -44,18 +44,19 @@ int main(int argc, char **argv){
     inserirSimbolo(tabela, "input", "global", DeclFuncT, TIPO_INT, 0);
     inserirSimbolo(tabela, "output", "global", DeclFuncT, TIPO_VOID, 0);
 
+    
+    percorrerArvore(AST, tabela, escopo);
+    
     if (verificarMain(tabela) == -1 ){
         printf("Encerrando o programa...\n");
         return 1;
     }
 
-    percorrerArvore(AST, tabela, escopo);
     printTabela(tabela);
-
     if (teveErroSemantico > 0)
         printf("Foram encontrados %d erro(s) semântico(s).\n", teveErroSemantico);
     else
-        printf("Análise semântica concluída sem erros%d.\n", teveErroSemantico);
+        printf("Análise semântica concluída sem erros.\n");
 
     return 0;
 }
