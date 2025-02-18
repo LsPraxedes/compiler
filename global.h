@@ -31,7 +31,16 @@ extern int Error;
 
 typedef int TokenType;
 
-typedef enum {Statement, Expressao, Nenhum} TipoNo;
+typedef enum {
+    TIPO_INT,
+    TIPO_VOID
+} Tipagem;
+
+typedef enum {
+    Statement, 
+    Expressao, 
+    Nenhum
+} TipoNo;
 typedef enum {  
     IfT, 
     WhileT, 
