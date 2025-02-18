@@ -2,6 +2,7 @@
 #include "flex.h"
 #include "util.h"
 #include "parser.h"
+#include "tabelaSimbolos.h"
 
 int Error = FALSE;
 
@@ -13,7 +14,9 @@ FILE * source;
 int main(int argc, char **argv){
 
     NoArvore* AST;
+    SimboloTabela** tabela = criarTabela();
     
+    char escopo[MAXLEXEMA] = "global";
     char nomeInput[120];
     
     if(argc != 2){
@@ -34,5 +37,8 @@ int main(int argc, char **argv){
         printArvore(AST, 0);
     }
 
+    percorrerArvore(AST, tabela, escopo);
+    printTabela(tabela);
+        
     return 0;
 }
