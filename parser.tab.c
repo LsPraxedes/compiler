@@ -2207,7 +2207,7 @@ int yyerror(char *message) {
     if (yychar == ERROR)
         printf("Erro léxico na linha %d. Lexema: ", linha);
     else
-        printf("Erro sintático na linha %d. Token: ", linha);
+        printf("Erro sintático na linha %d. Token: ", linha-1);
 
 
     switch (yychar) {
