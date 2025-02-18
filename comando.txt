@@ -1,0 +1,1 @@
+bison -d parser.y && flex flex.l && gcc -g -o compilador main.c lex.yy.c parser.tab.c util.c -lfl
