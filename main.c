@@ -37,8 +37,10 @@ int main(int argc, char **argv){
         printArvore(AST, 0);
     }
 
+    printf("\nTABELA DE SIMBOLOS:\n\n");
+
     percorrerArvore(AST, tabela, escopo);
     printTabela(tabela);
-        
+
     return 0;
 }

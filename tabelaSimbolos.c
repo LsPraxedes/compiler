@@ -79,10 +79,10 @@ int buscaIgual(SimboloTabela** tabela, char nomeID[MAXLEXEMA], char escopo[MAXLE
 
 /* Imprime a tabela de símbolos */
 void printTabela(SimboloTabela** tabela) {
-    printf("======================================================================\n");
+    printf("===================================================================================\n");
     printf("| %-4s | %-20s | %-15s | %-10s | %-10s | %-5s |\n",
            "ID", "Nome", "Escopo", "Tipo", "Tipagem", "Linha");
-    printf("======================================================================\n");
+    printf("===================================================================================\n");
     for (int i = 0; i < MAX; i++) {
         if (tabela[i] != NULL) {
             printf("| %-4d | %-20s | %-15s | %-10s | %-10s | %-5d |\n",
@@ -92,7 +92,7 @@ void printTabela(SimboloTabela** tabela) {
                    tabela[i]->linha);
         }
     }
-    printf("======================================================================\n");
+    printf("===================================================================================\n");
 }
 
 /* Libera a memória alocada para a tabela */
