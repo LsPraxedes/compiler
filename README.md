@@ -1,6 +1,15 @@
-# Compilador - Gramática e Tokens
+# Compilador C-
 
-Este repositório contém a implementação de um compilador para a linguagem C- (c menos) utilizando Flex e Bison. Abaixo estão a gramática utilizada e os lexemas/tokens aceitos.
+Este repositório contém a implementação de um compilador para a linguagem C- (c menos), utilizando Flex e Bison, para a disciplina de Compiladores da Universidade Federal de São Paulo.
+
+Este compilador compreende as 3 análise da primeira fase de compilação:
+1. Análise Léxica;
+2. Análise Sintática;
+3. Análise Semântica.
+
+Além disso, ele mostra o processo de identificação de Lexemas/Tokens, a Árvore Sintática Abstrata (AST) e a tabela de Símbolos.
+
+Abaixo estão a gramática utilizada e os lexemas/tokens aceitos.
 
 ## Gramática
 
