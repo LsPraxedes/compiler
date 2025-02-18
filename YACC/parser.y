@@ -1,9 +1,9 @@
 %{
     #define YYPARSER
 
-    #include "global.h"
-    #include "flex.h"
-    #include "util.h"
+    #include "../headers/global.h"
+    #include "../headers/lexer.h"
+    #include "../headers/util.h"
 
     #define YYSTYPE NoArvore*
     #define MAX_NOS 1000
@@ -17,10 +17,6 @@
     void printArvore(NoArvore* raiz, int num);
 
     int qntNos = 0;
-
-    // char auxLexema[MAXLEXEMA];
-
-    
 
     NoArvore* AST;
     NoArvore* nos[MAX_NOS];

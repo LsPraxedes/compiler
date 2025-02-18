@@ -1,8 +1,8 @@
 %{
 
-    #include "global.h"
-    #include "flex.h"
-    #include "util.h"
+    #include "../headers/global.h"
+    #include "../headers/lexer.h"
+    #include "../headers/util.h"
 
     char lexema[MAXTOKENLEN+1];
     char ultimoLexema[MAXTOKENLEN+1];

@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "global.h"
-#include "tabelaSimbolos.h"
+#include "../headers/global.h"
+#include "../headers/tabelaSimbolos.h"
 
 #define MAX 200
 

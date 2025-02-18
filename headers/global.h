@@ -7,7 +7,7 @@
 #include <string.h>
 
 #ifndef YYPARSER
-#include "parser.tab.h"
+#include "../YACC/parser.tab.h"
 #define ENDFILE 0
 #endif
 

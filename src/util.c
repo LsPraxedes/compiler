@@ -1,5 +1,5 @@
-#include "global.h"
-#include "util.h"
+#include "../headers/global.h"
+#include "../headers/util.h"
 
 void printToken( TokenType token, const char* lexema ) { switch (token)
    { case TK_IF:   fprintf(stdout,"%s\n",lexema);break;

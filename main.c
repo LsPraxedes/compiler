@@ -1,8 +1,8 @@
-#include "global.h"
-#include "flex.h"
-#include "util.h"
-#include "parser.h"
-#include "tabelaSimbolos.h"
+#include "headers/global.h"
+#include "headers/lexer.h"
+#include "headers/util.h"
+#include "headers/parser.h"
+#include "headers/tabelaSimbolos.h"
 
 int Error = FALSE;
 
