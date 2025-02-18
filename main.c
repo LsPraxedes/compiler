@@ -31,8 +31,10 @@ int main(int argc, char **argv){
 
     AST = parse();
 
-    if (AST == NULL)
-        fprintf(stdout, "ERRO NA GERAÇÃO DA AST.\n");
+    if (AST == NULL) {
+        fprintf(stdout, "ERRO NA GERAÇÃO DA AST. Encerrando o programa.\n");
+        return -1;
+    }
 
     else {
         fprintf(stdout, "\nAST:\n\n");
