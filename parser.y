@@ -96,7 +96,7 @@ var_declaracao  : tipo_especificador TK_ID TK_PONTO_VIRGULA {
                 }
                 | tipo_especificador TK_ID TK_ABRE_COLCHETES TK_NUM TK_FECHA_COLCHETES TK_PONTO_VIRGULA {
                     $$ = $1;
-                    $$->tipono = Declaracao;
+                    $$->tipono = Statement;
                     $$->statement = DeclVetorT;
                     $$->linha = linhas;
 
@@ -120,61 +120,199 @@ var_declaracao  : tipo_especificador TK_ID TK_PONTO_VIRGULA {
                 }
                 ;
 
-tipo_especificador
-    : TK_INT
-    | TK_VOID
+tipo_especificador  : TK_INT {
+                        $$ = novoNo();
+                        strcpy($$->lexema, "INT");
+                        $$->linha = linhas;
+
+                        nos[qntNos] = $$;
+                        qntNos++;
+                    }
+                    | TK_VOID {
+                        $$ = novoNo();
+                        strcpy($$->lexema, "VOID");
+                        $$->linha = linhas;
+
+                        nos[qntNos] = $$;
+                        qntNos++;
+                    }
+                    ;
+
+fun_declaracao  : tipo_especificador fun_id TK_ABRE_PARENTESES params TK_FECHA_PARENTESES composto_decl {
+                    $$ = $1;
+
+                    addFilho($$, $4);
+                    addFilho($$, $2);
+                    addFilho($2, $6);
+                    
+                    $$->tipono = Statement;
+                    $$->statement = DeclFuncT;
+                }
+                ;
+
+fun_id  : TK_ID {
+            $$ = novoNo();
+                        
+            strcpy($$->lexema, pilha[indPilha]);
+            indPilha--;
+
+            //strcpy($$->lexema, auxNome);
+            $$->linha = linhas;
+
+            nos[qntNos] = $$;
+            qntNos++;
+        }
+
+params  : param_lista {
+            $$ = $1;
+        }
+        | TK_VOID {
+            $$ = novoNo();
+            $$->tipono = Statement;
+            $$->linha = linhas;
+            $$->statement = ParametroVOIDT;
+            strcpy($$->lexema, "VOID");
+
+            nos[qntNos] = $$;
+            qntNos++;
+        }
+        ;
+
+param_lista : param_lista TK_VIRGULA param {
+                if($1 != NULL){
+                    $$ = $1;
+                    addIrmao($$, $3);
+                }
+                else{
+                    $$ = $3;
+                }	
+            }
+            | param {
+                $$ = $1;
+            }
+            ;
+
+param   : tipo_especificador TK_ID {
+            $$ = $1;
+            $$->tipono = Statement;
+            $$->linha = linhas;
+            $$->statement = VarParametroT;
+
+            NoArvore* aux = novoNo();
+
+            strcpy(aux->lexema, pilha[indPilha]);
+            indPilha--;
+        
+            addFilho($$, aux);
+
+            nos[qntNos] = aux;
+            qntNos++;
+        }
+        | tipo_especificador TK_ID TK_ABRE_COLCHETES TK_FECHA_COLCHETES {
+            $$ = $1;
+            $$->tipono = Statement;
+            $$->linha = linhas;
+            $$->statement = VetorParametroT;
+            NoArvore* aux = novoNo();
+
+
+            strcpy(aux->lexema, pilha[indPilha]);
+            indPilha--;
+
+            //strcpy(aux->lexema, id);
+            addFilho($$, aux);		
+
+            nos[qntNos] = aux;
+            qntNos++;	
+        }
+        ;
+
+composto_decl   : TK_ABRE_CHAVES local_declaracoes statement_lista TK_FECHA_CHAVES {
+        if($2 != NULL) {
+            $$ = $2;
+            addIrmao($$, $3);
+        } else {
+            $$ = $3;
+        }
+    }
     ;
 
-fun_declaracao
-    : tipo_especificador TK_ID TK_ABRE_PARENTESES params TK_FECHA_PARENTESES composto_decl
-    ;
+local_declaracoes   : local_declaracoes var_declaracao {
+                    if($1 != NULL) {
+                        $$ = $1;
+                        addIrmao($$, $2);
+                    } else {
+                        $$ = $2;
+                    }
+                    }
+                    | %empty {
+                        $$ = NULL;
+                    }
+                    ;
 
-params
-    : param_lista
-    | TK_VOID
-    ;
+statement_lista : statement_lista statement {
+                    if($1 != NULL) {
+                        $$ = $1;
+                        addIrmao($$, $2);
+                    } else {
+                        $$ = $2;
+                    }
+                }
+                | %empty {
+                    $$ = NULL;
+                }
+                ;
 
-param_lista
-    : param_lista TK_VIRGULA param
-    | param
-    ;
+statement   : expressao_decl {
+                $$ = $1;
+            }
+            | composto_decl {
+                $$ = $1;
+            }
+            | selecao_decl {
+                $$ = $1;
+            }
+            | iteracao_decl {
+                $$ = $1;
+            }
+            | retorno_decl {
+                $$ = $1;
+            }
+            ;
 
-param
-    : tipo_especificador TK_ID
-    | tipo_especificador TK_ID TK_ABRE_COLCHETES TK_FECHA_COLCHETES
-    ;
+expressao_decl  : expressao TK_PONTO_VIRGULA {
+                    $$ = $1;
+                }
+                | TK_PONTO_VIRGULA {
+                    $$ = NULL;
+                }
+                ;
 
-composto_decl
-    : TK_ABRE_CHAVES local_declaracoes statement_lista TK_FECHA_CHAVES
-    ;
+selecao_decl    : TK_IF TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement {
+                    $$ = novoNo();
+                    strcpy($$->lexema, "IF");
+                    $$->tipono = Statement;
+                    $$->linha = linhas;
+                    $$->statement = IfT;
 
-local_declaracoes
-    : local_declaracoes var_declaracao
-    | TK_VOID    /* cuidado: isso permite um 'void' literal no código */
-    ;
+                    addFilho($$, $5);		
+                    addFilho($$, $3);
+                    if($6 != NULL){
+                        addFilho($$, $6);
+                    }
 
-statement_lista
-    : statement_lista statement
-    | TK_VOID     /* idem */
-    ;
+                    nos[qntNos] = $$;
+                    qntNos++;
+                }
+                ;
 
-statement
-    : expressao_decl
-    | composto_decl
-    | selecao_decl
-    | iteracao_decl
-    | retorno_decl
-    ;
-
-expressao_decl
-    : expressao TK_PONTO_VIRGULA
-    | TK_PONTO_VIRGULA
-    ;
-
-selecao_decl
-    : TK_IF TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement
-    | TK_IF TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement TK_ELSE statement
-    ;
+fatoracao   : ELSE statement {
+                $$ = $2;
+            }
+            | %empty {
+                $$ = NULL;
+            }
+            ;
 
 iteracao_decl   : TK_WHILE TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement {
                     $$ = novoNo();
@@ -404,7 +542,7 @@ fator   : TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES {
         }
         ;
 
-ativacao    : TK_ID TK_ABRE_PARENTESES args TK_FECHA_PARENTESES {
+ativacao    : fun_id TK_ABRE_PARENTESES args TK_FECHA_PARENTESES {
                 $$ = $1;
                 $$->tipono = Expressao;
                 $$->linha = linhas;
@@ -416,8 +554,8 @@ ativacao    : TK_ID TK_ABRE_PARENTESES args TK_FECHA_PARENTESES {
 args    : arg_lista {
             $$ = $1;
         }
-        | TK_VOID {
-            %empty {$$ = NULL;}
+        | %empty {
+            $$ = NULL;
         }
         ;
 
