@@ -78,7 +78,7 @@
 
 static int yylex();
 
-extern int lineno;
+extern int linha;
 
 int yyerror(char *message);
 
@@ -1409,9 +1409,9 @@ int yyerror(char *message) {
     Error = TRUE;
 
     if (yychar == ERROR)
-        printf("Erro léxico na linha %d. Lexema: ", lineno);
+        printf("Erro léxico na linha %d. Lexema: ", linha);
     else
-        printf("Erro sintático na linha %d. Token: ", lineno);
+        printf("Erro sintático na linha %d. Token: ", linha);
 
 
     switch (yychar) {

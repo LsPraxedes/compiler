@@ -932,7 +932,7 @@ case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
 #line 56 "flex.l"
-{lineno++;}
+{linha++;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
@@ -1969,19 +1969,18 @@ TokenType getToken(void) {
     if (firstTime) {
         firstTime = FALSE;
         yyin = source;
-        yyout = listing;
     }
     
     currentToken = yylex();
 
+    if(currentToken == EOF) return ENDFILE;
+
     if(currentToken == TK_ID) 
         strncpy(id,yytext,MAXTOKENLEN);
-
-    if(currentToken == EOF) return ENDFILE;
-        
+    
     strncpy(lexema,yytext,MAXTOKENLEN);
     
-    fprintf(yyout,"\t%d: ",lineno);
+    fprintf(stdout,"\t%d: ",linha);
     printToken(currentToken,lexema);
 
   return currentToken;

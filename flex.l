@@ -53,7 +53,7 @@ DIGIT [0-9]
 
 <<EOF>> { return EOF; }
 ({LETTER}|{DIGIT})+ { fprintf(yyout, "ERROR(%s) ", yytext); return ERROR; }
-{NEWLINE}   {lineno++;}
+{NEWLINE}   {linha++;}
 {TAB}+ { }
 [ ]* { }
 
@@ -69,19 +69,18 @@ TokenType getToken(void) {
     if (firstTime) {
         firstTime = FALSE;
         yyin = source;
-        yyout = listing;
     }
     
     currentToken = yylex();
 
+    if(currentToken == EOF) return ENDFILE;
+
     if(currentToken == TK_ID) 
         strncpy(id,yytext,MAXTOKENLEN);
-
-    if(currentToken == EOF) return ENDFILE;
-        
+    
     strncpy(lexema,yytext,MAXTOKENLEN);
     
-    fprintf(yyout,"\t%d: ",lineno);
+    fprintf(stdout,"\t%d: ",linha);
     printToken(currentToken,lexema);
 
   return currentToken;

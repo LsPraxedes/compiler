@@ -23,17 +23,32 @@
 #define TRUE 1
 #endif
 
-
 typedef int TokenType;
 
+typedef enum {Statement, Expressao, Nenhum} TipoNo;
+typedef enum {IfT, WhileT, RetornoINT, RetornoVOIDT, Nulo, DeclVarT, DeclVetorT, DeclFuncT, VarParametroT, VetorParametroT, ParametroVOIDT } StatementTipo;
+typedef enum {OperandoT, ConstanteT, IdT, VarDeclT, FunCallT, VetorParamT, AtribuicaoT, NuloEXP, OperadorRelacionalT} ExpressaoTipo;
+struct noArvore {
+
+    struct treeNode * filho[3];
+    struct treeNode * irmao;
+
+    int linha;
+    char lexema[25];
+
+    TipoNo tipono;
+    StatementTipo statement;
+    ExpressaoTipo expressao;
+};
+typedef struct noArvore NoArvore;
+
 extern FILE* source;
-extern FILE* listing;
 
 extern int TraceScan;
 
 extern int Error;
 
-extern int lineno; 
+extern int linha; 
 
 
 #endif

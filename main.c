@@ -1,11 +1,9 @@
 #include "global.h"
 #include "flex.h"
 
-int lineno = 1;
+int linha = 1;
 
 FILE * source;
-FILE * listing;
-
 
 int Error = FALSE;
 
@@ -21,7 +19,6 @@ int main(int argc, char **argv){
     strcpy(nomeInput, argv[1]);
 
     source = fopen(nomeInput, "r");
-    listing = stdout;
 
     while (getToken() != ENDFILE);
     
