@@ -9,6 +9,8 @@
 #define DECLARACAO 1
 #define EXPRESSAO 2
 
+int teveErroSemantico = 0;
+
 
 /* Cria a tabela, alocando um vetor de ponteiros e inicializando com NULL */
 SimboloTabela** criarTabela() {
@@ -32,8 +34,7 @@ int proximoIndiceLivre(SimboloTabela** tabela) {
 }
 
 /* Insere um novo símbolo na tabela */
-SimboloTabela** inserirSimbolo(SimboloTabela** tabela, char nomeID[MAXLEXEMA], char escopo[MAXLEXEMA],
-                               StatementTipo tipoID, Tipagem tipagem, int linha) {
+SimboloTabela** inserirSimbolo(SimboloTabela** tabela, const char* nomeID, const char* escopo, StatementTipo tipoID, Tipagem tipagem, int linha) {
     int indice = proximoIndiceLivre(tabela);
     if (indice == -1) {
         fprintf(stderr, "Tabela de símbolos cheia.\n");
@@ -54,7 +55,7 @@ SimboloTabela** inserirSimbolo(SimboloTabela** tabela, char nomeID[MAXLEXEMA], c
 
 /* Busca um símbolo na tabela pelo nome e escopo (ou global).
    Retorna o índice se encontrado ou -1 se não encontrado. */
-int buscarSimbolo(SimboloTabela** tabela, char nomeID[MAXLEXEMA], char escopo[MAXLEXEMA]) {
+int buscarSimbolo(SimboloTabela** tabela, const char* nomeID, const char* escopo) {
     for (int i = 0; i < MAX; i++) {
         if (tabela[i] != NULL) {
             if (strcmp(tabela[i]->nomeID, nomeID) == 0 &&
@@ -67,11 +68,12 @@ int buscarSimbolo(SimboloTabela** tabela, char nomeID[MAXLEXEMA], char escopo[MA
 
 /* Verifica se o símbolo pode ser inserido (não foi declarado anteriormente).
    Se não houver duplicata retorna 1; caso contrário, imprime erro e retorna 0. */
-int buscaIgual(SimboloTabela** tabela, char nomeID[MAXLEXEMA], char escopo[MAXLEXEMA], int linha) {
+int buscaIgual(SimboloTabela** tabela, const char* nomeID, const char* escopo, int linha) {
     if (buscarSimbolo(tabela, nomeID, escopo) == -1)
         return 1; // Ainda não declarado
     else {
-        printf("ERRO SEMÂNTICO, LINHA: %d: Símbolo '%s' já declarado no escopo '%s'.\n",
+        teveErroSemantico++;
+        printf("ERRO SEMÂNTICO, LINHA: %d: Identificador '%s' já declarado no escopo '%s'.\n",
                linha, nomeID, escopo);
         return 0;
     }
@@ -107,9 +109,6 @@ void liberarTabela(SimboloTabela** tabela) {
 
 /* ======================= FUNÇÕES DE ANÁLISE SEMÂNTICA ======================= */
 
-/* Enumeração para os tipos de erro semântico */
-
-// int teveErroSemantico = 0;
 
 void percorrerArvore(NoArvore* arvoreSintatica, SimboloTabela** tabela, char* escopo);
 
@@ -159,23 +158,39 @@ void mostrarErroSemantico(erroSemantico erro, char* nome, int linha) {
 
 /* Função que percorre declarações na árvore sintática e insere os símbolos na tabela */
 void percorrerDecl(NoArvore* arvoreSintatica, SimboloTabela** tabela, char* auxEscopo) {
-    // Se o nó é declaração de função
+    // Declaração de função
     if (arvoreSintatica->statement == DeclFuncT) {
+        // Descobrir se a função é int ou void
         Tipagem tipo = (strcmp(arvoreSintatica->lexema, "INT") == 0) ? TIPO_INT : TIPO_VOID;
-        // Atualiza o escopo para o nome da função (supondo que filho[1] contém o nome)
-        strcpy(auxEscopo, arvoreSintatica->filho[1]->lexema);
-        if (buscaIgual(tabela, arvoreSintatica->filho[1]->lexema, auxEscopo, arvoreSintatica->linha))
-            inserirSimbolo(tabela, arvoreSintatica->filho[1]->lexema, auxEscopo, DeclFuncT, tipo, arvoreSintatica->linha);
         
-        // Se a função possui parâmetros (filho[0] não é do tipo ParamVoid)
-        if (arvoreSintatica->filho[0]->statement != ParametroVOIDT) {
+        // Nome da função (supondo que está em filho[1])
+        char* nomeFunc = arvoreSintatica->filho[1]->lexema;
+        
+        // 1) Insira a função com escopo = "global"
+        if (buscaIgual(tabela, nomeFunc, "global", arvoreSintatica->linha)) {
+            inserirSimbolo(tabela, nomeFunc, "global", DeclFuncT, tipo, arvoreSintatica->linha);
+        }
+        
+        // 2) Agora sim, troque o auxEscopo para o nome da função
+        strcpy(auxEscopo, nomeFunc);
+
+        // Se a função possui parâmetros (por exemplo, filho[0])
+        // eles devem ser inseridos com escopo = nome da função (auxEscopo).
+        if (arvoreSintatica->filho[0] != NULL && arvoreSintatica->filho[0]->statement != ParametroVOIDT) {
             NoArvore* auxNo = arvoreSintatica->filho[0];
             while (auxNo != NULL) {
-                if (buscaIgual(tabela, auxNo->filho[0]->lexema, auxEscopo, auxNo->linha)) {
-                    if (strcmp(auxNo->lexema, "INT") == 0)
-                        inserirSimbolo(tabela, auxNo->filho[0]->lexema, auxEscopo, DeclVarT, TIPO_INT, auxNo->linha);
-                    else
+                if (auxNo->filho[0] != NULL &&
+                    buscaIgual(tabela, auxNo->filho[0]->lexema, auxEscopo, auxNo->linha)) {
+                    
+                    // Se parâmetro for int
+                    if (strcmp(auxNo->lexema, "INT") == 0) {
+                        inserirSimbolo(tabela, auxNo->filho[0]->lexema, auxEscopo,
+                                       DeclVarT, TIPO_INT, auxNo->linha);
+                    }
+                    else {
+                        // Se for void, emita erro
                         mostrarErroSemantico(DeclVoidVar, auxNo->filho[0]->lexema, auxNo->linha);
+                    }
                 }
                 auxNo = auxNo->irmao;
             }
@@ -263,11 +278,3 @@ void percorrerArvore(NoArvore* arvoreSintatica, SimboloTabela** tabela, char* es
     else
         percorrerArvore(arvoreSintatica->irmao, tabela, auxEscopo);
 }
-
-/* ==================== FIM DAS FUNÇÕES DE ANÁLISE SEMÂNTICA ==================== */
-
-/* 
- * Exemplo de função principal que cria a tabela, percorre a árvore sintática 
- * e exibe a tabela de símbolos. A árvore sintática deve ser construída pelo seu
- * analisador sintático.
- */

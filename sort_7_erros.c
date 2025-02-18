@@ -1,4 +1,3 @@
-int x[10];
 int minloc(int a[], int low, int high)
 { 
     int i; int k;
@@ -24,6 +23,7 @@ void sort(int a[], int low, int high)
 { 
     int i; int k; 
     i = low;
+    func2();
     while (i < high-1)
     { 
         int t;
@@ -35,8 +35,16 @@ void sort(int a[], int low, int high)
     }
 }
 
+void func(){
+
+}
+
 void main()
 {
+    int c;
+    int func;
+    void a;
+    int i;
     int i;
     i = 0;
     while (i < 10)
@@ -44,6 +52,7 @@ void main()
         x[i] = input();
         i = i + 1;
     }
+    bb = 5;
     sort(x,0,10);
     i = 0;
     while (i < 10)

@@ -9,11 +9,11 @@ int Error = FALSE;
 int linha = 1;
 int linhas = 1;
 
-int teveErroSemantico;
-
 FILE * source;
 
 int main(int argc, char **argv){
+
+    teveErroSemantico = 0;
 
     NoArvore* AST;
     SimboloTabela** tabela = criarTabela();
@@ -41,13 +41,16 @@ int main(int argc, char **argv){
 
     printf("\nFIM_ANALISE_SINTATICA\n------------------------------------------\nINICIO_ANALISE_SEMANTICA\n\n");
 
+    inserirSimbolo(tabela, "input", "global", DeclFuncT, TIPO_INT, 0);
+    inserirSimbolo(tabela, "output", "global", DeclFuncT, TIPO_VOID, 0);
+
     percorrerArvore(AST, tabela, escopo);
     printTabela(tabela);
 
     if (teveErroSemantico > 0)
         printf("Foram encontrados %d erro(s) semântico(s).\n", teveErroSemantico);
     else
-        printf("Análise semântica concluída sem erros.\n");
+        printf("Análise semântica concluída sem erros%d.\n", teveErroSemantico);
 
     return 0;
 }

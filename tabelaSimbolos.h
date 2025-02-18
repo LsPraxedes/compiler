@@ -35,10 +35,10 @@ typedef struct SimboloTabela SimboloTabela;
 /* Protótipos das funções de manipulação da tabela de símbolos */
 SimboloTabela** criarTabela(void);
 int proximoIndiceLivre(SimboloTabela** tabela);
-SimboloTabela** inserirSimbolo(SimboloTabela** tabela, char nomeID[MAXLEXEMA], char escopo[MAXLEXEMA],
-                               StatementTipo tipoID, Tipagem tipagem, int linha);
-int buscarSimbolo(SimboloTabela** tabela, char nomeID[MAXLEXEMA], char escopo[MAXLEXEMA]);
-int buscaIgual(SimboloTabela** tabela, char nomeID[MAXLEXEMA], char escopo[MAXLEXEMA], int linha);
+
+SimboloTabela** inserirSimbolo(SimboloTabela** tabela, const char* nomeID, const char* escopo, StatementTipo tipoID, Tipagem tipagem, int linha);
+int buscarSimbolo(SimboloTabela** tabela, const char* nomeID, const char* escopo); 
+int buscaIgual(SimboloTabela** tabela, const char* nomeID,const char* escopo,int linha);
 void printTabela(SimboloTabela** tabela);
 void liberarTabela(SimboloTabela** tabela);
 
