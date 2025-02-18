@@ -18,7 +18,9 @@
 
     int qntNos = 0;
 
-    char auxLexema[MAXLEXEMA];
+    // char auxLexema[MAXLEXEMA];
+
+    
 
     NoArvore* AST;
     NoArvore* nos[MAX_NOS];
@@ -598,36 +600,36 @@ int yyerror(char *message) {
 
     switch (yychar) {
 
-        case TK_IF: printf("%s\n", lexema); break;
-        case TK_ELSE: printf("%s\n", lexema); break;
-        case TK_VIRGULA: printf("%s\n", lexema); break;
-        case TK_PONTO_VIRGULA: printf("%s\n", lexema); break;
-        case TK_ABRE_PARENTESES: printf("%s\n", lexema); break;
-        case TK_FECHA_PARENTESES: printf("%s\n", lexema); break;
-        case TK_ABRE_CHAVES: printf("%s\n", lexema); break;
-        case TK_FECHA_CHAVES: printf("%s\n", lexema); break;
-        case TK_ABRE_COLCHETES: printf("%s\n", lexema); break;
-        case TK_FECHA_COLCHETES: printf("%s\n", lexema); break;
-        case TK_MAIS: printf("%s\n", lexema); break;
-        case TK_MENOS: printf("%s\n", lexema); break;
-        case TK_MULTIPLICACAO: printf("%s\n", lexema); break;
-        case TK_DIVISAO: printf("%s\n", lexema); break;
-        case TK_MENOR: printf("%s\n", lexema); break;
-        case TK_MAIOR: printf("%s\n", lexema); break;
-        case TK_MENOR_IGUAL: printf("%s\n", lexema); break;
-        case TK_MAIOR_IGUAL: printf("%s\n", lexema); break;
-        case TK_ATRIBUICAO: printf("%s\n", lexema); break;
-        case TK_IGUALDADE: printf("%s\n", lexema); break;
-        case TK_DIFERENTE: printf("%s\n", lexema); break;
-        case TK_ABRE_COMENTARIO: printf("%s\n", lexema); break;
-        case TK_FECHA_COMENTARIO: printf("%s\n", lexema); break;
-        case TK_ID: printf("%s\n", lexema); break;
-        case TK_NUM: printf("%s\n", lexema); break;
-        case TK_INT: printf("%s\n", lexema); break;
-        case TK_RETORNO: printf("%s\n", lexema); break;
-        case TK_VOID: printf("%s\n", lexema); break;
-        case TK_WHILE: printf("%s\n", lexema); break;
-        case ERROR: printf("%s\n", lexema); break;
+        case TK_IF: printf("%s\n", ultimoLexema); break;
+        case TK_ELSE: printf("%s\n", ultimoLexema); break;
+        case TK_VIRGULA: printf("%s\n", ultimoLexema); break;
+        case TK_PONTO_VIRGULA: printf("%s\n", ultimoLexema); break;
+        case TK_ABRE_PARENTESES: printf("%s\n", ultimoLexema); break;
+        case TK_FECHA_PARENTESES: printf("%s\n", ultimoLexema); break;
+        case TK_ABRE_CHAVES: printf("%s\n", ultimoLexema); break;
+        case TK_FECHA_CHAVES: printf("%s\n", ultimoLexema); break;
+        case TK_ABRE_COLCHETES: printf("%s\n", ultimoLexema); break;
+        case TK_FECHA_COLCHETES: printf("%s\n", ultimoLexema); break;
+        case TK_MAIS: printf("%s\n", ultimoLexema); break;
+        case TK_MENOS: printf("%s\n", ultimoLexema); break;
+        case TK_MULTIPLICACAO: printf("%s\n", ultimoLexema); break;
+        case TK_DIVISAO: printf("%s\n", ultimoLexema); break;
+        case TK_MENOR: printf("%s\n", ultimoLexema); break;
+        case TK_MAIOR: printf("%s\n", ultimoLexema); break;
+        case TK_MENOR_IGUAL: printf("%s\n", ultimoLexema); break;
+        case TK_MAIOR_IGUAL: printf("%s\n", ultimoLexema); break;
+        case TK_ATRIBUICAO: printf("%s\n", ultimoLexema); break;
+        case TK_IGUALDADE: printf("%s\n", ultimoLexema); break;
+        case TK_DIFERENTE: printf("%s\n", ultimoLexema); break;
+        case TK_ABRE_COMENTARIO: printf("%s\n", ultimoLexema); break;
+        case TK_FECHA_COMENTARIO: printf("%s\n", ultimoLexema); break;
+        case TK_ID: printf("%s\n", ultimoLexema); break;
+        case TK_NUM: printf("%s\n", ultimoLexema); break;
+        case TK_INT: printf("%s\n", ultimoLexema); break;
+        case TK_RETORNO: printf("%s\n", ultimoLexema); break;
+        case TK_VOID: printf("%s\n", ultimoLexema); break;
+        case TK_WHILE: printf("%s\n", ultimoLexema); break;
+        case ERROR: printf("%s\n", ultimoLexema); break;
         case ENDFILE: printf("\n"); break;
 
         default: printf("Token desconhecido: %d\n", yychar);

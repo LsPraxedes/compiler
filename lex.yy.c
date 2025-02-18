@@ -489,14 +489,16 @@ char *yytext;
     #include "util.h"
 
     char lexema[MAXTOKENLEN+1];
+    char ultimoLexema[MAXTOKENLEN+1];
 
     extern int yylex(void);
+
 
     static int firstTime = TRUE;
     int indPilha = -1;
     char pilha[4][MAXLEXEMA];
-#line 499 "lex.yy.c"
-#line 500 "lex.yy.c"
+#line 501 "lex.yy.c"
+#line 502 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -713,10 +715,10 @@ YY_DECL
 		}
 
 	{
-#line 23 "flex.l"
+#line 25 "flex.l"
 
 
-#line 720 "lex.yy.c"
+#line 722 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -775,37 +777,37 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 25 "flex.l"
+#line 27 "flex.l"
 { fprintf(yyout, "TK_IF "); return TK_IF; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 26 "flex.l"
+#line 28 "flex.l"
 { fprintf(yyout, "TK_ELSE "); return TK_ELSE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 27 "flex.l"
+#line 29 "flex.l"
 { fprintf(yyout, "TK_INT "); return TK_INT; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 28 "flex.l"
+#line 30 "flex.l"
 { fprintf(yyout, "TK_RETORNO "); return TK_RETORNO; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 29 "flex.l"
+#line 31 "flex.l"
 { fprintf(yyout, "TK_VOID "); return TK_VOID; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 30 "flex.l"
+#line 32 "flex.l"
 { fprintf(yyout, "TK_WHILE "); return TK_WHILE; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 32 "flex.l"
+#line 34 "flex.l"
 { 
     
     indPilha++;
@@ -816,7 +818,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 40 "flex.l"
+#line 42 "flex.l"
 { 
 
     indPilha++;
@@ -828,145 +830,145 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 49 "flex.l"
+#line 51 "flex.l"
 { fprintf(yyout, "+ "); return TK_MAIS; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 50 "flex.l"
+#line 52 "flex.l"
 { fprintf(yyout, "- "); return TK_MENOS; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 51 "flex.l"
+#line 53 "flex.l"
 { fprintf(yyout, "* "); return TK_MULTIPLICACAO; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 52 "flex.l"
+#line 54 "flex.l"
 { fprintf(yyout, "/ "); return TK_DIVISAO; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 53 "flex.l"
+#line 55 "flex.l"
 { fprintf(yyout, "< "); return TK_MENOR; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 54 "flex.l"
+#line 56 "flex.l"
 { fprintf(yyout, "<="); return TK_MENOR_IGUAL; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 55 "flex.l"
+#line 57 "flex.l"
 { fprintf(yyout, "> "); return TK_MAIOR; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 56 "flex.l"
+#line 58 "flex.l"
 { fprintf(yyout, ">= "); return TK_MAIOR_IGUAL; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 57 "flex.l"
+#line 59 "flex.l"
 { fprintf(yyout, "== "); return TK_IGUALDADE; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 58 "flex.l"
+#line 60 "flex.l"
 { fprintf(yyout, "!= "); return TK_DIFERENTE; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 59 "flex.l"
+#line 61 "flex.l"
 { fprintf(yyout, "= "); return TK_ATRIBUICAO; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 60 "flex.l"
+#line 62 "flex.l"
 { fprintf(yyout, "; "); return TK_PONTO_VIRGULA; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 61 "flex.l"
+#line 63 "flex.l"
 { fprintf(yyout, ", "); return TK_VIRGULA; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 62 "flex.l"
+#line 64 "flex.l"
 { fprintf(yyout, "{ "); return TK_ABRE_CHAVES; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 63 "flex.l"
+#line 65 "flex.l"
 { fprintf(yyout, "} "); return TK_FECHA_CHAVES; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 64 "flex.l"
+#line 66 "flex.l"
 { fprintf(yyout, "[ "); return TK_ABRE_COLCHETES; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 65 "flex.l"
+#line 67 "flex.l"
 { fprintf(yyout, "] "); return TK_FECHA_COLCHETES; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 66 "flex.l"
+#line 68 "flex.l"
 { fprintf(yyout, "( "); return TK_ABRE_PARENTESES; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 67 "flex.l"
+#line 69 "flex.l"
 { fprintf(yyout, ") "); return TK_FECHA_PARENTESES; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 68 "flex.l"
+#line 70 "flex.l"
 { fprintf(yyout, "TK_ABRE_COMENTARIO "); return TK_ABRE_COMENTARIO; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 69 "flex.l"
+#line 71 "flex.l"
 { fprintf(yyout, "TK_FECHA_COMENTARIO "); return TK_FECHA_COMENTARIO; }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 71 "flex.l"
+#line 73 "flex.l"
 { return ENDFILE; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 73 "flex.l"
+#line 75 "flex.l"
 { fprintf(yyout, "ERROR(%s) ", yytext); return ERROR; }
 	YY_BREAK
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 75 "flex.l"
+#line 77 "flex.l"
 {linha++;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 77 "flex.l"
+#line 79 "flex.l"
 { }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 79 "flex.l"
+#line 81 "flex.l"
 { }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 81 "flex.l"
+#line 83 "flex.l"
 { fprintf(yyout, "ERROR(%s) ", yytext); return ERROR; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 83 "flex.l"
+#line 85 "flex.l"
 ECHO;
 	YY_BREAK
-#line 970 "lex.yy.c"
+#line 972 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1969,7 +1971,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 83 "flex.l"
+#line 85 "flex.l"
 
 
 TokenType getToken(void) { 
@@ -1984,6 +1986,9 @@ TokenType getToken(void) {
         for (int i = 0; i < 5; i++)
             bzero(pilha[i], MAXLEXEMA);	
     }
+
+    if (!firstTime)
+        strcpy(ultimoLexema, lexema);
     
     currentToken = yylex();
     

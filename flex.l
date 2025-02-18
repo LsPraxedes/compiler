@@ -5,8 +5,10 @@
     #include "util.h"
 
     char lexema[MAXTOKENLEN+1];
+    char ultimoLexema[MAXTOKENLEN+1];
 
     extern int yylex(void);
+
 
     static int firstTime = TRUE;
     int indPilha = -1;
@@ -94,6 +96,9 @@ TokenType getToken(void) {
         for (int i = 0; i < 5; i++)
             bzero(pilha[i], MAXLEXEMA);	
     }
+
+    if (!firstTime)
+        strcpy(ultimoLexema, lexema);
     
     currentToken = yylex();
     

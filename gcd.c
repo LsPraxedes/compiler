@@ -5,8 +5,7 @@ int gcd (int u, int v)
 }
    
 void main(void)
-{	float x; int y;
+{	int x; int y;
     x = input(); y = input();
     output(gcd(x,y));
 }
-   
