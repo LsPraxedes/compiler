@@ -3,6 +3,7 @@
 #include "headers/util.h"
 #include "headers/parser.h"
 #include "headers/tabelaSimbolos.h"
+#include "headers/codigoIntermediario.h"
 
 int Error = FALSE;
 
@@ -56,8 +57,13 @@ int main(int argc, char **argv){
     printTabela(tabela);
     if (teveErroSemantico > 0)
         printf("Foram encontrados %d erro(s) semântico(s).\n", teveErroSemantico);
-    else
+    else {
         printf("Análise semântica concluída sem erros.\n");
+        gerarCodigoIntermediario(AST);   // Gera o código intermediário
+        imprimirCodigoIntermediario(); 
+    }
+
+    
 
     return 0;
 }

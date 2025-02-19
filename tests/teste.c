@@ -1,8 +1,9 @@
-void func(int a){
-    
-}
-
+int b;
 int main(void){
 
-    return 0;
+    int a;
+    b = 1;
+    a = 4 + b;
+
+    return a;
 }
