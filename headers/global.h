@@ -22,7 +22,6 @@
 #define MAXLEXEMA 25
 
 extern int linha; 
-extern int linhas;
 extern int indPilha;
 extern char pilha[4][MAXLEXEMA];
 

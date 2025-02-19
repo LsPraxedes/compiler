@@ -1264,7 +1264,7 @@ yyreduce:
                     yyval = yyvsp[-2];
                     yyval->tipono = Statement;
                     yyval->statement = DeclVarT;
-                    yyval->linha = linhas;
+                    yyval->linha = linha;
 
                     NoArvore* aux = novoNo();
 
@@ -1285,7 +1285,7 @@ yyreduce:
                     yyval = yyvsp[-5];
                     yyval->tipono = Statement;
                     yyval->statement = DeclVetorT;
-                    yyval->linha = linhas;
+                    yyval->linha = linha;
 
                     NoArvore* aux = novoNo();
                     NoArvore* aux2 = novoNo();
@@ -1313,7 +1313,7 @@ yyreduce:
                              {
                         yyval = novoNo();
                         strcpy(yyval->lexema, "INT");
-                        yyval->linha = linhas;
+                        yyval->linha = linha;
 
                         nos[qntNos] = yyval;
                         qntNos++;
@@ -1326,7 +1326,7 @@ yyreduce:
                               {
                         yyval = novoNo();
                         strcpy(yyval->lexema, "VOID");
-                        yyval->linha = linhas;
+                        yyval->linha = linha;
 
                         nos[qntNos] = yyval;
                         qntNos++;
@@ -1357,7 +1357,7 @@ yyreduce:
             strcpy(yyval->lexema, pilha[indPilha]);
             indPilha--;
 
-            yyval->linha = linhas;
+            yyval->linha = linha;
 
             nos[qntNos] = yyval;
             qntNos++;
@@ -1386,7 +1386,7 @@ yyreduce:
                   {
             yyval = novoNo();
             yyval->tipono = Statement;
-            yyval->linha = linhas;
+            yyval->linha = linha;
             yyval->statement = ParametroVOIDT;
             strcpy(yyval->lexema, "VOID");
 
@@ -1423,7 +1423,7 @@ yyreduce:
                                    {
             yyval = yyvsp[-1];
             yyval->tipono = Statement;
-            yyval->linha = linhas;
+            yyval->linha = linha;
             yyval->statement = VarParametroT;
 
             NoArvore* aux = novoNo();
@@ -1444,7 +1444,7 @@ yyreduce:
                                                                         {
             yyval = yyvsp[-3];
             yyval->tipono = Statement;
-            yyval->linha = linhas;
+            yyval->linha = linha;
             yyval->statement = VetorParametroT;
             NoArvore* aux = novoNo();
 
@@ -1577,7 +1577,7 @@ yyreduce:
                     yyval = novoNo();
                     strcpy(yyval->lexema, "IF");
                     yyval->tipono = Statement;
-                    yyval->linha = linhas;
+                    yyval->linha = linha;
                     yyval->statement = IfT;
 
                     addFilho(yyval, yyvsp[-1]);		
@@ -1614,7 +1614,7 @@ yyreduce:
                     yyval = novoNo();
                     strcpy(yyval->lexema, "WHILE");
                     yyval->tipono = Statement;
-                    yyval->linha = linhas;
+                    yyval->linha = linha;
                     yyval->statement = WhileT;
 
                     addFilho(yyval, yyvsp[-2]);
@@ -1631,7 +1631,7 @@ yyreduce:
                                               {
                     yyval = novoNo();
                     yyval->tipono = Statement;
-                    yyval->linha = linhas;
+                    yyval->linha = linha;
                     yyval->statement = RetornoVOIDT;
                     strcpy(yyval->lexema, "RetornoVOID");
 
@@ -1646,7 +1646,7 @@ yyreduce:
                                                         {
                     yyval = novoNo();
                     yyval->tipono = Statement;
-                    yyval->linha = linhas;
+                    yyval->linha = linha;
                     yyval->statement = RetornoINTT;
                     strcpy(yyval->lexema, "RetornoINT");
 
@@ -1664,7 +1664,7 @@ yyreduce:
                 yyval = novoNo();
                 strcpy(yyval->lexema, "=");
                 yyval->tipono = Expressao;
-                yyval->linha = linhas;
+                yyval->linha = linha;
                 yyval->expressao = AtribuicaoT;
             
                 addFilho(yyval, yyvsp[-2]);
@@ -1690,7 +1690,7 @@ yyreduce:
             {
         yyval = novoNo();
         yyval->tipono = Expressao;
-        yyval->linha = linhas;
+        yyval->linha = linha;
         yyval->expressao = IdT;
 
         strcpy(yyval->lexema, pilha[indPilha]);
@@ -1708,7 +1708,7 @@ yyreduce:
                                                            {
         yyval = novoNo();
         yyval->tipono = Expressao;
-        yyval->linha = linhas;
+        yyval->linha = linha;
         yyval->expressao = VetorParamT;
 
         strcpy(yyval->lexema, pilha[indPilha]);
@@ -1727,7 +1727,7 @@ yyreduce:
                                                                {
                         yyval = yyvsp[-1];
                         yyval->tipono = Expressao;
-                        yyval->linha = linhas;
+                        yyval->linha = linha;
                         yyval->expressao = OperadorRelacionalT;
 
                         addFilho(yyval, yyvsp[-2]);
@@ -1821,7 +1821,7 @@ yyreduce:
                                             {
                     yyval = yyvsp[-1];
                     yyval->tipono = Expressao;
-                    yyval->linha = linhas;
+                    yyval->linha = linha;
                     yyval->expressao = OperandoT;
 
                     addFilho(yyval, yyvsp[-2]);
@@ -1867,7 +1867,7 @@ yyreduce:
                            {
             yyval = yyvsp[-1];
             yyval->tipono = Expressao;
-            yyval->linha = linhas;
+            yyval->linha = linha;
             yyval->expressao = OperandoT;
 
             addFilho(yyval, yyvsp[-2]);
@@ -1937,7 +1937,7 @@ yyreduce:
                  {
             yyval = novoNo();
             yyval->tipono = Expressao;
-            yyval->linha = linhas;
+            yyval->linha = linha;
             yyval->expressao = ConstanteT;
 
             strcpy(yyval->lexema, pilha[indPilha]);
@@ -1954,7 +1954,7 @@ yyreduce:
                                                                  {
                 yyval = yyvsp[-3];
                 yyval->tipono = Expressao;
-                yyval->linha = linhas;
+                yyval->linha = linha;
                 yyval->expressao = FunCallT;
                 addFilho(yyval, yyvsp[-1]);
             }

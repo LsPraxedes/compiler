@@ -7,7 +7,6 @@
 int Error = FALSE;
 
 int linha = 1;
-int linhas = 1;
 
 FILE * source;
 

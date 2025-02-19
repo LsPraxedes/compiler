@@ -88,7 +88,7 @@ var_declaracao  : tipo_especificador TK_ID TK_PONTO_VIRGULA {
                     $$ = $1;
                     $$->tipono = Statement;
                     $$->statement = DeclVarT;
-                    $$->linha = linhas;
+                    $$->linha = linha;
 
                     NoArvore* aux = novoNo();
 
@@ -104,7 +104,7 @@ var_declaracao  : tipo_especificador TK_ID TK_PONTO_VIRGULA {
                     $$ = $1;
                     $$->tipono = Statement;
                     $$->statement = DeclVetorT;
-                    $$->linha = linhas;
+                    $$->linha = linha;
 
                     NoArvore* aux = novoNo();
                     NoArvore* aux2 = novoNo();
@@ -129,7 +129,7 @@ var_declaracao  : tipo_especificador TK_ID TK_PONTO_VIRGULA {
 tipo_especificador  : TK_INT {
                         $$ = novoNo();
                         strcpy($$->lexema, "INT");
-                        $$->linha = linhas;
+                        $$->linha = linha;
 
                         nos[qntNos] = $$;
                         qntNos++;
@@ -137,7 +137,7 @@ tipo_especificador  : TK_INT {
                     | TK_VOID {
                         $$ = novoNo();
                         strcpy($$->lexema, "VOID");
-                        $$->linha = linhas;
+                        $$->linha = linha;
 
                         nos[qntNos] = $$;
                         qntNos++;
@@ -162,7 +162,7 @@ fun_id  : TK_ID {
             strcpy($$->lexema, pilha[indPilha]);
             indPilha--;
 
-            $$->linha = linhas;
+            $$->linha = linha;
 
             nos[qntNos] = $$;
             qntNos++;
@@ -178,7 +178,7 @@ params  : %empty {
         | TK_VOID {
             $$ = novoNo();
             $$->tipono = Statement;
-            $$->linha = linhas;
+            $$->linha = linha;
             $$->statement = ParametroVOIDT;
             strcpy($$->lexema, "VOID");
 
@@ -204,7 +204,7 @@ param_lista : param_lista TK_VIRGULA param {
 param   : tipo_especificador TK_ID {
             $$ = $1;
             $$->tipono = Statement;
-            $$->linha = linhas;
+            $$->linha = linha;
             $$->statement = VarParametroT;
 
             NoArvore* aux = novoNo();
@@ -220,7 +220,7 @@ param   : tipo_especificador TK_ID {
         | tipo_especificador TK_ID TK_ABRE_COLCHETES TK_FECHA_COLCHETES {
             $$ = $1;
             $$->tipono = Statement;
-            $$->linha = linhas;
+            $$->linha = linha;
             $$->statement = VetorParametroT;
             NoArvore* aux = novoNo();
 
@@ -300,7 +300,7 @@ selecao_decl    : TK_IF TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES stateme
                     $$ = novoNo();
                     strcpy($$->lexema, "IF");
                     $$->tipono = Statement;
-                    $$->linha = linhas;
+                    $$->linha = linha;
                     $$->statement = IfT;
 
                     addFilho($$, $5);		
@@ -326,7 +326,7 @@ iteracao_decl   : TK_WHILE TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES stat
                     $$ = novoNo();
                     strcpy($$->lexema, "WHILE");
                     $$->tipono = Statement;
-                    $$->linha = linhas;
+                    $$->linha = linha;
                     $$->statement = WhileT;
 
                     addFilho($$, $3);
@@ -340,7 +340,7 @@ iteracao_decl   : TK_WHILE TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES stat
 retorno_decl    : TK_RETORNO TK_PONTO_VIRGULA {
                     $$ = novoNo();
                     $$->tipono = Statement;
-                    $$->linha = linhas;
+                    $$->linha = linha;
                     $$->statement = RetornoVOIDT;
                     strcpy($$->lexema, "RetornoVOID");
 
@@ -350,7 +350,7 @@ retorno_decl    : TK_RETORNO TK_PONTO_VIRGULA {
                 | TK_RETORNO expressao TK_PONTO_VIRGULA {
                     $$ = novoNo();
                     $$->tipono = Statement;
-                    $$->linha = linhas;
+                    $$->linha = linha;
                     $$->statement = RetornoINTT;
                     strcpy($$->lexema, "RetornoINT");
 
@@ -365,7 +365,7 @@ expressao   : var TK_ATRIBUICAO expressao {
                 $$ = novoNo();
                 strcpy($$->lexema, "=");
                 $$->tipono = Expressao;
-                $$->linha = linhas;
+                $$->linha = linha;
                 $$->expressao = AtribuicaoT;
             
                 addFilho($$, $1);
@@ -383,7 +383,7 @@ expressao   : var TK_ATRIBUICAO expressao {
 var : TK_ID {
         $$ = novoNo();
         $$->tipono = Expressao;
-        $$->linha = linhas;
+        $$->linha = linha;
         $$->expressao = IdT;
 
         strcpy($$->lexema, pilha[indPilha]);
@@ -396,7 +396,7 @@ var : TK_ID {
     | TK_ID TK_ABRE_COLCHETES expressao TK_FECHA_COLCHETES {
         $$ = novoNo();
         $$->tipono = Expressao;
-        $$->linha = linhas;
+        $$->linha = linha;
         $$->expressao = VetorParamT;
 
         strcpy($$->lexema, pilha[indPilha]);
@@ -412,7 +412,7 @@ var : TK_ID {
 simples_expressao   : soma_expressao relacional soma_expressao {
                         $$ = $2;
                         $$->tipono = Expressao;
-                        $$->linha = linhas;
+                        $$->linha = linha;
                         $$->expressao = OperadorRelacionalT;
 
                         addFilho($$, $1);
@@ -470,7 +470,7 @@ relacional  : TK_MENOR_IGUAL {
 soma_expressao  : soma_expressao soma termo {
                     $$ = $2;
                     $$->tipono = Expressao;
-                    $$->linha = linhas;
+                    $$->linha = linha;
                     $$->expressao = OperandoT;
 
                     addFilho($$, $1);
@@ -500,7 +500,7 @@ soma    : TK_MAIS {
 termo   : termo mult fator {
             $$ = $2;
             $$->tipono = Expressao;
-            $$->linha = linhas;
+            $$->linha = linha;
             $$->expressao = OperandoT;
 
             addFilho($$, $1);
@@ -539,7 +539,7 @@ fator   : TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES {
         | TK_NUM {
             $$ = novoNo();
             $$->tipono = Expressao;
-            $$->linha = linhas;
+            $$->linha = linha;
             $$->expressao = ConstanteT;
 
             strcpy($$->lexema, pilha[indPilha]);
@@ -553,7 +553,7 @@ fator   : TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES {
 ativacao    : fun_id TK_ABRE_PARENTESES args TK_FECHA_PARENTESES {
                 $$ = $1;
                 $$->tipono = Expressao;
-                $$->linha = linhas;
+                $$->linha = linha;
                 $$->expressao = FunCallT;
                 addFilho($$, $3);
             }
