@@ -1,0 +1,24 @@
+LEXICO
+
+    lexema - valor do yytext 
+    ultimoLexema - para evitar o lookahead no yyeror do parser
+
+    regex para capturar os tokens
+
+    strcpy(ultimoLexema, lexama) - para usar o anterior e não o atual, evita erro de lookahead
+    printa o token
+
+SINTATICO
+
+
+
+
+SEMANTICO
+
+buscarSimbolo() - busca ID pelo nome
+buscaIgual() - tenta inserir ID, ou printa erro
+percorrerDecl() - declaracao de variavel ou funcao, em caso de funcao percorrer os filhos (parametros)
+chamadaFunc() - trata erro de funcao de chamada indevida
+percorrerExp() - chamadas de id e funcao
+percorrerArv() - percorre e direciona para Decl ou Exp usando o ->tipono
+verificarMain() - verifica se a main foi declarada.

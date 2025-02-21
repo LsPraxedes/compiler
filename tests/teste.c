@@ -1,6 +1,7 @@
-void func(int a, int b) {
-}
 
 int main(void){
+
+    void a;
+    
     return 0;
 }

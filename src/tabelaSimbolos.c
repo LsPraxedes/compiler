@@ -214,7 +214,6 @@ void chamadaFunc(NoArvore* arvoreSintatica, SimboloTabela** tabela, char* escopo
     if (arvoreSintatica->expressao == FunCallT) {
         if (buscarSimbolo(tabela, arvoreSintatica->lexema, escopo) == -1)
             mostrarErroSemantico(FuncaoNaoDeclarada, arvoreSintatica->lexema, arvoreSintatica->linha);
-        // Aqui você pode adicionar linhas de código para atualizar informações do símbolo, se necessário.
     }
     else if (arvoreSintatica->expressao == IdT) {
         if (buscarSimbolo(tabela, arvoreSintatica->lexema, escopo) == -1)

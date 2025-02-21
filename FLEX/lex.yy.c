@@ -497,7 +497,7 @@ char *yytext;
 
     static int firstTime = TRUE;
     int indPilha = -1;
-    char pilha[4][MAXLEXEMA];
+    char pilha[3][MAXLEXEMA];
 #line 502 "FLEX/lex.yy.c"
 #line 503 "FLEX/lex.yy.c"
 
