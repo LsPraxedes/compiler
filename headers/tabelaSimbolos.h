@@ -22,13 +22,12 @@ typedef enum {
 
 /* Estrutura para armazenar informações do símbolo */
 struct SimboloTabela {
+
     char nomeID[MAXLEXEMA];
     char escopo[MAXLEXEMA];
     StatementTipo tipoID;
     Tipagem tipagem;
     int linha;
-    struct SimboloTabela* prox;
-    struct SimboloTabela* inicial;
 };
 typedef struct SimboloTabela SimboloTabela;
 

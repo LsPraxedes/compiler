@@ -1,9 +1,6 @@
-int b;
+void func(int a, int b) {
+}
+
 int main(void){
-
-    int a;
-    b = 1;
-    a = 4 + b;
-
-    return a;
+    return 0;
 }

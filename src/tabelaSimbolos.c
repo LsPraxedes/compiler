@@ -53,7 +53,7 @@ SimboloTabela** inserirSimbolo(SimboloTabela** tabela, const char* nomeID, const
     return tabela;
 }
 
-/* Busca um símbolo na tabela pelo nome e escopo (ou global).
+/* Busca um símbolo na tabela pelo nome e escopo.
    Retorna o índice se encontrado ou -1 se não encontrado. */
 int buscarSimbolo(SimboloTabela** tabela, const char* nomeID, const char* escopo) {
     for (int i = 0; i < MAX; i++) {
@@ -173,7 +173,7 @@ void percorrerDecl(NoArvore* arvoreSintatica, SimboloTabela** tabela, char* auxE
             inserirSimbolo(tabela, nomeFunc, "global", DeclFuncT, tipo, arvoreSintatica->linha);
         }
         
-        // 2) Agora sim, troque o auxEscopo para o nome da função
+        //Troque o auxEscopo para o nome da função
         strcpy(auxEscopo, nomeFunc);
 
         // Se a função possui parâmetros (por exemplo, filho[0])
@@ -231,6 +231,7 @@ void percorrerExp(NoArvore* arvoreSintatica, SimboloTabela** tabela, char* escop
     else if (arvoreSintatica->expressao == FunCallT) {
         if (buscarSimbolo(tabela, arvoreSintatica->lexema, escopo) == -1)
             mostrarErroSemantico(FuncaoNaoDeclarada, arvoreSintatica->lexema, arvoreSintatica->linha);
+
         NoArvore* filhoFunc = arvoreSintatica->filho[0];
         while (filhoFunc != NULL) {
             if (filhoFunc->filho[0] != NULL)
