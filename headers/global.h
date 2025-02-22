@@ -19,11 +19,11 @@
 #define TRUE 1
 #endif
 
-#define MAXLEXEMA 25
+#define MAXLEXEMA 40
 
 extern int linha; 
 extern int indPilha;
-extern char pilha[4][MAXLEXEMA];
+extern char pilha[4][MAXLEXEMA+1];
 
 extern FILE* source;
 extern int Error;
@@ -71,7 +71,7 @@ struct noArvore {
     struct noArvore * irmao;
 
     int linha;
-    char lexema[25];
+    char lexema[MAXLEXEMA+1];
 
     TipoNo tipono;
     StatementTipo statement;

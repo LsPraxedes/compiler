@@ -12,7 +12,7 @@
 
     static int firstTime = TRUE;
     int indPilha = -1;
-    char pilha[4][MAXLEXEMA];
+    char pilha[4][MAXLEXEMA+1];
 %}
 
 %option noyywrap
