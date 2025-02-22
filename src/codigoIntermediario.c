@@ -6,7 +6,7 @@
 #include "../headers/tabelaSimbolos.h"
 
 #define MAX_INTERMEDIARIO 1000
-#define MAX_FILHOS 3  // ajuste conforme a definição de NoArvore
+#define MAX_FILHOS 3
 
 typedef struct {
     char instrucao[50];
