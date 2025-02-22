@@ -46,7 +46,6 @@ int main(int argc, char **argv){
     inserirSimbolo(tabela, "input", "global", DeclFuncT, TIPO_INT, 0);
     inserirSimbolo(tabela, "output", "global", DeclFuncT, TIPO_VOID, 0);
 
-    
     percorrerArvore(AST, tabela, escopo);
     
     if (verificarMain(tabela) == -1 ){
@@ -62,8 +61,6 @@ int main(int argc, char **argv){
         gerarCodigoIntermediario(AST);   // Gera o código intermediário
         imprimirCodigoIntermediario(); 
     }
-
-    
 
     return 0;
 }
