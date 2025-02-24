@@ -16,10 +16,7 @@
 
     void printArvore(NoArvore* raiz, int num);
 
-    int qntNos = 0;
-
     NoArvore* AST;
-    NoArvore* nos[MAX_NOS];
 %}
 
 %start programa
