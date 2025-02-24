@@ -97,8 +97,7 @@ var_declaracao  : tipo_especificador TK_ID TK_PONTO_VIRGULA {
 
                     addFilho($$, aux);
 
-                    nos[qntNos] = aux;
-                    qntNos++;
+                    
                 }
                 | tipo_especificador TK_ID TK_ABRE_COLCHETES TK_NUM TK_FECHA_COLCHETES TK_PONTO_VIRGULA {
                     $$ = $1;
@@ -112,8 +111,7 @@ var_declaracao  : tipo_especificador TK_ID TK_PONTO_VIRGULA {
                     strcpy(aux->lexema, pilha[indPilha]);
                     indPilha--;
 
-                    nos[qntNos] = aux;
-                    qntNos++;
+                   
 
                     strcpy(aux2->lexema, pilha[indPilha]);
                     indPilha--;
@@ -121,8 +119,7 @@ var_declaracao  : tipo_especificador TK_ID TK_PONTO_VIRGULA {
                     addFilho($$, aux2);
                     addFilho($$, aux);
 
-                    nos[qntNos] = aux2;
-                    qntNos++;
+                    
                 }
                 ;
 
@@ -131,16 +128,14 @@ tipo_especificador  : TK_INT {
                         strcpy($$->lexema, "INT");
                         $$->linha = linha;
 
-                        nos[qntNos] = $$;
-                        qntNos++;
+                        
                     }
                     | TK_VOID {
                         $$ = novoNo();
                         strcpy($$->lexema, "VOID");
                         $$->linha = linha;
 
-                        nos[qntNos] = $$;
-                        qntNos++;
+                        
                     }
                     ;
 
@@ -164,8 +159,7 @@ fun_id  : TK_ID {
 
             $$->linha = linha;
 
-            nos[qntNos] = $$;
-            qntNos++;
+            
         }
 
 params  : %empty {
@@ -182,8 +176,7 @@ params  : %empty {
             $$->statement = ParametroVOIDT;
             strcpy($$->lexema, "VOID");
 
-            nos[qntNos] = $$;
-            qntNos++;
+            
         }
         ;
 
@@ -214,8 +207,7 @@ param   : tipo_especificador TK_ID {
         
             addFilho($$, aux);
 
-            nos[qntNos] = aux;
-            qntNos++;
+            
         }
         | tipo_especificador TK_ID TK_ABRE_COLCHETES TK_FECHA_COLCHETES {
             $$ = $1;
@@ -230,8 +222,7 @@ param   : tipo_especificador TK_ID {
 
             addFilho($$, aux);		
 
-            nos[qntNos] = aux;
-            qntNos++;	
+            
         }
         ;
 
@@ -309,8 +300,7 @@ selecao_decl    : TK_IF TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES stateme
                         addFilho($$, $6);
                     }
 
-                    nos[qntNos] = $$;
-                    qntNos++;
+                    
                 }
                 ;
 
@@ -332,8 +322,7 @@ iteracao_decl   : TK_WHILE TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES stat
                     addFilho($$, $3);
                     addFilho($$, $5);
 
-                    nos[qntNos] = $$;
-                    qntNos++;
+                    
                 }
                 ;
 
@@ -344,8 +333,7 @@ retorno_decl    : TK_RETORNO TK_PONTO_VIRGULA {
                     $$->statement = RetornoVOIDT;
                     strcpy($$->lexema, "RetornoVOID");
 
-                    nos[qntNos] = $$;
-                    qntNos++;
+                    
                 }
                 | TK_RETORNO expressao TK_PONTO_VIRGULA {
                     $$ = novoNo();
@@ -356,8 +344,7 @@ retorno_decl    : TK_RETORNO TK_PONTO_VIRGULA {
 
                     addFilho($$, $2);
 
-                    nos[qntNos] = $$;
-                    qntNos++;
+                    
                 }
                 ;
 
@@ -371,8 +358,7 @@ expressao   : var TK_ATRIBUICAO expressao {
                 addFilho($$, $1);
                 addFilho($$, $3);
 
-                nos[qntNos] = $$;
-                qntNos++;
+                
             }
             | simples_expressao {
                 $$ = $1;
@@ -389,8 +375,7 @@ var : TK_ID {
         strcpy($$->lexema, pilha[indPilha]);
 
         indPilha--;
-        nos[qntNos] = $$;
-        qntNos++;
+        
 
     }
     | TK_ID TK_ABRE_COLCHETES expressao TK_FECHA_COLCHETES {
@@ -404,8 +389,7 @@ var : TK_ID {
 
         addFilho($$, $3);
 
-        nos[qntNos] = $$;
-        qntNos++;
+        
     }
     ;
 
@@ -427,43 +411,37 @@ relacional  : TK_MENOR_IGUAL {
                 $$ = novoNo();
                 strcpy($$->lexema, "<=");
 
-                nos[qntNos] = $$;
-                qntNos++;
+                
             }
             | TK_MENOR {
                 $$ = novoNo();
                 strcpy($$->lexema, "<");
 
-                nos[qntNos] = $$;
-                qntNos++;
+                
             }
             | TK_MAIOR {
                 $$ = novoNo();
                 strcpy($$->lexema, ">");
 
-                nos[qntNos] = $$;
-                qntNos++;
+                
             }
             | TK_MAIOR_IGUAL {
                 $$ = novoNo();
                 strcpy($$->lexema, ">=");
 
-                nos[qntNos] = $$;
-                qntNos++;
+                
             }
             | TK_IGUALDADE {
                 $$ = novoNo();
                 strcpy($$->lexema, "==");
 
-                nos[qntNos] = $$;
-                qntNos++;
+                
             }
             | TK_DIFERENTE {
                 $$ = novoNo();
                 strcpy($$->lexema, "!=");
 
-                nos[qntNos] = $$;
-                qntNos++;
+                
             }
             ;
 
@@ -485,15 +463,13 @@ soma    : TK_MAIS {
             $$ = novoNo();
             strcpy($$->lexema, "+");
 
-            nos[qntNos] = $$;
-            qntNos++;
+            
         }
         | TK_MENOS {
             $$ = novoNo();
             strcpy($$->lexema, "-");
 
-            nos[qntNos] = $$;
-            qntNos++;
+            
         }
         ;
 
@@ -515,15 +491,13 @@ mult    : TK_MULTIPLICACAO {
             $$ = novoNo();
             strcpy($$->lexema, "*");
         
-            nos[qntNos] = $$;
-            qntNos++;
+            
         }
         | TK_DIVISAO {
             $$ = novoNo();
             strcpy($$->lexema, "/");
 
-            nos[qntNos] = $$;
-            qntNos++;
+            
         }
         ;
 
@@ -543,10 +517,9 @@ fator   : TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES {
             $$->expressao = ConstanteT;
 
             strcpy($$->lexema, pilha[indPilha]);
-                        indPilha--;
+            indPilha--;
 
-                        nos[qntNos] = $$;
-                        qntNos++;
+                        
         }
         ;
 

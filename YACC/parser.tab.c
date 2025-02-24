@@ -573,13 +573,13 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    62,    62,    67,    76,    79,    82,    87,   103,   129,
-     137,   147,   159,   171,   175,   178,   190,   199,   204,   220,
-     238,   248,   256,   261,   269,   274,   277,   280,   283,   286,
-     291,   294,   299,   317,   320,   325,   340,   350,   364,   377,
-     383,   396,   412,   421,   426,   433,   440,   447,   454,   461,
-     470,   479,   484,   491,   500,   509,   514,   521,   530,   533,
-     536,   539,   553,   562,   565,   570,   578
+       0,    62,    62,    67,    76,    79,    82,    87,   102,   126,
+     133,   142,   154,   165,   169,   172,   183,   192,   197,   212,
+     229,   239,   247,   252,   260,   265,   268,   271,   274,   277,
+     282,   285,   290,   307,   310,   315,   329,   338,   351,   363,
+     369,   381,   396,   405,   410,   416,   422,   428,   434,   440,
+     448,   457,   462,   468,   476,   485,   490,   496,   504,   507,
+     510,   513,   526,   535,   538,   543,   551
 };
 #endif
 
@@ -1273,14 +1273,13 @@ yyreduce:
 
                     addFilho(yyval, aux);
 
-                    nos[qntNos] = aux;
-                    qntNos++;
+                    
                 }
-#line 1280 "YACC/parser.tab.c"
+#line 1279 "YACC/parser.tab.c"
     break;
 
   case 8: /* var_declaracao: tipo_especificador TK_ID TK_ABRE_COLCHETES TK_NUM TK_FECHA_COLCHETES TK_PONTO_VIRGULA  */
-#line 103 "YACC/parser.y"
+#line 102 "YACC/parser.y"
                                                                                                         {
                     yyval = yyvsp[-5];
                     yyval->tipono = Statement;
@@ -1293,8 +1292,7 @@ yyreduce:
                     strcpy(aux->lexema, pilha[indPilha]);
                     indPilha--;
 
-                    nos[qntNos] = aux;
-                    qntNos++;
+                   
 
                     strcpy(aux2->lexema, pilha[indPilha]);
                     indPilha--;
@@ -1302,40 +1300,37 @@ yyreduce:
                     addFilho(yyval, aux2);
                     addFilho(yyval, aux);
 
-                    nos[qntNos] = aux2;
-                    qntNos++;
+                    
                 }
-#line 1309 "YACC/parser.tab.c"
+#line 1306 "YACC/parser.tab.c"
     break;
 
   case 9: /* tipo_especificador: TK_INT  */
-#line 129 "YACC/parser.y"
+#line 126 "YACC/parser.y"
                              {
                         yyval = novoNo();
                         strcpy(yyval->lexema, "INT");
                         yyval->linha = linha;
 
-                        nos[qntNos] = yyval;
-                        qntNos++;
+                        
                     }
-#line 1322 "YACC/parser.tab.c"
+#line 1318 "YACC/parser.tab.c"
     break;
 
   case 10: /* tipo_especificador: TK_VOID  */
-#line 137 "YACC/parser.y"
+#line 133 "YACC/parser.y"
                               {
                         yyval = novoNo();
                         strcpy(yyval->lexema, "VOID");
                         yyval->linha = linha;
 
-                        nos[qntNos] = yyval;
-                        qntNos++;
+                        
                     }
-#line 1335 "YACC/parser.tab.c"
+#line 1330 "YACC/parser.tab.c"
     break;
 
   case 11: /* fun_declaracao: tipo_especificador fun_id TK_ABRE_PARENTESES params TK_FECHA_PARENTESES composto_decl  */
-#line 147 "YACC/parser.y"
+#line 142 "YACC/parser.y"
                                                                                                         {
                     yyval = yyvsp[-5];
 
@@ -1346,11 +1341,11 @@ yyreduce:
                     yyval->tipono = Statement;
                     yyval->statement = DeclFuncT;
                 }
-#line 1350 "YACC/parser.tab.c"
+#line 1345 "YACC/parser.tab.c"
     break;
 
   case 12: /* fun_id: TK_ID  */
-#line 159 "YACC/parser.y"
+#line 154 "YACC/parser.y"
                 {
             yyval = novoNo();
                         
@@ -1359,30 +1354,29 @@ yyreduce:
 
             yyval->linha = linha;
 
-            nos[qntNos] = yyval;
-            qntNos++;
+            
         }
-#line 1366 "YACC/parser.tab.c"
+#line 1360 "YACC/parser.tab.c"
     break;
 
   case 13: /* params: %empty  */
-#line 171 "YACC/parser.y"
+#line 165 "YACC/parser.y"
                  {
             yyval = novoNo();
         }
-#line 1374 "YACC/parser.tab.c"
+#line 1368 "YACC/parser.tab.c"
     break;
 
   case 14: /* params: param_lista  */
-#line 175 "YACC/parser.y"
+#line 169 "YACC/parser.y"
                     {
             yyval = yyvsp[0];
         }
-#line 1382 "YACC/parser.tab.c"
+#line 1376 "YACC/parser.tab.c"
     break;
 
   case 15: /* params: TK_VOID  */
-#line 178 "YACC/parser.y"
+#line 172 "YACC/parser.y"
                   {
             yyval = novoNo();
             yyval->tipono = Statement;
@@ -1390,14 +1384,13 @@ yyreduce:
             yyval->statement = ParametroVOIDT;
             strcpy(yyval->lexema, "VOID");
 
-            nos[qntNos] = yyval;
-            qntNos++;
+            
         }
-#line 1397 "YACC/parser.tab.c"
+#line 1390 "YACC/parser.tab.c"
     break;
 
   case 16: /* param_lista: param_lista TK_VIRGULA param  */
-#line 190 "YACC/parser.y"
+#line 183 "YACC/parser.y"
                                            {
                 if(yyvsp[-2] != NULL){
                     yyval = yyvsp[-2];
@@ -1407,19 +1400,19 @@ yyreduce:
                     yyval = yyvsp[0];
                 }	
             }
-#line 1411 "YACC/parser.tab.c"
+#line 1404 "YACC/parser.tab.c"
     break;
 
   case 17: /* param_lista: param  */
-#line 199 "YACC/parser.y"
+#line 192 "YACC/parser.y"
                     {
                 yyval = yyvsp[0];
             }
-#line 1419 "YACC/parser.tab.c"
+#line 1412 "YACC/parser.tab.c"
     break;
 
   case 18: /* param: tipo_especificador TK_ID  */
-#line 204 "YACC/parser.y"
+#line 197 "YACC/parser.y"
                                    {
             yyval = yyvsp[-1];
             yyval->tipono = Statement;
@@ -1433,14 +1426,13 @@ yyreduce:
         
             addFilho(yyval, aux);
 
-            nos[qntNos] = aux;
-            qntNos++;
+            
         }
-#line 1440 "YACC/parser.tab.c"
+#line 1432 "YACC/parser.tab.c"
     break;
 
   case 19: /* param: tipo_especificador TK_ID TK_ABRE_COLCHETES TK_FECHA_COLCHETES  */
-#line 220 "YACC/parser.y"
+#line 212 "YACC/parser.y"
                                                                         {
             yyval = yyvsp[-3];
             yyval->tipono = Statement;
@@ -1454,14 +1446,13 @@ yyreduce:
 
             addFilho(yyval, aux);		
 
-            nos[qntNos] = aux;
-            qntNos++;	
+            
         }
-#line 1461 "YACC/parser.tab.c"
+#line 1452 "YACC/parser.tab.c"
     break;
 
   case 20: /* composto_decl: TK_ABRE_CHAVES local_declaracoes statement_lista TK_FECHA_CHAVES  */
-#line 238 "YACC/parser.y"
+#line 229 "YACC/parser.y"
                                                                                    {
                     if(yyvsp[-2] != NULL) {
                         yyval = yyvsp[-2];
@@ -1470,11 +1461,11 @@ yyreduce:
                         yyval = yyvsp[-1];
                     }
                 }
-#line 1474 "YACC/parser.tab.c"
+#line 1465 "YACC/parser.tab.c"
     break;
 
   case 21: /* local_declaracoes: local_declaracoes var_declaracao  */
-#line 248 "YACC/parser.y"
+#line 239 "YACC/parser.y"
                                                        {
                         if(yyvsp[-1] != NULL) {
                             yyval = yyvsp[-1];
@@ -1483,19 +1474,19 @@ yyreduce:
                             yyval = yyvsp[0];
                         }
                     }
-#line 1487 "YACC/parser.tab.c"
+#line 1478 "YACC/parser.tab.c"
     break;
 
   case 22: /* local_declaracoes: %empty  */
-#line 256 "YACC/parser.y"
+#line 247 "YACC/parser.y"
                              {
                         yyval = NULL;
                     }
-#line 1495 "YACC/parser.tab.c"
+#line 1486 "YACC/parser.tab.c"
     break;
 
   case 23: /* statement_lista: statement_lista statement  */
-#line 261 "YACC/parser.y"
+#line 252 "YACC/parser.y"
                                             {
                     if(yyvsp[-1] != NULL) {
                         yyval = yyvsp[-1];
@@ -1504,75 +1495,75 @@ yyreduce:
                         yyval = yyvsp[0];
                     }
                 }
-#line 1508 "YACC/parser.tab.c"
+#line 1499 "YACC/parser.tab.c"
     break;
 
   case 24: /* statement_lista: %empty  */
-#line 269 "YACC/parser.y"
+#line 260 "YACC/parser.y"
                          {
                     yyval = NULL;
                 }
-#line 1516 "YACC/parser.tab.c"
+#line 1507 "YACC/parser.tab.c"
     break;
 
   case 25: /* statement: expressao_decl  */
-#line 274 "YACC/parser.y"
+#line 265 "YACC/parser.y"
                              {
                 yyval = yyvsp[0];
             }
-#line 1524 "YACC/parser.tab.c"
+#line 1515 "YACC/parser.tab.c"
     break;
 
   case 26: /* statement: composto_decl  */
-#line 277 "YACC/parser.y"
+#line 268 "YACC/parser.y"
                             {
                 yyval = yyvsp[0];
             }
-#line 1532 "YACC/parser.tab.c"
+#line 1523 "YACC/parser.tab.c"
     break;
 
   case 27: /* statement: selecao_decl  */
-#line 280 "YACC/parser.y"
+#line 271 "YACC/parser.y"
                            {
                 yyval = yyvsp[0];
             }
-#line 1540 "YACC/parser.tab.c"
+#line 1531 "YACC/parser.tab.c"
     break;
 
   case 28: /* statement: iteracao_decl  */
-#line 283 "YACC/parser.y"
+#line 274 "YACC/parser.y"
                             {
                 yyval = yyvsp[0];
             }
-#line 1548 "YACC/parser.tab.c"
+#line 1539 "YACC/parser.tab.c"
     break;
 
   case 29: /* statement: retorno_decl  */
-#line 286 "YACC/parser.y"
+#line 277 "YACC/parser.y"
                            {
                 yyval = yyvsp[0];
             }
-#line 1556 "YACC/parser.tab.c"
+#line 1547 "YACC/parser.tab.c"
     break;
 
   case 30: /* expressao_decl: expressao TK_PONTO_VIRGULA  */
-#line 291 "YACC/parser.y"
+#line 282 "YACC/parser.y"
                                              {
                     yyval = yyvsp[-1];
                 }
-#line 1564 "YACC/parser.tab.c"
+#line 1555 "YACC/parser.tab.c"
     break;
 
   case 31: /* expressao_decl: TK_PONTO_VIRGULA  */
-#line 294 "YACC/parser.y"
+#line 285 "YACC/parser.y"
                                    {
                     yyval = NULL;
                 }
-#line 1572 "YACC/parser.tab.c"
+#line 1563 "YACC/parser.tab.c"
     break;
 
   case 32: /* selecao_decl: TK_IF TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement fatoracao  */
-#line 299 "YACC/parser.y"
+#line 290 "YACC/parser.y"
                                                                                             {
                     yyval = novoNo();
                     strcpy(yyval->lexema, "IF");
@@ -1586,30 +1577,29 @@ yyreduce:
                         addFilho(yyval, yyvsp[0]);
                     }
 
-                    nos[qntNos] = yyval;
-                    qntNos++;
+                    
                 }
-#line 1593 "YACC/parser.tab.c"
+#line 1583 "YACC/parser.tab.c"
     break;
 
   case 33: /* fatoracao: TK_ELSE statement  */
-#line 317 "YACC/parser.y"
+#line 307 "YACC/parser.y"
                                 {
                 yyval = yyvsp[0];
             }
-#line 1601 "YACC/parser.tab.c"
+#line 1591 "YACC/parser.tab.c"
     break;
 
   case 34: /* fatoracao: %empty  */
-#line 320 "YACC/parser.y"
+#line 310 "YACC/parser.y"
                      {
                 yyval = NULL;
             }
-#line 1609 "YACC/parser.tab.c"
+#line 1599 "YACC/parser.tab.c"
     break;
 
   case 35: /* iteracao_decl: TK_WHILE TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement  */
-#line 325 "YACC/parser.y"
+#line 315 "YACC/parser.y"
                                                                                       {
                     yyval = novoNo();
                     strcpy(yyval->lexema, "WHILE");
@@ -1620,14 +1610,13 @@ yyreduce:
                     addFilho(yyval, yyvsp[-2]);
                     addFilho(yyval, yyvsp[0]);
 
-                    nos[qntNos] = yyval;
-                    qntNos++;
+                    
                 }
-#line 1627 "YACC/parser.tab.c"
+#line 1616 "YACC/parser.tab.c"
     break;
 
   case 36: /* retorno_decl: TK_RETORNO TK_PONTO_VIRGULA  */
-#line 340 "YACC/parser.y"
+#line 329 "YACC/parser.y"
                                               {
                     yyval = novoNo();
                     yyval->tipono = Statement;
@@ -1635,14 +1624,13 @@ yyreduce:
                     yyval->statement = RetornoVOIDT;
                     strcpy(yyval->lexema, "RetornoVOID");
 
-                    nos[qntNos] = yyval;
-                    qntNos++;
+                    
                 }
-#line 1642 "YACC/parser.tab.c"
+#line 1630 "YACC/parser.tab.c"
     break;
 
   case 37: /* retorno_decl: TK_RETORNO expressao TK_PONTO_VIRGULA  */
-#line 350 "YACC/parser.y"
+#line 338 "YACC/parser.y"
                                                         {
                     yyval = novoNo();
                     yyval->tipono = Statement;
@@ -1652,14 +1640,13 @@ yyreduce:
 
                     addFilho(yyval, yyvsp[-1]);
 
-                    nos[qntNos] = yyval;
-                    qntNos++;
+                    
                 }
-#line 1659 "YACC/parser.tab.c"
+#line 1646 "YACC/parser.tab.c"
     break;
 
   case 38: /* expressao: var TK_ATRIBUICAO expressao  */
-#line 364 "YACC/parser.y"
+#line 351 "YACC/parser.y"
                                           {
                 yyval = novoNo();
                 strcpy(yyval->lexema, "=");
@@ -1670,23 +1657,22 @@ yyreduce:
                 addFilho(yyval, yyvsp[-2]);
                 addFilho(yyval, yyvsp[0]);
 
-                nos[qntNos] = yyval;
-                qntNos++;
+                
             }
-#line 1677 "YACC/parser.tab.c"
+#line 1663 "YACC/parser.tab.c"
     break;
 
   case 39: /* expressao: simples_expressao  */
-#line 377 "YACC/parser.y"
+#line 363 "YACC/parser.y"
                                 {
                 yyval = yyvsp[0];
 
             }
-#line 1686 "YACC/parser.tab.c"
+#line 1672 "YACC/parser.tab.c"
     break;
 
   case 40: /* var: TK_ID  */
-#line 383 "YACC/parser.y"
+#line 369 "YACC/parser.y"
             {
         yyval = novoNo();
         yyval->tipono = Expressao;
@@ -1696,15 +1682,14 @@ yyreduce:
         strcpy(yyval->lexema, pilha[indPilha]);
 
         indPilha--;
-        nos[qntNos] = yyval;
-        qntNos++;
+        
 
     }
-#line 1704 "YACC/parser.tab.c"
+#line 1689 "YACC/parser.tab.c"
     break;
 
   case 41: /* var: TK_ID TK_ABRE_COLCHETES expressao TK_FECHA_COLCHETES  */
-#line 396 "YACC/parser.y"
+#line 381 "YACC/parser.y"
                                                            {
         yyval = novoNo();
         yyval->tipono = Expressao;
@@ -1716,14 +1701,13 @@ yyreduce:
 
         addFilho(yyval, yyvsp[-1]);
 
-        nos[qntNos] = yyval;
-        qntNos++;
+        
     }
-#line 1723 "YACC/parser.tab.c"
+#line 1707 "YACC/parser.tab.c"
     break;
 
   case 42: /* simples_expressao: soma_expressao relacional soma_expressao  */
-#line 412 "YACC/parser.y"
+#line 396 "YACC/parser.y"
                                                                {
                         yyval = yyvsp[-1];
                         yyval->tipono = Expressao;
@@ -1733,91 +1717,85 @@ yyreduce:
                         addFilho(yyval, yyvsp[-2]);
                         addFilho(yyval, yyvsp[0]);
                     }
-#line 1737 "YACC/parser.tab.c"
+#line 1721 "YACC/parser.tab.c"
     break;
 
   case 43: /* simples_expressao: soma_expressao  */
-#line 421 "YACC/parser.y"
+#line 405 "YACC/parser.y"
                                      {
                         yyval = yyvsp[0];
                     }
-#line 1745 "YACC/parser.tab.c"
+#line 1729 "YACC/parser.tab.c"
     break;
 
   case 44: /* relacional: TK_MENOR_IGUAL  */
-#line 426 "YACC/parser.y"
+#line 410 "YACC/parser.y"
                              {
                 yyval = novoNo();
                 strcpy(yyval->lexema, "<=");
 
-                nos[qntNos] = yyval;
-                qntNos++;
+                
             }
-#line 1757 "YACC/parser.tab.c"
+#line 1740 "YACC/parser.tab.c"
     break;
 
   case 45: /* relacional: TK_MENOR  */
-#line 433 "YACC/parser.y"
+#line 416 "YACC/parser.y"
                        {
                 yyval = novoNo();
                 strcpy(yyval->lexema, "<");
 
-                nos[qntNos] = yyval;
-                qntNos++;
+                
             }
-#line 1769 "YACC/parser.tab.c"
+#line 1751 "YACC/parser.tab.c"
     break;
 
   case 46: /* relacional: TK_MAIOR  */
-#line 440 "YACC/parser.y"
+#line 422 "YACC/parser.y"
                        {
                 yyval = novoNo();
                 strcpy(yyval->lexema, ">");
 
-                nos[qntNos] = yyval;
-                qntNos++;
+                
             }
-#line 1781 "YACC/parser.tab.c"
+#line 1762 "YACC/parser.tab.c"
     break;
 
   case 47: /* relacional: TK_MAIOR_IGUAL  */
-#line 447 "YACC/parser.y"
+#line 428 "YACC/parser.y"
                              {
                 yyval = novoNo();
                 strcpy(yyval->lexema, ">=");
 
-                nos[qntNos] = yyval;
-                qntNos++;
+                
             }
-#line 1793 "YACC/parser.tab.c"
+#line 1773 "YACC/parser.tab.c"
     break;
 
   case 48: /* relacional: TK_IGUALDADE  */
-#line 454 "YACC/parser.y"
+#line 434 "YACC/parser.y"
                            {
                 yyval = novoNo();
                 strcpy(yyval->lexema, "==");
 
-                nos[qntNos] = yyval;
-                qntNos++;
+                
             }
-#line 1805 "YACC/parser.tab.c"
+#line 1784 "YACC/parser.tab.c"
     break;
 
   case 49: /* relacional: TK_DIFERENTE  */
-#line 461 "YACC/parser.y"
+#line 440 "YACC/parser.y"
                            {
                 yyval = novoNo();
                 strcpy(yyval->lexema, "!=");
 
-                nos[qntNos] = yyval;
-                qntNos++;
+                
             }
-#line 1817 "YACC/parser.tab.c"
+#line 1795 "YACC/parser.tab.c"
     break;
 
   case 50: /* soma_expressao: soma_expressao soma termo  */
-#line 470 "YACC/parser.y"
+#line 448 "YACC/parser.y"
                                             {
                     yyval = yyvsp[-1];
                     yyval->tipono = Expressao;
@@ -1827,43 +1805,41 @@ yyreduce:
                     addFilho(yyval, yyvsp[-2]);
                     addFilho(yyval, yyvsp[0]);
                 }
-#line 1831 "YACC/parser.tab.c"
+#line 1809 "YACC/parser.tab.c"
     break;
 
   case 51: /* soma_expressao: termo  */
-#line 479 "YACC/parser.y"
+#line 457 "YACC/parser.y"
                         {
                     yyval = yyvsp[0];
                 }
-#line 1839 "YACC/parser.tab.c"
+#line 1817 "YACC/parser.tab.c"
     break;
 
   case 52: /* soma: TK_MAIS  */
-#line 484 "YACC/parser.y"
+#line 462 "YACC/parser.y"
                   {
             yyval = novoNo();
             strcpy(yyval->lexema, "+");
 
-            nos[qntNos] = yyval;
-            qntNos++;
+            
         }
-#line 1851 "YACC/parser.tab.c"
+#line 1828 "YACC/parser.tab.c"
     break;
 
   case 53: /* soma: TK_MENOS  */
-#line 491 "YACC/parser.y"
+#line 468 "YACC/parser.y"
                    {
             yyval = novoNo();
             strcpy(yyval->lexema, "-");
 
-            nos[qntNos] = yyval;
-            qntNos++;
+            
         }
-#line 1863 "YACC/parser.tab.c"
+#line 1839 "YACC/parser.tab.c"
     break;
 
   case 54: /* termo: termo mult fator  */
-#line 500 "YACC/parser.y"
+#line 476 "YACC/parser.y"
                            {
             yyval = yyvsp[-1];
             yyval->tipono = Expressao;
@@ -1873,67 +1849,65 @@ yyreduce:
             addFilho(yyval, yyvsp[-2]);
             addFilho(yyval, yyvsp[0]);
         }
-#line 1877 "YACC/parser.tab.c"
+#line 1853 "YACC/parser.tab.c"
     break;
 
   case 55: /* termo: fator  */
-#line 509 "YACC/parser.y"
+#line 485 "YACC/parser.y"
                 {
             yyval = yyvsp[0];
         }
-#line 1885 "YACC/parser.tab.c"
+#line 1861 "YACC/parser.tab.c"
     break;
 
   case 56: /* mult: TK_MULTIPLICACAO  */
-#line 514 "YACC/parser.y"
+#line 490 "YACC/parser.y"
                            {
             yyval = novoNo();
             strcpy(yyval->lexema, "*");
         
-            nos[qntNos] = yyval;
-            qntNos++;
+            
         }
-#line 1897 "YACC/parser.tab.c"
+#line 1872 "YACC/parser.tab.c"
     break;
 
   case 57: /* mult: TK_DIVISAO  */
-#line 521 "YACC/parser.y"
+#line 496 "YACC/parser.y"
                      {
             yyval = novoNo();
             strcpy(yyval->lexema, "/");
 
-            nos[qntNos] = yyval;
-            qntNos++;
+            
         }
-#line 1909 "YACC/parser.tab.c"
+#line 1883 "YACC/parser.tab.c"
     break;
 
   case 58: /* fator: TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES  */
-#line 530 "YACC/parser.y"
+#line 504 "YACC/parser.y"
                                                            {
             yyval = yyvsp[-1];
         }
-#line 1917 "YACC/parser.tab.c"
+#line 1891 "YACC/parser.tab.c"
     break;
 
   case 59: /* fator: var  */
-#line 533 "YACC/parser.y"
+#line 507 "YACC/parser.y"
               {
             yyval = yyvsp[0];
         }
-#line 1925 "YACC/parser.tab.c"
+#line 1899 "YACC/parser.tab.c"
     break;
 
   case 60: /* fator: ativacao  */
-#line 536 "YACC/parser.y"
+#line 510 "YACC/parser.y"
                    {
             yyval = yyvsp[0];
         }
-#line 1933 "YACC/parser.tab.c"
+#line 1907 "YACC/parser.tab.c"
     break;
 
   case 61: /* fator: TK_NUM  */
-#line 539 "YACC/parser.y"
+#line 513 "YACC/parser.y"
                  {
             yyval = novoNo();
             yyval->tipono = Expressao;
@@ -1941,16 +1915,15 @@ yyreduce:
             yyval->expressao = ConstanteT;
 
             strcpy(yyval->lexema, pilha[indPilha]);
-                        indPilha--;
+            indPilha--;
 
-                        nos[qntNos] = yyval;
-                        qntNos++;
+                        
         }
-#line 1950 "YACC/parser.tab.c"
+#line 1923 "YACC/parser.tab.c"
     break;
 
   case 62: /* ativacao: fun_id TK_ABRE_PARENTESES args TK_FECHA_PARENTESES  */
-#line 553 "YACC/parser.y"
+#line 526 "YACC/parser.y"
                                                                  {
                 yyval = yyvsp[-3];
                 yyval->tipono = Expressao;
@@ -1958,27 +1931,27 @@ yyreduce:
                 yyval->expressao = FunCallT;
                 addFilho(yyval, yyvsp[-1]);
             }
-#line 1962 "YACC/parser.tab.c"
+#line 1935 "YACC/parser.tab.c"
     break;
 
   case 63: /* args: arg_lista  */
-#line 562 "YACC/parser.y"
+#line 535 "YACC/parser.y"
                     {
             yyval = yyvsp[0];
         }
-#line 1970 "YACC/parser.tab.c"
+#line 1943 "YACC/parser.tab.c"
     break;
 
   case 64: /* args: %empty  */
-#line 565 "YACC/parser.y"
+#line 538 "YACC/parser.y"
                  {
             yyval = NULL;
         }
-#line 1978 "YACC/parser.tab.c"
+#line 1951 "YACC/parser.tab.c"
     break;
 
   case 65: /* arg_lista: arg_lista TK_VIRGULA expressao  */
-#line 570 "YACC/parser.y"
+#line 543 "YACC/parser.y"
                                              {
                 if(yyvsp[-2] != NULL){
                     yyval = yyvsp[-2];
@@ -1987,19 +1960,19 @@ yyreduce:
                     yyval = yyvsp[0];
                 }
             }
-#line 1991 "YACC/parser.tab.c"
+#line 1964 "YACC/parser.tab.c"
     break;
 
   case 66: /* arg_lista: expressao  */
-#line 578 "YACC/parser.y"
+#line 551 "YACC/parser.y"
                         {
                 yyval = yyvsp[0];
             }
-#line 1999 "YACC/parser.tab.c"
+#line 1972 "YACC/parser.tab.c"
     break;
 
 
-#line 2003 "YACC/parser.tab.c"
+#line 1976 "YACC/parser.tab.c"
 
       default: break;
     }
@@ -2192,7 +2165,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 583 "YACC/parser.y"
+#line 556 "YACC/parser.y"
 
 
 int yyerror(char *message) {
