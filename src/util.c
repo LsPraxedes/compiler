@@ -92,7 +92,7 @@ NoArvore* addFilho(NoArvore* raiz, NoArvore* no){
     return raiz;
 }
 
-void printArvore(NoArvore* raiz, int num){
+void printArvore(NoArvore* raiz, int num, int u){
 
     int i;
     
@@ -103,10 +103,15 @@ void printArvore(NoArvore* raiz, int num){
     for(i = 0; i < num; i++)
         fprintf(stdout, "----");
 
-    fprintf(stdout, "%s\n", raiz->lexema);
+    fprintf(stdout, "pai - %s\n", raiz->lexema);
 
-    for (i=0; i < 3; i++)
-        printArvore(raiz->filho[i], num +1);
-    
-    printArvore(raiz->irmao, num);
+    for (i=0; i < 3; i++){
+        if(raiz->filho[i]) 
+        printf("filho %d",i);
+        printArvore(raiz->filho[i], num +1, i);
+
+    }
+    if(raiz->irmao) 
+    printf("irmao ");
+    printArvore(raiz->irmao, num, u);
 }

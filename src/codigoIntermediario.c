@@ -46,10 +46,10 @@ void adicionarCodigo(const char* formato, ...) {
 }
 
 /* Percorre a árvore e gera código intermediário */
-char* gerarCodigoIntermediario(NoArvore* arvoreSintatica) {
-    if (arvoreSintatica == NULL)
+char* gerarCodigoIntermediario(NoArvore* no) {
+    if (no == NULL)
         return NULL;
-    
+
     char* result = NULL;
     int processado = 0; // indica se o nó já foi tratado especificamente
 
@@ -60,99 +60,171 @@ char* gerarCodigoIntermediario(NoArvore* arvoreSintatica) {
          - Operações aritméticas: "+", "-", "*", "/"
          - Chamada de função e identificador, conforme os campos 'expressao'
     */
-    if (arvoreSintatica->tipono == Expressao) {
-        if (arvoreSintatica->lexema != NULL && strcmp(arvoreSintatica->lexema, "=") == 0) {
+    
+   if (no->tipono == Expressao) {
+        if (no->lexema != NULL && strcmp(no->lexema, "=") == 0) {
             // Nó de atribuição: filho[0] = variável, filho[1] = expressão
-            char* var = gerarCodigoIntermediario(arvoreSintatica->filho[0]);
-            char* expr = gerarCodigoIntermediario(arvoreSintatica->filho[1]);
+            char* var = gerarCodigoIntermediario(no->filho[0]);
+            char* expr = gerarCodigoIntermediario(no->filho[1]);
+            char* temp=novaTemp();
+            adicionarCodigo("LOAD: %s = %s", temp, var);
             adicionarCodigo("%s = %s", var, expr);
+            
             result = var;
             processado = 1;
         }
-        else if (arvoreSintatica->lexema != NULL &&
-                 (strcmp(arvoreSintatica->lexema, "+") == 0 ||
-                  strcmp(arvoreSintatica->lexema, "-") == 0 ||
-                  strcmp(arvoreSintatica->lexema, "*") == 0 ||
-                  strcmp(arvoreSintatica->lexema, "/") == 0)) {
+        else if (no->lexema != NULL &&
+                (strcmp(no->lexema, "+") == 0 ||
+                strcmp(no->lexema, "-") == 0 ||
+                strcmp(no->lexema, "*") == 0 ||
+                strcmp(no->lexema, "/") == 0)) {
             // Operação aritmética
-            char* left = gerarCodigoIntermediario(arvoreSintatica->filho[0]);
-            char* right = gerarCodigoIntermediario(arvoreSintatica->filho[1]);
-            char* temp = novaTemp();
-            adicionarCodigo("%s = %s %s %s", temp, left, arvoreSintatica->lexema, right);
-            result = temp;
+            char* left = gerarCodigoIntermediario(no->filho[0]);
+            char* right = gerarCodigoIntermediario(no->filho[1]);
+            if(no->filho[0] != NULL && 
+                (strcmp(no->filho[0]->lexema, "+") == 0 ||
+                strcmp(no->filho[0]->lexema, "-") == 0 ||
+                strcmp(no->filho[0]->lexema, "*") == 0 ||
+                strcmp(no->filho[0]->lexema, "/") == 0)){
+                char* temp = novaTemp();
+
+                adicionarCodigo("%s = %s %s %s", temp, left, no->lexema,right);
+                                
+                result = temp;
+            }
+            else{
+                result = (char*)malloc((strlen(left)+strlen(right)+strlen(no->lexema)+3)*sizeof(char));
+                strcpy(result,left);
+                strcat(result, " ");
+                strcat(result,no->lexema);
+                strcat(result, " ");
+                strcat(result, right);
+            }
             processado = 1;
         }
-        else if (arvoreSintatica->expressao == FunCallT) {
+        else if (no->expressao == FunCallT) {
             // Chamada de função
-            adicionarCodigo("CALL %s", arvoreSintatica->lexema);
+            adicionarCodigo("CALL %s (%s)", no->lexema, gerarCodigoIntermediario(no->filho[0]));
             char* temp = novaTemp();
             adicionarCodigo("%s = RET", temp);
             result = temp;
             processado = 1;
         }
-        else if (arvoreSintatica->expressao == IdT) {
+        else if (no->expressao == IdT) {
             // Nó identificador ou literal
-            result = arvoreSintatica->lexema;
+            
+                // Este é um acesso a uma variável simples (não array, ou array usado como um todo, o que C- pode não permitir)
+                result = no->lexema;
+                processado = 1;
+
+        }
+        else if(no->expressao==VetorParamT){
+            char* nomeArray = no->lexema; // Nome do array (ex: "a")
+        
+                // Gera código para a expressão do índice e obtém seu valor/temporário
+                char* tempIndice = gerarCodigoIntermediario(no->filho[0]); // Processa o nó 'i'
+        
+                // Cria um novo temporário para armazenar o valor lido de a[i]
+                char* tempResultadoLeituraArray = novaTemp();
+        
+                // Adiciona a instrução TAC para carregar o valor do array
+                // Formato: t_resultado = nome_array [ valor_indice ]
+                adicionarCodigo("%s = %s*4", tempResultadoLeituraArray, tempIndice);
+                result = (char*)malloc((strlen(tempResultadoLeituraArray)+strlen(nomeArray)+3)*sizeof(char));
+                strcat(result, nomeArray);
+                strcat(result, "[");
+                strcat(result, tempResultadoLeituraArray);
+                strcat(result, "]");
+                processado = 1;
+        }
+        else if (no->lexema != NULL &&
+            (strcmp(no->lexema, "<") == 0 || strcmp(no->lexema, ">") == 0 ||
+            strcmp(no->lexema, "==") == 0 || strcmp(no->lexema, "!=") == 0 ||
+            strcmp(no->lexema, "<=") == 0 || strcmp(no->lexema, ">=") == 0)) {
+
+            char* left = gerarCodigoIntermediario(no->filho[0]);
+            char* right = gerarCodigoIntermediario(no->filho[1]);
+            char* temp = novaTemp();
+            int val=0;
+            for (int i = 0; i < strlen(right)-1; i++) {
+                if (right[i] == ' '){ // Verifica se o caractere é um espaço literal
+                    val=1;   
+                break;
+                }
+            }
+    
+            if(val){
+                adicionarCodigo("%s = %s", temp, right);
+                char* temp2 = novaTemp();
+                adicionarCodigo("%s = %s %s %s", temp2, left, no->lexema, temp);
+                result = temp2; 
+            }
+            else{
+                adicionarCodigo("%s = %s %s %s", temp, left, no->lexema, right);
+                result = temp; 
+            }
+                
             processado = 1;
         }
     }
-    else if (arvoreSintatica->tipono == Statement) {
-        if (arvoreSintatica->statement == DeclFuncT) {
+    else if (no->tipono == Statement) {
+        if (no->statement == DeclFuncT) {
             // Para declaração de função, assume-se:
             //   filho[1] -> nome da função
             //   filho[2] -> corpo da função
-            adicionarCodigo("\nFUNC %s:", arvoreSintatica->filho[1]->lexema);
-            gerarCodigoIntermediario(arvoreSintatica->filho[2]); // Processa o corpo
+            
+            adicionarCodigo("\nFUNC %s:", no->filho[1]->lexema);
+            gerarCodigoIntermediario(no->filho[1]->filho[0]); // Processa o corpo
             processado = 1;
         }
-        else if (arvoreSintatica->statement == IfT) {
-            char* cond = gerarCodigoIntermediario(arvoreSintatica->filho[0]);
+        else if (no->statement == IfT) {
+            char* cond = gerarCodigoIntermediario(no->filho[1]);
             char* labelFalse = novoLabel();
             adicionarCodigo("IF !%s GOTO %s", cond, labelFalse);
-            gerarCodigoIntermediario(arvoreSintatica->filho[1]); // Bloco do IF
+            gerarCodigoIntermediario(no->filho[0]); // Bloco do IF
             adicionarCodigo("%s:", labelFalse);
             processado = 1;
         }
-        else if (arvoreSintatica->statement == WhileT) {
+        else if (no->statement == WhileT) {
             char* labelInicio = novoLabel();
             char* labelSaida = novoLabel();
             adicionarCodigo("%s:", labelInicio);
-            char* cond = gerarCodigoIntermediario(arvoreSintatica->filho[0]);
+            char* cond = gerarCodigoIntermediario(no->filho[0]);
             adicionarCodigo("IF !%s GOTO %s", cond, labelSaida);
-            gerarCodigoIntermediario(arvoreSintatica->filho[1]); // Corpo do loop
+            gerarCodigoIntermediario(no->filho[1]); // Corpo do loop
             adicionarCodigo("GOTO %s", labelInicio);
             adicionarCodigo("%s:", labelSaida);
             processado = 1;
         }
-        else if (arvoreSintatica->statement == RetornoINTT || arvoreSintatica->statement == RetornoVOIDT) {
-            char* retorno = gerarCodigoIntermediario(arvoreSintatica->filho[0]);
+        else if (no->statement == RetornoINTT || no->statement == RetornoVOIDT) {
+            char* retorno = gerarCodigoIntermediario(no->filho[0]);
             adicionarCodigo("RET %s", retorno);
             processado = 1;
         }
     }
-    
-    /* Se o nó não foi tratado especificamente, verifica se há um lexema
-       (por exemplo, para declarações de variáveis ou literais) */
-    if (!processado) {
-        if (arvoreSintatica->lexema != NULL)
-            result = arvoreSintatica->lexema;
-    }
-    
-    /* Percorre os filhos (assumindo um número máximo de filhos definido por MAX_FILHOS) */
-    for (int i = 0; i < MAX_FILHOS; i++) {
-        if (arvoreSintatica->filho[i] != NULL) {
-            char* aux = gerarCodigoIntermediario(arvoreSintatica->filho[i]);
-            // Se ainda não há resultado e o filho gerou algo, utiliza-o
-            if (result == NULL && aux != NULL)
-                result = aux;
+    else{
+            /* Percorre os filhos (assumindo um número máximo de filhos definido por MAX_FILHOS) */
+        for (int i = 0; i < MAX_FILHOS; i++) {
+            if (no->filho[i] != NULL) {
+                char* aux = gerarCodigoIntermediario(no->filho[i]);
+                printf("no %s no->filho%d %s\n",no->lexema,i,no->filho[i]->lexema);
+            }
         }
     }
-    
-    /* Processa os nós irmãos */
-    if (arvoreSintatica->irmao)
-        gerarCodigoIntermediario(arvoreSintatica->irmao);
-    
-    return result;
+
+/* Se o nó não foi tratado especificamente, verifica se há um lexema
+   (por exemplo, para declarações de variáveis ou literais) */
+if (!processado) {
+    if (no->lexema != NULL)
+        result = no->lexema;
+}
+
+
+/* Processa os nós irmãos */
+if (no->irmao){
+    gerarCodigoIntermediario(no->irmao);
+}
+return result;
 }
 
 /* Imprime o código intermediário */

@@ -84,7 +84,7 @@
     int yyparse(void);
     int yyerror(char *message);
 
-    void printArvore(NoArvore* raiz, int num);
+    void printArvore(NoArvore* raiz, int num, int u);
 
     NoArvore* AST;
 

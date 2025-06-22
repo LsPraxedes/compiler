@@ -1995,7 +1995,7 @@ TokenType getToken(void) {
     
     strncpy(lexema,yytext,MAXTOKENLEN);
     
-    fprintf(stdout,"\t%d: ",linha);
+    fprintf(stdout,"%d: ",linha);
     printToken(currentToken,lexema);
 
     return currentToken;

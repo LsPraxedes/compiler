@@ -8,6 +8,6 @@ NoArvore* addFilho(NoArvore*, NoArvore*);
 NoArvore* addIrmao(NoArvore*, NoArvore*);
 NoArvore* parse(void);
 
-void printArvore(NoArvore*, int);
+void printArvore(NoArvore*, int, int);
 
 #endif
