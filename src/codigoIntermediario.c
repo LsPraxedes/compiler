@@ -52,22 +52,15 @@ char* gerarCodigoIntermediario(NoArvore* no) {
 
     char* result = NULL;
     int processado = 0; // indica se o nó já foi tratado especificamente
-
-    /* 
-       Se o nó é do tipo Expressao, tentamos identificar operações específicas.
-       Aqui tratamos:
-         - Atribuição: lexema "="
-         - Operações aritméticas: "+", "-", "*", "/"
-         - Chamada de função e identificador, conforme os campos 'expressao'
-    */
     
    if (no->tipono == Expressao) {
         if (no->lexema != NULL && strcmp(no->lexema, "=") == 0) {
             // Nó de atribuição: filho[0] = variável, filho[1] = expressão
             char* var = gerarCodigoIntermediario(no->filho[0]);
-            char* expr = gerarCodigoIntermediario(no->filho[1]);
             char* temp=novaTemp();
-            adicionarCodigo("LOAD: %s = %s", temp, var);
+
+            char* expr = gerarCodigoIntermediario(no->filho[1]);
+            
             adicionarCodigo("%s = %s", var, expr);
             
             result = var;
@@ -113,22 +106,21 @@ char* gerarCodigoIntermediario(NoArvore* no) {
         else if (no->expressao == IdT) {
             // Nó identificador ou literal
             
-                // Este é um acesso a uma variável simples (não array, ou array usado como um todo, o que C- pode não permitir)
+                
                 result = no->lexema;
                 processado = 1;
 
         }
         else if(no->expressao==VetorParamT){
-            char* nomeArray = no->lexema; // Nome do array (ex: "a")
+            char* nomeArray = no->lexema; 
         
-                // Gera código para a expressão do índice e obtém seu valor/temporário
-                char* tempIndice = gerarCodigoIntermediario(no->filho[0]); // Processa o nó 'i'
+                
+                char* tempIndice = gerarCodigoIntermediario(no->filho[0]);
         
-                // Cria um novo temporário para armazenar o valor lido de a[i]
+                
                 char* tempResultadoLeituraArray = novaTemp();
         
-                // Adiciona a instrução TAC para carregar o valor do array
-                // Formato: t_resultado = nome_array [ valor_indice ]
+                
                 adicionarCodigo("%s = %s*4", tempResultadoLeituraArray, tempIndice);
                 result = (char*)malloc((strlen(tempResultadoLeituraArray)+strlen(nomeArray)+3)*sizeof(char));
                 strcat(result, nomeArray);
@@ -166,14 +158,24 @@ char* gerarCodigoIntermediario(NoArvore* no) {
                 
             processado = 1;
         }
+        else 
+        if(no->statement == VarParametroT){
+            char* irmao = gerarCodigoIntermediario(no->filho[0]);
+            result = (char*)malloc((strlen(irmao)+strlen(no->lexema)+3)*sizeof(char));
+            strcat(result,no->lexema);
+            if(irmao!=NULL){
+                strcat(result,",");
+                strcat(result,irmao);
+            }
+        }
     }
     else if (no->tipono == Statement) {
         if (no->statement == DeclFuncT) {
-            // Para declaração de função, assume-se:
             //   filho[1] -> nome da função
-            //   filho[2] -> corpo da função
-            
-            adicionarCodigo("\nFUNC %s:", no->filho[1]->lexema);
+            //   filho[1]->filho[0] -> corpo da função
+            gerarCodigoIntermediario(no->filho[0]); // Processa o argumento
+
+            adicionarCodigo("\n(FUNC, %s, %s, -)", no->lexema,no->filho[1]->lexema);
             gerarCodigoIntermediario(no->filho[1]->filho[0]); // Processa o corpo
             processado = 1;
         }
@@ -198,22 +200,29 @@ char* gerarCodigoIntermediario(NoArvore* no) {
         }
         else if (no->statement == RetornoINTT || no->statement == RetornoVOIDT) {
             char* retorno = gerarCodigoIntermediario(no->filho[0]);
-            adicionarCodigo("RET %s", retorno);
+            adicionarCodigo("RET %s\n", retorno);
             processado = 1;
         }
-    }
-    else{
-            /* Percorre os filhos (assumindo um número máximo de filhos definido por MAX_FILHOS) */
-        for (int i = 0; i < MAX_FILHOS; i++) {
-            if (no->filho[i] != NULL) {
-                char* aux = gerarCodigoIntermediario(no->filho[i]);
-                printf("no %s no->filho%d %s\n",no->lexema,i,no->filho[i]->lexema);
-            }
+        else if(no->statement == DeclVarT){
+            char *temp=novaTemp();
+            char *right=gerarCodigoIntermediario(no->filho[0]);
+            adicionarCodigo("LOAD: %s = %s", temp, right);
+        }
+        else if(no->statement == DeclVetorT){
+            char* expr = gerarCodigoIntermediario(no->filho[1]);
+            char *left = gerarCodigoIntermediario(no->filho[0]);
+            adicionarCodigo("%s[%s]", left, expr);
+        }
+        else if(no->statement == VetorParametroT || no->statement == VarParametroT){
+            char *left = gerarCodigoIntermediario(no->filho[0]);
+            adicionarCodigo("(ARG, %s, %s, -)", no->lexema, left);
+        
         }
     }
 
-/* Se o nó não foi tratado especificamente, verifica se há um lexema
-   (por exemplo, para declarações de variáveis ou literais) */
+
+
+/* Se o nó não foi tratado especificamente, verifica se há um lexema*/
 if (!processado) {
     if (no->lexema != NULL)
         result = no->lexema;

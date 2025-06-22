@@ -94,24 +94,26 @@ NoArvore* addFilho(NoArvore* raiz, NoArvore* no){
 
 void printArvore(NoArvore* raiz, int num, int u){
 
-    int i;
+    int i, j;
     
     if(raiz == NULL)
         return;
 
-    fprintf(stdout,"|");
-    for(i = 0; i < num; i++)
-        fprintf(stdout, "----");
-
-    fprintf(stdout, "pai - %s\n", raiz->lexema);
+    fprintf(stdout, "pai  ' %s '  %d %d %d\n", raiz->lexema, raiz->tipono, raiz->statement, raiz->expressao);
 
     for (i=0; i < 3; i++){
-        if(raiz->filho[i]) 
-        printf("filho %d",i);
-        printArvore(raiz->filho[i], num +1, i);
+        if(raiz->filho[i]){
+            for(j = -1; j < num; j++)
+                printf("\t");
+            printf("filho %d - ", i);
+        } 
+        printArvore(raiz->filho[i], num +1, u+1);
 
     }
-    if(raiz->irmao) 
-    printf("irmao ");
-    printArvore(raiz->irmao, num, u);
+    if(raiz->irmao){
+        for(j = 0; j < num; j++)
+            printf("\t");
+        printf("irmao %d ", num);
+        printArvore(raiz->irmao, num, u);
+    }
 }
