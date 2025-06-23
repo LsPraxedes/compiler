@@ -17,7 +17,7 @@ PARSER = $(YACC_DIR)/parser.y
 PARSER_C = $(YACC_DIR)/parser.tab.c
 PARSER_H = $(YACC_DIR)/parser.tab.h
 
-SRC_FILES = main.c $(SRC_DIR)/util.c $(SRC_DIR)/tabelaSimbolos.c $(SRC_DIR)/codigoIntermediario.c
+SRC_FILES = main.c $(SRC_DIR)/util.c $(SRC_DIR)/tabelaSimbolos.c $(SRC_DIR)/codigoIntermediario.c $(SRC_DIR)/quadruplas.c
 OBJ_FILES = $(LEXER_C) $(PARSER_C) $(SRC_FILES)
 
 # Executável final
