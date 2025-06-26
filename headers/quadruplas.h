@@ -8,12 +8,14 @@ typedef struct {
 
     char lexema[MAX];
     int num;
+    char escopo[MAX];
 
 } tempTab;
 
-char* gerarQuadruplas(tempTab** ttabela, NoArvore* arvoreSintatica); // Percorre a árvore e gera código intermediário
+char* gerarQuadruplas(tempTab** ttabela, NoArvore* arvoreSintatica, char* escopo); // Percorre a árvore e gera código intermediário
 void imprimirQuadruplas();    // Imprime o código intermediário gerado
 void printTTabela();
 tempTab** criarTempTabela();
+void adicionarQuadruplas(const char* formato, ...);
 
 #endif

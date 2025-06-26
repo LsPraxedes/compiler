@@ -60,8 +60,10 @@ int main(int argc, char **argv){
         printf("Foram encontrados %d erro(s) semântico(s).\n", teveErroSemantico);
     else {
         printf("Análise semântica concluída sem erros.\n");
-        gerarQuadruplas(ttabela, AST);   // Gera o código intermediário
+        gerarQuadruplas(ttabela, AST, "global");   // Gera o código intermediário
+        adicionarQuadruplas("(HALT, -, -, -)");
         imprimirQuadruplas(); 
+        printTTabela(ttabela);
     }
 
     return 0;
