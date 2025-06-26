@@ -358,12 +358,12 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
             char* labelTrue = novaLabel();
             adicionarQuadruplas("(IFF, %s, %s, -)", cond, labelFalse);
             gerarQuadruplas(ttabela, no->filho[0], escopo); // Bloco do IF
+            adicionarQuadruplas("(GOTO, %s, - , -)", labelTrue);
             adicionarQuadruplas("(LAB, %s, -, -)", labelFalse);
             if(no->filho[2]!=NULL){
-                adicionarQuadruplas("(GOTO, %s, - , -)", labelTrue);
                 gerarQuadruplas(ttabela, no->filho[2], escopo);
-                adicionarQuadruplas("(LAB, %s, -, -)", labelTrue);
             }
+            adicionarQuadruplas("(LAB, %s, -, -)", labelTrue);
             processado = 1;
         }
         else if (no->statement == WhileT) {
