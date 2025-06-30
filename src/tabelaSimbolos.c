@@ -81,20 +81,20 @@ int buscaIgual(SimboloTabela** tabela, const char* nomeID, const char* escopo, i
 
 /* Imprime a tabela de símbolos */
 void printTabela(SimboloTabela** tabela) {
-    printf("\nTABELA DE SIMBOLOS\n\n===================================================================================\n");
-    printf("| %-4s | %-20s | %-15s | %-10s | %-10s | %-5s |\n",
+    printf("\nTABELA DE SIMBOLOS\n\n==================================================================\n");
+    printf("| %-4s | %-10s | %-8s | %-10s | %-10s | %-5s |\n",
            "ID", "Nome", "Escopo", "Tipo", "Tipagem", "Linha");
-    printf("===================================================================================\n");
+    printf("==================================================================\n");
     for (int i = 0; i < MAX; i++) {
         if (tabela[i] != NULL) {
-            printf("| %-4d | %-20s | %-15s | %-10s | %-10s | %-5d |\n",
+            printf("| %-4d | %-10s | %-8s | %-10s | %-10s | %-5d |\n",
                    i, tabela[i]->nomeID, tabela[i]->escopo,
                    (tabela[i]->tipoID == DeclVarT) ? "Variavel" : "Funcao",
                    (tabela[i]->tipagem == TIPO_INT) ? "Int" : "Void",
                    tabela[i]->linha);
         }
     }
-    printf("===================================================================================\n");
+    printf("===================================================================\n");
 }
 
 /* Libera a memória alocada para a tabela */
