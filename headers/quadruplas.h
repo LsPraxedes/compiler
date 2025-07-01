@@ -7,6 +7,7 @@
 typedef struct {
 
     char lexema[MAX];
+    char ret[MAX];
     int num;
     char escopo[MAX];
 
