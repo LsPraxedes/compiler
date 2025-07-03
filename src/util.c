@@ -1,39 +1,138 @@
 #include "../headers/global.h"
 #include "../headers/util.h"
 
-void printToken( TokenType token, const char* lexema ) { switch (token)
-   { case TK_IF:   fprintf(stdout,"%s\n",lexema);break;
-     case TK_RETORNO:  fprintf(stdout,"%s\n",lexema);break;
-     case TK_ELSE: fprintf(stdout,"%s\n",lexema);break;
-     case TK_INT:  fprintf(stdout,"%s\n",lexema);break;
-     case TK_WHILE:  fprintf(stdout,"%s\n",lexema);break;
-     case TK_VOID: fprintf(stdout,"%s\n",lexema);break;
-     case TK_IGUALDADE: fprintf(stdout,"==\n"); break;
-     case TK_ATRIBUICAO: fprintf(stdout,"=\n"); break;
-     case TK_DIFERENTE: fprintf(stdout,"!=\n"); break;
-     case TK_MENOR: fprintf(stdout,"<\n"); break;
-     case TK_MAIOR: fprintf(stdout,">\n"); break;
-     case TK_MENOR_IGUAL: fprintf(stdout,"<=\n"); break;
-     case TK_MAIOR_IGUAL: fprintf(stdout,">=\n"); break;
-     case TK_ABRE_PARENTESES: fprintf(stdout,"(\n"); break;
-     case TK_FECHA_PARENTESES: fprintf(stdout,")\n"); break;
-     case TK_ABRE_COLCHETES: fprintf(stdout,"[\n"); break;
-     case TK_FECHA_COLCHETES: fprintf(stdout,"]\n"); break;
-     case TK_ABRE_CHAVES: fprintf(stdout,"{\n"); break;
-     case TK_FECHA_CHAVES: fprintf(stdout,"}\n"); break;
-     case TK_PONTO_VIRGULA: fprintf(stdout,";\n"); break;
-     case TK_VIRGULA: fprintf(stdout,",\n"); break;
-     case TK_MAIS: fprintf(stdout,"+\n"); break;
-     case TK_MENOS: fprintf(stdout,"-\n"); break;
-     case TK_MULTIPLICACAO: fprintf(stdout,"*\n"); break;
-     case TK_DIVISAO: fprintf(stdout,"/\n"); break;
-     case ENDFILE: fprintf(stdout,"EOF\n"); break;
-     case TK_NUM: fprintf(stdout,"NUM, val = %s\n",lexema);break;
-     case TK_ID:  fprintf(stdout,"ID, nome = %s\n",lexema);break;
-     case ERROR:  fprintf(stdout,"%s\n",lexema); break;
-     default: /* Nunca deve acontecer */
-       fprintf(stdout,"Token Desconhecido: %d\n",token);
-   }
+void printToken( TokenType token, FILE *arq, const char* lexema) {
+   switch (token)
+   {
+     case TK_IF:
+        fprintf(stdout,"%s\n",lexema);
+        fprintf(arq,"%s\n",lexema); // Adicionado para arquivo
+        break;
+     case TK_RETORNO:
+        fprintf(stdout,"%s\n",lexema);
+        fprintf(arq,"%s\n",lexema); // Adicionado para arquivo
+        break;
+     case TK_ELSE:
+        fprintf(stdout,"%s\n",lexema);
+        fprintf(arq,"%s\n",lexema); // Adicionado para arquivo
+        break;
+     case TK_INT:
+        fprintf(stdout,"%s\n",lexema);
+        fprintf(arq,"%s\n",lexema); // Adicionado para arquivo
+        break;
+     case TK_WHILE:
+        fprintf(stdout,"%s\n",lexema);
+        fprintf(arq,"%s\n",lexema); // Adicionado para arquivo
+        break;
+     case TK_VOID:
+        fprintf(stdout,"%s\n",lexema);
+        fprintf(arq,"%s\n",lexema); // Adicionado para arquivo
+        break;
+     case TK_IGUALDADE:
+        fprintf(stdout,"==\n");
+        fprintf(arq,"==\n"); // Adicionado para arquivo
+        break;
+     case TK_ATRIBUICAO:
+        fprintf(stdout,"=\n");
+        fprintf(arq,"=\n"); // Adicionado para arquivo
+        break;
+     case TK_DIFERENTE:
+        fprintf(stdout,"!=\n");
+        fprintf(arq,"!=\n"); // Adicionado para arquivo
+        break;
+     case TK_MENOR:
+        fprintf(stdout,"<\n");
+        fprintf(arq,"<\n"); // Adicionado para arquivo
+        break;
+     case TK_MAIOR:
+        fprintf(stdout,">\n");
+        fprintf(arq,">\n"); // Adicionado para arquivo
+        break;
+     case TK_MENOR_IGUAL:
+        fprintf(stdout,"<=\n");
+        fprintf(arq,"<=\n"); // Adicionado para arquivo
+        break;
+     case TK_MAIOR_IGUAL:
+        fprintf(stdout,">=\n");
+        fprintf(arq,">=\n"); // Adicionado para arquivo
+        break;
+     case TK_ABRE_PARENTESES:
+        fprintf(stdout,"(\n");
+        fprintf(arq,"(\n"); // Adicionado para arquivo
+        break;
+     case TK_FECHA_PARENTESES:
+        fprintf(stdout,")\n");
+        fprintf(arq,")\n"); // Adicionado para arquivo
+        break;
+     case TK_ABRE_COLCHETES:
+        fprintf(stdout,"[\n");
+        fprintf(arq,"[\n"); // Adicionado para arquivo
+        break;
+     case TK_FECHA_COLCHETES:
+        fprintf(stdout,"]\n");
+        fprintf(arq,"]\n"); // Adicionado para arquivo
+        break;
+     case TK_ABRE_CHAVES:
+        fprintf(stdout,"{\n");
+        fprintf(arq,"{\n"); // Adicionado para arquivo
+        break;
+     case TK_FECHA_CHAVES:
+        fprintf(stdout,"}\n");
+        fprintf(arq,"}\n"); // Adicionado para arquivo
+        break;
+     case TK_PONTO_VIRGULA:
+        fprintf(stdout,";\n");
+        fprintf(arq,";\n"); // Adicionado para arquivo
+        break;
+     case TK_VIRGULA:
+        fprintf(stdout,",\n");
+        fprintf(arq,",\n"); // Adicionado para arquivo
+        break;
+     case TK_MAIS:
+        fprintf(stdout,"+\n");
+        fprintf(arq,"+\n"); // Adicionado para arquivo
+        break;
+     case TK_MENOS:
+        fprintf(stdout,"-\n");
+        fprintf(arq,"-\n"); // Adicionado para arquivo
+        break;
+     case TK_MULTIPLICACAO:
+        fprintf(stdout,"*\n");
+        fprintf(arq,"*\n"); // Adicionado para arquivo
+        break;
+     case TK_DIVISAO:
+        fprintf(stdout,"/\n");
+        fprintf(arq,"/\n"); // Adicionado para arquivo
+        break;
+     case ENDFILE:
+        fprintf(stdout,"EOF\n");
+        fprintf(arq,"EOF\n"); // Adicionado para arquivo
+        break;
+     case TK_NUM:
+        fprintf(stdout,"NUM\n");
+        fprintf(arq,"NUM: %s\n", lexema); // Adicionado para arquivo
+        break;
+     case TK_ID:
+        fprintf(stdout,"ID\n");
+        fprintf(arq,"ID: %s\n", lexema); // Adicionado para arquivo
+        break;
+     case ERROR:
+        fprintf(stdout,"%s\n",lexema);
+        fprintf(arq,"%s\n",lexema); // Adicionado para arquivo
+        break;
+     case TK_ABRE_COMENTARIO:
+        fprintf(stdout,"/*\n");
+        fprintf(arq,"/*\n"); // Adicionado para arquivo
+        break;
+     case TK_FECHA_COMENTARIO:
+        fprintf(stdout,"*/\n");
+        fprintf(arq,"*/\n"); // Adicionado para arquivo
+        break;
+     case TK_COMENTARIO_LINHA:
+        fprintf(stdout,"//\n");
+        fprintf(arq,"//\n"); // Adicionado para arquivo
+        break;
+    }
 }
 
 NoArvore* novoNo (){
@@ -92,7 +191,7 @@ NoArvore* addFilho(NoArvore* raiz, NoArvore* no){
     return raiz;
 }
 
-void printArvore(NoArvore* raiz, int num, int u){
+void printArvore(NoArvore* raiz, FILE *arq, int num, int u){
 
     int i, j;
     
@@ -100,20 +199,27 @@ void printArvore(NoArvore* raiz, int num, int u){
         return;
 
     fprintf(stdout, "pai  ' %s '  %d %d %d\n", raiz->lexema, raiz->tipono, raiz->statement, raiz->expressao);
+    fprintf(arq, "%s\n", raiz->lexema);
 
     for (i=0; i < 3; i++){
         if(raiz->filho[i]){
-            for(j = -1; j < num; j++)
+            for(j = -1; j < num; j++){
                 printf("\t");
+                fprintf(arq,"\t");
+            }
             printf("filho %d - ", i);
+            fprintf(arq,"%d - ", i);
+            
         } 
-        printArvore(raiz->filho[i], num +1, u+1);
+        printArvore(raiz->filho[i], arq, num +1, u+1);
 
     }
     if(raiz->irmao){
-        for(j = 0; j < num; j++)
+        for(j = 0; j < num; j++){
             printf("\t");
+            fprintf(arq,"\t");
+        }
         printf("irmao %d ", num);
-        printArvore(raiz->irmao, num, u);
+        printArvore(raiz->irmao, arq, num, u);
     }
 }

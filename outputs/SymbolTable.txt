@@ -1,0 +1,15 @@
+
+TABELA DE SIMBOLOS
+
+==================================================================
+| ID   | Nome       | Escopo   | Tipo       | Tipagem    | Linha |
+==================================================================
+| 0    | input      | global   | Funcao     | Int        | 0     |
+| 1    | output     | global   | Funcao     | Void       | 0     |
+| 2    | gcd        | global   | Funcao     | Int        | 1     |
+| 3    | u          | gcd      | Variavel   | Int        | 1     |
+| 4    | v          | gcd      | Variavel   | Int        | 1     |
+| 5    | main       | global   | Funcao     | Void       | 7     |
+| 6    | x          | main     | Variavel   | Int        | 8     |
+| 7    | y          | main     | Variavel   | Int        | 8     |
+===================================================================

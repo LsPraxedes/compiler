@@ -23,6 +23,14 @@ int main(int argc, char **argv){
     char escopo[MAXLEXEMA] = "global";
     char nomeInput[120];
     
+    FILE *arq;
+    char* nomeArq = "outputs/AST.txt";
+    arq = fopen(nomeArq, "w");
+    if (arq == NULL) {
+    perror("Erro ao abrir o arquivo"); // Mostra a mensagem de erro do sistema
+    exit(EXIT_FAILURE); // Encerra o programa com código de erro
+    }
+
     if(argc != 2){
         fprintf(stderr, "Uso: %s <nome_do_arquivo>\n", argv[0]);
         exit(1);
@@ -40,9 +48,9 @@ int main(int argc, char **argv){
 
     else {
         fprintf(stdout, "\nAST:\n\n");
-        printArvore(AST, 0, 0);
+        printArvore(AST, arq, 0, 0);
+        fclose(arq);
     }
-
     printf("\nFIM_ANALISE_SINTATICA\n------------------------------------------\nINICIO_ANALISE_SEMANTICA\n\n");
 
     inserirSimbolo(tabela, "input", "global", DeclFuncT, TIPO_INT, 0);

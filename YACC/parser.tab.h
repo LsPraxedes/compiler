@@ -77,14 +77,15 @@ extern int yydebug;
     TK_DIFERENTE = 278,            /* TK_DIFERENTE  */
     TK_ABRE_COMENTARIO = 279,      /* TK_ABRE_COMENTARIO  */
     TK_FECHA_COMENTARIO = 280,     /* TK_FECHA_COMENTARIO  */
-    TK_ID = 281,                   /* TK_ID  */
-    TK_NUM = 282,                  /* TK_NUM  */
-    TK_INT = 283,                  /* TK_INT  */
-    TK_RETORNO = 284,              /* TK_RETORNO  */
-    TK_VOID = 285,                 /* TK_VOID  */
-    TK_WHILE = 286,                /* TK_WHILE  */
-    ERROR = 287,                   /* ERROR  */
-    ENDFILE = 288                  /* ENDFILE  */
+    TK_COMENTARIO_LINHA = 281,     /* TK_COMENTARIO_LINHA  */
+    TK_ID = 282,                   /* TK_ID  */
+    TK_NUM = 283,                  /* TK_NUM  */
+    TK_INT = 284,                  /* TK_INT  */
+    TK_RETORNO = 285,              /* TK_RETORNO  */
+    TK_VOID = 286,                 /* TK_VOID  */
+    TK_WHILE = 287,                /* TK_WHILE  */
+    ERROR = 288,                   /* ERROR  */
+    ENDFILE = 289                  /* ENDFILE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif

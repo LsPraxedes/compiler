@@ -81,6 +81,19 @@ int buscaIgual(SimboloTabela** tabela, const char* nomeID, const char* escopo, i
 
 /* Imprime a tabela de símbolos */
 void printTabela(SimboloTabela** tabela) {
+    FILE *arq;
+    char* nomeArq = "outputs/SymbolTable.txt";
+    arq = fopen(nomeArq, "w");
+    if (arq == NULL) {
+    perror("Erro ao abrir o arquivo"); // Mostra a mensagem de erro do sistema
+    exit(EXIT_FAILURE); // Encerra o programa com código de erro
+    }
+
+    fprintf(arq,"\nTABELA DE SIMBOLOS\n\n==================================================================\n");
+    fprintf(arq,"| %-4s | %-10s | %-8s | %-10s | %-10s | %-5s |\n",
+           "ID", "Nome", "Escopo", "Tipo", "Tipagem", "Linha");
+    fprintf(arq,"==================================================================\n");
+    
     printf("\nTABELA DE SIMBOLOS\n\n==================================================================\n");
     printf("| %-4s | %-10s | %-8s | %-10s | %-10s | %-5s |\n",
            "ID", "Nome", "Escopo", "Tipo", "Tipagem", "Linha");
@@ -92,9 +105,15 @@ void printTabela(SimboloTabela** tabela) {
                    (tabela[i]->tipoID == DeclVarT) ? "Variavel" : "Funcao",
                    (tabela[i]->tipagem == TIPO_INT) ? "Int" : "Void",
                    tabela[i]->linha);
+            fprintf(arq,"| %-4d | %-10s | %-8s | %-10s | %-10s | %-5d |\n",
+                   i, tabela[i]->nomeID, tabela[i]->escopo,
+                   (tabela[i]->tipoID == DeclVarT) ? "Variavel" : "Funcao",
+                   (tabela[i]->tipagem == TIPO_INT) ? "Int" : "Void",
+                   tabela[i]->linha);
         }
     }
     printf("===================================================================\n");
+    fprintf(arq,"===================================================================\n");
 }
 
 /* Libera a memória alocada para a tabela */

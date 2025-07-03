@@ -71,16 +71,31 @@ int pesquisarTempTab(tempTab** ttabela, char* var, char* escopo){
 }
 
 void printTTabela(tempTab** ttabela) {
+    FILE *arq;
+    char* nomeArq = "outputs/TempTable.txt";
+    arq = fopen(nomeArq, "w");
+    if (arq == NULL) {
+    perror("Erro ao abrir o arquivo"); // Mostra a mensagem de erro do sistema
+    exit(EXIT_FAILURE); // Encerra o programa com código de erro
+    }
+    fprintf(arq,"\nTABELA DE TEMPORARIOS\n\n=============================================\n");
+    fprintf(arq,"| %-8s | %-10s | %-5s | %-8s |\n","ID","RET Func","Num","Escopo");
+    fprintf(arq,"=============================================\n");
+
     printf("\nTABELA DE TEMPORARIOS\n\n=============================================\n");
-    printf("| %-5s | %-10s | %-5s | %-8s |\n","ID","RET Func","Num","Escopo");
+    printf("| %-8s | %-10s | %-5s | %-8s |\n","ID","RET Func","Num","Escopo");
     printf("=============================================\n");
     for (int i = 0; i < MAX; i++) {
         if (ttabela[i] != NULL) {
-            printf("| %-5s | %-10s | %-5d | %-8s |\n",
+            printf("| %-8s | %-10s | %-5d | %-8s |\n",
+                   ttabela[i]->lexema, ttabela[i]->ret, ttabela[i]->num, ttabela[i]->escopo);
+            fprintf(arq,"| %-8s | %-10s | %-5d | %-8s |\n",
                    ttabela[i]->lexema, ttabela[i]->ret, ttabela[i]->num, ttabela[i]->escopo);
         }
     }
     printf("=============================================\n");
+    fprintf(arq,"=============================================\n");
+    fclose(arq);
 }
 
 /* Gera um novo rótulo */
@@ -162,6 +177,7 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
             int indice1 = -1;
             char temp[10];
             char temp2[10];
+            char *temp3;
             indice1 = pesquisarTempTab(ttabela, left, escopo);
             if(indice1==-1){
                 strcpy(temp,novoTemp());
@@ -179,25 +195,40 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
                 }else{
                     sprintf(temp2, "t%d", ttabela[indice2]->num);
                 }
-            }else
+                temp3 = novoTemp();
+                if(strcmp(no->lexema, "+")==0){
+                    adicionarQuadruplas("(ADD, %s, %s, %s)", temp3, temp, temp2);
+                    inserirTempTab(ttabela, temp3,"ADD", tempCounter-1,escopo);
+                }else if(strcmp(no->lexema, "-")==0){
+                    adicionarQuadruplas("(SUB, %s, %s, %s)", temp3, temp, temp2);
+                    inserirTempTab(ttabela, temp3,"SUB", tempCounter-1,escopo);
+                }else if(strcmp(no->lexema, "*")==0){
+                    adicionarQuadruplas("(MULT, %s, %s, %s)", temp3, temp, temp2);
+                    inserirTempTab(ttabela, temp3,"MULT", tempCounter-1,escopo);
+                }else if(strcmp(no->lexema, "/")==0){
+                    adicionarQuadruplas("(DIV, %s, %s, %s)", temp3, temp, temp2);
+                    inserirTempTab(ttabela, temp3,"DIV", tempCounter-1,escopo);
+                }
+            }else{
                 strcpy(temp2, right);
-                
-            
-            char *temp3 = novoTemp();
-
-            if(strcmp(no->lexema, "+")==0){
-                adicionarQuadruplas("(ADD, %s, %s, %s)", temp3, temp, temp2);
-                inserirTempTab(ttabela, temp3,"ADD", tempCounter-1,escopo);
-            }else if(strcmp(no->lexema, "-")==0){
-                adicionarQuadruplas("(SUB, %s, %s, %s)", temp3, temp, temp2);
-                inserirTempTab(ttabela, temp3,"SUB", tempCounter-1,escopo);
-            }else if(strcmp(no->lexema, "*")==0){
-                adicionarQuadruplas("(MULT, %s, %s, %s)", temp3, temp, temp2);
-                inserirTempTab(ttabela, temp3,"MULT", tempCounter-1,escopo);
-            }else if(strcmp(no->lexema, "/")==0){
-                adicionarQuadruplas("(DIV, %s, %s, %s)", temp3, temp, temp2);
-                inserirTempTab(ttabela, temp3,"DIV", tempCounter-1,escopo);
+                temp3 = novoTemp();
+                if(strcmp(no->lexema, "+")==0){
+                    adicionarQuadruplas("(ADDI, %s, %s, %s)", temp3, temp, temp2);
+                    inserirTempTab(ttabela, temp3,"ADDI", tempCounter-1,escopo);
+                }else if(strcmp(no->lexema, "-")==0){
+                    adicionarQuadruplas("(SUBI, %s, %s, %s)", temp3, temp, temp2);
+                    inserirTempTab(ttabela, temp3,"SUBI", tempCounter-1,escopo);
+                }else if(strcmp(no->lexema, "*")==0){
+                    adicionarQuadruplas("(MULTI, %s, %s, %s)", temp3, temp, temp2);
+                    inserirTempTab(ttabela, temp3,"MULTI", tempCounter-1,escopo);
+                }else if(strcmp(no->lexema, "/")==0){
+                    adicionarQuadruplas("(DIVI, %s, %s, %s)", temp3, temp, temp2);
+                    inserirTempTab(ttabela, temp3,"DIVI", tempCounter-1,escopo);
+                }
             }
+                
+
+        
             
             result = temp3;
 
@@ -461,10 +492,19 @@ return result;
 
 /* Imprime o código intermediário */
 void imprimirQuadruplas() {
+    FILE *arq;
+    char* nomeArq = "outputs/Quadruplas.txt";
+    arq = fopen(nomeArq, "w");
+    if (arq == NULL) {
+    perror("Erro ao abrir o arquivo"); // Mostra a mensagem de erro do sistema
+    exit(EXIT_FAILURE); // Encerra o programa com código de erro
+}
     printf("\nCÓDIGO INTERMEDIÁRIO\n");
     printf("=========================================\n");
     for (int i = 0; i < contador_quad; i++) {
         printf("%s\n", quad[i].instrucao);
+        fprintf(arq, "%s\n", quad[i].instrucao);
     }
+    fclose(arq);
     printf("=========================================\n");
 }

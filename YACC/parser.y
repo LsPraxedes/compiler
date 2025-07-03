@@ -14,7 +14,7 @@
     int yyparse(void);
     int yyerror(char *message);
 
-    void printArvore(NoArvore* raiz, int num, int u);
+    void printArvore(NoArvore* raiz, FILE* arq, int num, int u);
 
     NoArvore* AST;
 %}
@@ -44,6 +44,7 @@
 %left  TK_DIFERENTE
 %token TK_ABRE_COMENTARIO
 %token TK_FECHA_COMENTARIO
+%token TK_COMENTARIO_LINHA
 %token TK_ID
 %token TK_NUM
 %token TK_INT
@@ -589,6 +590,7 @@ int yyerror(char *message) {
         case TK_DIFERENTE: printf("%s\n", ultimoLexema); break;
         case TK_ABRE_COMENTARIO: printf("%s\n", ultimoLexema); break;
         case TK_FECHA_COMENTARIO: printf("%s\n", ultimoLexema); break;
+        case TK_COMENTARIO_LINHA: printf("%s\n", ultimoLexema); break;
         case TK_ID: printf("%s\n", ultimoLexema); break;
         case TK_NUM: printf("%s\n", ultimoLexema); break;
         case TK_INT: printf("%s\n", ultimoLexema); break;

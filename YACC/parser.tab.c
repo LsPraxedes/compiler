@@ -84,7 +84,7 @@
     int yyparse(void);
     int yyerror(char *message);
 
-    void printArvore(NoArvore* raiz, int num, int u);
+    void printArvore(NoArvore* raiz, FILE* arq, int num, int u);
 
     NoArvore* AST;
 
@@ -142,46 +142,47 @@ enum yysymbol_kind_t
   YYSYMBOL_TK_DIFERENTE = 23,              /* TK_DIFERENTE  */
   YYSYMBOL_TK_ABRE_COMENTARIO = 24,        /* TK_ABRE_COMENTARIO  */
   YYSYMBOL_TK_FECHA_COMENTARIO = 25,       /* TK_FECHA_COMENTARIO  */
-  YYSYMBOL_TK_ID = 26,                     /* TK_ID  */
-  YYSYMBOL_TK_NUM = 27,                    /* TK_NUM  */
-  YYSYMBOL_TK_INT = 28,                    /* TK_INT  */
-  YYSYMBOL_TK_RETORNO = 29,                /* TK_RETORNO  */
-  YYSYMBOL_TK_VOID = 30,                   /* TK_VOID  */
-  YYSYMBOL_TK_WHILE = 31,                  /* TK_WHILE  */
-  YYSYMBOL_ERROR = 32,                     /* ERROR  */
-  YYSYMBOL_ENDFILE = 33,                   /* ENDFILE  */
-  YYSYMBOL_YYACCEPT = 34,                  /* $accept  */
-  YYSYMBOL_programa = 35,                  /* programa  */
-  YYSYMBOL_declaracao_lista = 36,          /* declaracao_lista  */
-  YYSYMBOL_declaracao = 37,                /* declaracao  */
-  YYSYMBOL_var_declaracao = 38,            /* var_declaracao  */
-  YYSYMBOL_tipo_especificador = 39,        /* tipo_especificador  */
-  YYSYMBOL_fun_declaracao = 40,            /* fun_declaracao  */
-  YYSYMBOL_fun_id = 41,                    /* fun_id  */
-  YYSYMBOL_params = 42,                    /* params  */
-  YYSYMBOL_param_lista = 43,               /* param_lista  */
-  YYSYMBOL_param = 44,                     /* param  */
-  YYSYMBOL_composto_decl = 45,             /* composto_decl  */
-  YYSYMBOL_local_declaracoes = 46,         /* local_declaracoes  */
-  YYSYMBOL_statement_lista = 47,           /* statement_lista  */
-  YYSYMBOL_statement = 48,                 /* statement  */
-  YYSYMBOL_expressao_decl = 49,            /* expressao_decl  */
-  YYSYMBOL_selecao_decl = 50,              /* selecao_decl  */
-  YYSYMBOL_fatoracao = 51,                 /* fatoracao  */
-  YYSYMBOL_iteracao_decl = 52,             /* iteracao_decl  */
-  YYSYMBOL_retorno_decl = 53,              /* retorno_decl  */
-  YYSYMBOL_expressao = 54,                 /* expressao  */
-  YYSYMBOL_var = 55,                       /* var  */
-  YYSYMBOL_simples_expressao = 56,         /* simples_expressao  */
-  YYSYMBOL_relacional = 57,                /* relacional  */
-  YYSYMBOL_soma_expressao = 58,            /* soma_expressao  */
-  YYSYMBOL_soma = 59,                      /* soma  */
-  YYSYMBOL_termo = 60,                     /* termo  */
-  YYSYMBOL_mult = 61,                      /* mult  */
-  YYSYMBOL_fator = 62,                     /* fator  */
-  YYSYMBOL_ativacao = 63,                  /* ativacao  */
-  YYSYMBOL_args = 64,                      /* args  */
-  YYSYMBOL_arg_lista = 65                  /* arg_lista  */
+  YYSYMBOL_TK_COMENTARIO_LINHA = 26,       /* TK_COMENTARIO_LINHA  */
+  YYSYMBOL_TK_ID = 27,                     /* TK_ID  */
+  YYSYMBOL_TK_NUM = 28,                    /* TK_NUM  */
+  YYSYMBOL_TK_INT = 29,                    /* TK_INT  */
+  YYSYMBOL_TK_RETORNO = 30,                /* TK_RETORNO  */
+  YYSYMBOL_TK_VOID = 31,                   /* TK_VOID  */
+  YYSYMBOL_TK_WHILE = 32,                  /* TK_WHILE  */
+  YYSYMBOL_ERROR = 33,                     /* ERROR  */
+  YYSYMBOL_ENDFILE = 34,                   /* ENDFILE  */
+  YYSYMBOL_YYACCEPT = 35,                  /* $accept  */
+  YYSYMBOL_programa = 36,                  /* programa  */
+  YYSYMBOL_declaracao_lista = 37,          /* declaracao_lista  */
+  YYSYMBOL_declaracao = 38,                /* declaracao  */
+  YYSYMBOL_var_declaracao = 39,            /* var_declaracao  */
+  YYSYMBOL_tipo_especificador = 40,        /* tipo_especificador  */
+  YYSYMBOL_fun_declaracao = 41,            /* fun_declaracao  */
+  YYSYMBOL_fun_id = 42,                    /* fun_id  */
+  YYSYMBOL_params = 43,                    /* params  */
+  YYSYMBOL_param_lista = 44,               /* param_lista  */
+  YYSYMBOL_param = 45,                     /* param  */
+  YYSYMBOL_composto_decl = 46,             /* composto_decl  */
+  YYSYMBOL_local_declaracoes = 47,         /* local_declaracoes  */
+  YYSYMBOL_statement_lista = 48,           /* statement_lista  */
+  YYSYMBOL_statement = 49,                 /* statement  */
+  YYSYMBOL_expressao_decl = 50,            /* expressao_decl  */
+  YYSYMBOL_selecao_decl = 51,              /* selecao_decl  */
+  YYSYMBOL_fatoracao = 52,                 /* fatoracao  */
+  YYSYMBOL_iteracao_decl = 53,             /* iteracao_decl  */
+  YYSYMBOL_retorno_decl = 54,              /* retorno_decl  */
+  YYSYMBOL_expressao = 55,                 /* expressao  */
+  YYSYMBOL_var = 56,                       /* var  */
+  YYSYMBOL_simples_expressao = 57,         /* simples_expressao  */
+  YYSYMBOL_relacional = 58,                /* relacional  */
+  YYSYMBOL_soma_expressao = 59,            /* soma_expressao  */
+  YYSYMBOL_soma = 60,                      /* soma  */
+  YYSYMBOL_termo = 61,                     /* termo  */
+  YYSYMBOL_mult = 62,                      /* mult  */
+  YYSYMBOL_fator = 63,                     /* fator  */
+  YYSYMBOL_ativacao = 64,                  /* ativacao  */
+  YYSYMBOL_args = 65,                      /* args  */
+  YYSYMBOL_arg_lista = 66                  /* arg_lista  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -509,10 +510,10 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  9
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   95
+#define YYLAST   98
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  34
+#define YYNTOKENS  35
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  32
 /* YYNRULES -- Number of rules.  */
@@ -521,7 +522,7 @@ union yyalloc
 #define YYNSTATES  105
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   288
+#define YYMAXUTOK   289
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -563,20 +564,20 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    32,    33
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    59,    59,    64,    73,    76,    79,    84,    99,   123,
-     130,   139,   151,   162,   166,   169,   180,   189,   194,   209,
-     226,   236,   244,   249,   257,   262,   265,   268,   271,   274,
-     279,   282,   287,   304,   307,   312,   326,   335,   348,   360,
-     366,   378,   393,   402,   407,   413,   419,   425,   431,   437,
-     445,   454,   459,   465,   473,   482,   487,   493,   501,   504,
-     507,   510,   523,   532,   535,   540,   548
+       0,    60,    60,    65,    74,    77,    80,    85,   100,   124,
+     131,   140,   152,   163,   167,   170,   181,   190,   195,   210,
+     227,   237,   245,   250,   258,   263,   266,   269,   272,   275,
+     280,   283,   288,   305,   308,   313,   327,   336,   349,   361,
+     367,   379,   394,   403,   408,   414,   420,   426,   432,   438,
+     446,   455,   460,   466,   474,   483,   488,   494,   502,   505,
+     508,   511,   524,   533,   536,   541,   549
 };
 #endif
 
@@ -598,15 +599,16 @@ static const char *const yytname[] =
   "TK_ABRE_COLCHETES", "TK_FECHA_COLCHETES", "TK_MAIS", "TK_MENOS",
   "TK_MULTIPLICACAO", "TK_DIVISAO", "TK_MENOR", "TK_MAIOR",
   "TK_MENOR_IGUAL", "TK_MAIOR_IGUAL", "TK_ATRIBUICAO", "TK_IGUALDADE",
-  "TK_DIFERENTE", "TK_ABRE_COMENTARIO", "TK_FECHA_COMENTARIO", "TK_ID",
-  "TK_NUM", "TK_INT", "TK_RETORNO", "TK_VOID", "TK_WHILE", "ERROR",
-  "ENDFILE", "$accept", "programa", "declaracao_lista", "declaracao",
-  "var_declaracao", "tipo_especificador", "fun_declaracao", "fun_id",
-  "params", "param_lista", "param", "composto_decl", "local_declaracoes",
-  "statement_lista", "statement", "expressao_decl", "selecao_decl",
-  "fatoracao", "iteracao_decl", "retorno_decl", "expressao", "var",
-  "simples_expressao", "relacional", "soma_expressao", "soma", "termo",
-  "mult", "fator", "ativacao", "args", "arg_lista", YY_NULLPTR
+  "TK_DIFERENTE", "TK_ABRE_COMENTARIO", "TK_FECHA_COMENTARIO",
+  "TK_COMENTARIO_LINHA", "TK_ID", "TK_NUM", "TK_INT", "TK_RETORNO",
+  "TK_VOID", "TK_WHILE", "ERROR", "ENDFILE", "$accept", "programa",
+  "declaracao_lista", "declaracao", "var_declaracao", "tipo_especificador",
+  "fun_declaracao", "fun_id", "params", "param_lista", "param",
+  "composto_decl", "local_declaracoes", "statement_lista", "statement",
+  "expressao_decl", "selecao_decl", "fatoracao", "iteracao_decl",
+  "retorno_decl", "expressao", "var", "simples_expressao", "relacional",
+  "soma_expressao", "soma", "termo", "mult", "fator", "ativacao", "args",
+  "arg_lista", YY_NULLPTR
 };
 
 static const char *
@@ -616,7 +618,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-92)
+#define YYPACT_NINF (-40)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -630,17 +632,17 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       5,   -92,   -92,     1,     5,   -92,   -92,   -18,   -92,   -92,
-     -92,    -4,    16,   -92,    13,    33,    30,    44,    29,    60,
-      64,   -92,    65,    59,    63,     5,   -92,    61,   -92,   -92,
-     -92,   -92,     5,   -92,    48,     3,    -4,    68,   -92,    20,
-     -92,    51,   -92,    10,    69,    70,   -92,   -92,   -92,   -92,
-     -92,   -92,    72,    58,   -92,    31,    49,   -92,   -92,    20,
-      73,    20,   -92,    74,    20,    20,   -92,    20,   -92,   -92,
-     -92,   -92,   -92,   -92,   -92,   -92,    20,    20,   -92,   -92,
-      20,    75,   -92,    76,   -92,    77,   -92,    78,    79,   -92,
-     -92,    53,    49,   -92,    12,   -92,    12,   -92,    20,    83,
-     -92,   -92,    12,   -92,   -92
+      31,   -40,   -40,     7,    31,   -40,   -40,    -9,   -40,   -40,
+     -40,    -5,    14,   -40,    -1,    34,    21,    45,    12,    49,
+      56,   -40,    64,    60,    63,    31,   -40,    61,   -40,   -40,
+     -40,   -40,    31,   -40,    47,     2,    -5,    68,   -40,     8,
+     -40,     3,   -40,    -4,    69,    70,   -40,   -40,   -40,   -40,
+     -40,   -40,    72,    58,   -40,    32,    51,   -40,   -40,     8,
+      73,     8,   -40,    74,     8,     8,   -40,     8,   -40,   -40,
+     -40,   -40,   -40,   -40,   -40,   -40,     8,     8,   -40,   -40,
+       8,    75,   -40,    76,   -40,    77,   -40,    78,    79,   -40,
+     -40,    55,    51,   -40,    10,   -40,    10,   -40,     8,    83,
+     -40,   -40,    10,   -40,   -40
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -664,10 +666,10 @@ static const yytype_int8 yydefact[] =
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -92,   -92,   -92,    85,    50,    -1,   -92,    84,   -92,   -92,
-      67,    66,   -92,   -92,   -91,   -92,   -92,   -92,   -92,   -92,
-     -39,   -20,   -92,   -92,    17,   -92,    18,   -92,    14,   -92,
-     -92,   -92
+     -40,   -40,   -40,    85,    50,    16,   -40,    84,   -40,   -40,
+      65,    71,   -40,   -40,   -38,   -40,   -40,   -40,   -40,   -40,
+     -39,   -33,   -40,   -40,    17,   -40,    15,   -40,    18,   -40,
+     -40,   -40
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -684,59 +686,59 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      60,     9,    13,    99,    63,   100,    37,    14,    11,    38,
-      39,   104,    28,    40,    18,    37,    62,    39,    38,    39,
-      81,    28,    83,    15,    18,    85,    86,    39,    89,    41,
-      42,    34,    43,     1,    44,     2,    41,    42,    41,    42,
-      16,    43,    22,    44,    68,    69,    41,    42,    70,    71,
-      72,    73,   -15,    74,    75,    23,    90,    90,   -12,   101,
-      90,     1,    61,    17,    78,    79,    68,    69,    24,    25,
-      27,    26,    28,    31,    36,    59,    64,    65,    66,    67,
+      60,    13,    62,    39,    63,    37,    14,     9,    38,    39,
+     -12,    28,    40,    37,    61,    39,    38,    39,    11,    28,
+      81,    15,    83,    41,    42,    85,    86,    16,    89,    41,
+      42,    18,    43,    22,    44,    41,    42,    41,    42,    23,
+      43,    18,    44,    90,    90,    68,    69,    90,    34,    70,
+      71,    72,    73,   -15,    74,    75,    99,    24,   100,   101,
+       1,    25,     2,     1,   104,    17,    78,    79,    68,    69,
+      26,    27,    28,    31,    36,    59,    64,    65,    66,    67,
       84,    82,    33,    94,    98,    96,    97,   102,    95,    10,
-      29,    12,    30,    91,    93,    92
+      30,    12,    92,    91,     0,    29,     0,     0,    93
 };
 
 static const yytype_int8 yycheck[] =
 {
-      39,     0,     6,    94,    43,    96,     3,    11,    26,     6,
-       7,   102,     9,    10,    15,     3,     6,     7,     6,     7,
-      59,     9,    61,     7,    25,    64,    65,     7,    67,    26,
-      27,    32,    29,    28,    31,    30,    26,    27,    26,    27,
-      27,    29,    12,    31,    13,    14,    26,    27,    17,    18,
-      19,    20,     8,    22,    23,    26,    76,    77,     7,    98,
-      80,    28,    11,    30,    15,    16,    13,    14,     8,     5,
-      11,     6,     9,    12,    26,     7,     7,     7,     6,    21,
+      39,     6,     6,     7,    43,     3,    11,     0,     6,     7,
+       7,     9,    10,     3,    11,     7,     6,     7,    27,     9,
+      59,     7,    61,    27,    28,    64,    65,    28,    67,    27,
+      28,    15,    30,    12,    32,    27,    28,    27,    28,    27,
+      30,    25,    32,    76,    77,    13,    14,    80,    32,    17,
+      18,    19,    20,     8,    22,    23,    94,     8,    96,    98,
+      29,     5,    31,    29,   102,    31,    15,    16,    13,    14,
+       6,    11,     9,    12,    27,     7,     7,     7,     6,    21,
        6,     8,    32,     8,     5,     8,     8,     4,    12,     4,
-      24,     7,    25,    76,    80,    77
+      25,     7,    77,    76,    -1,    24,    -1,    -1,    80
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    28,    30,    35,    36,    37,    38,    39,    40,     0,
-      37,    26,    41,     6,    11,     7,    27,    30,    39,    42,
-      43,    44,    12,    26,     8,     5,     6,    11,     9,    45,
-      44,    12,    46,    38,    39,    47,    26,     3,     6,     7,
-      10,    26,    27,    29,    31,    41,    45,    48,    49,    50,
-      52,    53,    54,    55,    56,    58,    60,    62,    63,     7,
-      54,    11,     6,    54,     7,     7,     6,    21,    13,    14,
-      17,    18,    19,    20,    22,    23,    57,    59,    15,    16,
-      61,    54,     8,    54,     6,    54,    54,    64,    65,    54,
-      55,    58,    60,    62,     8,    12,     8,     8,     5,    48,
-      48,    54,     4,    51,    48
+       0,    29,    31,    36,    37,    38,    39,    40,    41,     0,
+      38,    27,    42,     6,    11,     7,    28,    31,    40,    43,
+      44,    45,    12,    27,     8,     5,     6,    11,     9,    46,
+      45,    12,    47,    39,    40,    48,    27,     3,     6,     7,
+      10,    27,    28,    30,    32,    42,    46,    49,    50,    51,
+      53,    54,    55,    56,    57,    59,    61,    63,    64,     7,
+      55,    11,     6,    55,     7,     7,     6,    21,    13,    14,
+      17,    18,    19,    20,    22,    23,    58,    60,    15,    16,
+      62,    55,     8,    55,     6,    55,    55,    65,    66,    55,
+      56,    59,    61,    63,     8,    12,     8,     8,     5,    49,
+      49,    55,     4,    52,    49
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    34,    35,    36,    36,    37,    37,    38,    38,    39,
-      39,    40,    41,    42,    42,    42,    43,    43,    44,    44,
-      45,    46,    46,    47,    47,    48,    48,    48,    48,    48,
-      49,    49,    50,    51,    51,    52,    53,    53,    54,    54,
-      55,    55,    56,    56,    57,    57,    57,    57,    57,    57,
-      58,    58,    59,    59,    60,    60,    61,    61,    62,    62,
-      62,    62,    63,    64,    64,    65,    65
+       0,    35,    36,    37,    37,    38,    38,    39,    39,    40,
+      40,    41,    42,    43,    43,    43,    44,    44,    45,    45,
+      46,    47,    47,    48,    48,    49,    49,    49,    49,    49,
+      50,    50,    51,    52,    52,    53,    54,    54,    55,    55,
+      56,    56,    57,    57,    58,    58,    58,    58,    58,    58,
+      59,    59,    60,    60,    61,    61,    62,    62,    63,    63,
+      63,    63,    64,    65,    65,    66,    66
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
@@ -1212,15 +1214,15 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* programa: declaracao_lista  */
-#line 59 "YACC/parser.y"
+#line 60 "YACC/parser.y"
                                {
                 AST = yyvsp[0];
             }
-#line 1220 "YACC/parser.tab.c"
+#line 1222 "YACC/parser.tab.c"
     break;
 
   case 3: /* declaracao_lista: declaracao_lista declaracao  */
-#line 64 "YACC/parser.y"
+#line 65 "YACC/parser.y"
                                                    {
                         if (yyvsp[-1] != NULL){
                             yyval = yyvsp[-1];
@@ -1230,33 +1232,33 @@ yyreduce:
                             yyval = yyvsp[0];
                         }
                     }
-#line 1234 "YACC/parser.tab.c"
+#line 1236 "YACC/parser.tab.c"
     break;
 
   case 4: /* declaracao_lista: declaracao  */
-#line 73 "YACC/parser.y"
+#line 74 "YACC/parser.y"
                                  {yyval = yyvsp[0];}
-#line 1240 "YACC/parser.tab.c"
+#line 1242 "YACC/parser.tab.c"
     break;
 
   case 5: /* declaracao: var_declaracao  */
-#line 76 "YACC/parser.y"
+#line 77 "YACC/parser.y"
                              {
                 yyval = yyvsp[0];
             }
-#line 1248 "YACC/parser.tab.c"
+#line 1250 "YACC/parser.tab.c"
     break;
 
   case 6: /* declaracao: fun_declaracao  */
-#line 79 "YACC/parser.y"
+#line 80 "YACC/parser.y"
                              {
                 yyval = yyvsp[0];
             }
-#line 1256 "YACC/parser.tab.c"
+#line 1258 "YACC/parser.tab.c"
     break;
 
   case 7: /* var_declaracao: tipo_especificador TK_ID TK_PONTO_VIRGULA  */
-#line 84 "YACC/parser.y"
+#line 85 "YACC/parser.y"
                                                             {
                     yyval = yyvsp[-2];
                     yyval->tipono = Statement;
@@ -1272,11 +1274,11 @@ yyreduce:
 
                     
                 }
-#line 1276 "YACC/parser.tab.c"
+#line 1278 "YACC/parser.tab.c"
     break;
 
   case 8: /* var_declaracao: tipo_especificador TK_ID TK_ABRE_COLCHETES TK_NUM TK_FECHA_COLCHETES TK_PONTO_VIRGULA  */
-#line 99 "YACC/parser.y"
+#line 100 "YACC/parser.y"
                                                                                                         {
                     yyval = yyvsp[-5];
                     yyval->tipono = Statement;
@@ -1299,11 +1301,11 @@ yyreduce:
 
                     
                 }
-#line 1303 "YACC/parser.tab.c"
+#line 1305 "YACC/parser.tab.c"
     break;
 
   case 9: /* tipo_especificador: TK_INT  */
-#line 123 "YACC/parser.y"
+#line 124 "YACC/parser.y"
                              {
                         yyval = novoNo();
                         strcpy(yyval->lexema, "INT");
@@ -1311,11 +1313,11 @@ yyreduce:
 
                         
                     }
-#line 1315 "YACC/parser.tab.c"
+#line 1317 "YACC/parser.tab.c"
     break;
 
   case 10: /* tipo_especificador: TK_VOID  */
-#line 130 "YACC/parser.y"
+#line 131 "YACC/parser.y"
                               {
                         yyval = novoNo();
                         strcpy(yyval->lexema, "VOID");
@@ -1323,11 +1325,11 @@ yyreduce:
 
                         
                     }
-#line 1327 "YACC/parser.tab.c"
+#line 1329 "YACC/parser.tab.c"
     break;
 
   case 11: /* fun_declaracao: tipo_especificador fun_id TK_ABRE_PARENTESES params TK_FECHA_PARENTESES composto_decl  */
-#line 139 "YACC/parser.y"
+#line 140 "YACC/parser.y"
                                                                                                         {
                     yyval = yyvsp[-5];
 
@@ -1338,11 +1340,11 @@ yyreduce:
                     yyval->tipono = Statement;
                     yyval->statement = DeclFuncT;
                 }
-#line 1342 "YACC/parser.tab.c"
+#line 1344 "YACC/parser.tab.c"
     break;
 
   case 12: /* fun_id: TK_ID  */
-#line 151 "YACC/parser.y"
+#line 152 "YACC/parser.y"
                 {
             yyval = novoNo();
                         
@@ -1353,27 +1355,27 @@ yyreduce:
 
             
         }
-#line 1357 "YACC/parser.tab.c"
+#line 1359 "YACC/parser.tab.c"
     break;
 
   case 13: /* params: %empty  */
-#line 162 "YACC/parser.y"
+#line 163 "YACC/parser.y"
                  {
             yyval = novoNo();
         }
-#line 1365 "YACC/parser.tab.c"
+#line 1367 "YACC/parser.tab.c"
     break;
 
   case 14: /* params: param_lista  */
-#line 166 "YACC/parser.y"
+#line 167 "YACC/parser.y"
                     {
             yyval = yyvsp[0];
         }
-#line 1373 "YACC/parser.tab.c"
+#line 1375 "YACC/parser.tab.c"
     break;
 
   case 15: /* params: TK_VOID  */
-#line 169 "YACC/parser.y"
+#line 170 "YACC/parser.y"
                   {
             yyval = novoNo();
             yyval->tipono = Statement;
@@ -1383,11 +1385,11 @@ yyreduce:
 
             
         }
-#line 1387 "YACC/parser.tab.c"
+#line 1389 "YACC/parser.tab.c"
     break;
 
   case 16: /* param_lista: param_lista TK_VIRGULA param  */
-#line 180 "YACC/parser.y"
+#line 181 "YACC/parser.y"
                                            {
                 if(yyvsp[-2] != NULL){
                     yyval = yyvsp[-2];
@@ -1397,19 +1399,19 @@ yyreduce:
                     yyval = yyvsp[0];
                 }	
             }
-#line 1401 "YACC/parser.tab.c"
+#line 1403 "YACC/parser.tab.c"
     break;
 
   case 17: /* param_lista: param  */
-#line 189 "YACC/parser.y"
+#line 190 "YACC/parser.y"
                     {
                 yyval = yyvsp[0];
             }
-#line 1409 "YACC/parser.tab.c"
+#line 1411 "YACC/parser.tab.c"
     break;
 
   case 18: /* param: tipo_especificador TK_ID  */
-#line 194 "YACC/parser.y"
+#line 195 "YACC/parser.y"
                                    {
             yyval = yyvsp[-1];
             yyval->tipono = Statement;
@@ -1425,11 +1427,11 @@ yyreduce:
 
             
         }
-#line 1429 "YACC/parser.tab.c"
+#line 1431 "YACC/parser.tab.c"
     break;
 
   case 19: /* param: tipo_especificador TK_ID TK_ABRE_COLCHETES TK_FECHA_COLCHETES  */
-#line 209 "YACC/parser.y"
+#line 210 "YACC/parser.y"
                                                                         {
             yyval = yyvsp[-3];
             yyval->tipono = Statement;
@@ -1445,11 +1447,11 @@ yyreduce:
 
             
         }
-#line 1449 "YACC/parser.tab.c"
+#line 1451 "YACC/parser.tab.c"
     break;
 
   case 20: /* composto_decl: TK_ABRE_CHAVES local_declaracoes statement_lista TK_FECHA_CHAVES  */
-#line 226 "YACC/parser.y"
+#line 227 "YACC/parser.y"
                                                                                    {
                     if(yyvsp[-2] != NULL) {
                         yyval = yyvsp[-2];
@@ -1458,11 +1460,11 @@ yyreduce:
                         yyval = yyvsp[-1];
                     }
                 }
-#line 1462 "YACC/parser.tab.c"
+#line 1464 "YACC/parser.tab.c"
     break;
 
   case 21: /* local_declaracoes: local_declaracoes var_declaracao  */
-#line 236 "YACC/parser.y"
+#line 237 "YACC/parser.y"
                                                        {
                         if(yyvsp[-1] != NULL) {
                             yyval = yyvsp[-1];
@@ -1471,19 +1473,19 @@ yyreduce:
                             yyval = yyvsp[0];
                         }
                     }
-#line 1475 "YACC/parser.tab.c"
+#line 1477 "YACC/parser.tab.c"
     break;
 
   case 22: /* local_declaracoes: %empty  */
-#line 244 "YACC/parser.y"
+#line 245 "YACC/parser.y"
                              {
                         yyval = NULL;
                     }
-#line 1483 "YACC/parser.tab.c"
+#line 1485 "YACC/parser.tab.c"
     break;
 
   case 23: /* statement_lista: statement_lista statement  */
-#line 249 "YACC/parser.y"
+#line 250 "YACC/parser.y"
                                             {
                     if(yyvsp[-1] != NULL) {
                         yyval = yyvsp[-1];
@@ -1492,75 +1494,75 @@ yyreduce:
                         yyval = yyvsp[0];
                     }
                 }
-#line 1496 "YACC/parser.tab.c"
+#line 1498 "YACC/parser.tab.c"
     break;
 
   case 24: /* statement_lista: %empty  */
-#line 257 "YACC/parser.y"
+#line 258 "YACC/parser.y"
                          {
                     yyval = NULL;
                 }
-#line 1504 "YACC/parser.tab.c"
+#line 1506 "YACC/parser.tab.c"
     break;
 
   case 25: /* statement: expressao_decl  */
-#line 262 "YACC/parser.y"
+#line 263 "YACC/parser.y"
                              {
                 yyval = yyvsp[0];
             }
-#line 1512 "YACC/parser.tab.c"
+#line 1514 "YACC/parser.tab.c"
     break;
 
   case 26: /* statement: composto_decl  */
-#line 265 "YACC/parser.y"
+#line 266 "YACC/parser.y"
                             {
                 yyval = yyvsp[0];
             }
-#line 1520 "YACC/parser.tab.c"
+#line 1522 "YACC/parser.tab.c"
     break;
 
   case 27: /* statement: selecao_decl  */
-#line 268 "YACC/parser.y"
+#line 269 "YACC/parser.y"
                            {
                 yyval = yyvsp[0];
             }
-#line 1528 "YACC/parser.tab.c"
+#line 1530 "YACC/parser.tab.c"
     break;
 
   case 28: /* statement: iteracao_decl  */
-#line 271 "YACC/parser.y"
+#line 272 "YACC/parser.y"
                             {
                 yyval = yyvsp[0];
             }
-#line 1536 "YACC/parser.tab.c"
+#line 1538 "YACC/parser.tab.c"
     break;
 
   case 29: /* statement: retorno_decl  */
-#line 274 "YACC/parser.y"
+#line 275 "YACC/parser.y"
                            {
                 yyval = yyvsp[0];
             }
-#line 1544 "YACC/parser.tab.c"
+#line 1546 "YACC/parser.tab.c"
     break;
 
   case 30: /* expressao_decl: expressao TK_PONTO_VIRGULA  */
-#line 279 "YACC/parser.y"
+#line 280 "YACC/parser.y"
                                              {
                     yyval = yyvsp[-1];
                 }
-#line 1552 "YACC/parser.tab.c"
+#line 1554 "YACC/parser.tab.c"
     break;
 
   case 31: /* expressao_decl: TK_PONTO_VIRGULA  */
-#line 282 "YACC/parser.y"
+#line 283 "YACC/parser.y"
                                    {
                     yyval = NULL;
                 }
-#line 1560 "YACC/parser.tab.c"
+#line 1562 "YACC/parser.tab.c"
     break;
 
   case 32: /* selecao_decl: TK_IF TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement fatoracao  */
-#line 287 "YACC/parser.y"
+#line 288 "YACC/parser.y"
                                                                                             {
                     yyval = novoNo();
                     strcpy(yyval->lexema, "IF");
@@ -1576,27 +1578,27 @@ yyreduce:
 
                     
                 }
-#line 1580 "YACC/parser.tab.c"
+#line 1582 "YACC/parser.tab.c"
     break;
 
   case 33: /* fatoracao: TK_ELSE statement  */
-#line 304 "YACC/parser.y"
+#line 305 "YACC/parser.y"
                                 {
                 yyval = yyvsp[0];
             }
-#line 1588 "YACC/parser.tab.c"
+#line 1590 "YACC/parser.tab.c"
     break;
 
   case 34: /* fatoracao: %empty  */
-#line 307 "YACC/parser.y"
+#line 308 "YACC/parser.y"
                      {
                 yyval = NULL;
             }
-#line 1596 "YACC/parser.tab.c"
+#line 1598 "YACC/parser.tab.c"
     break;
 
   case 35: /* iteracao_decl: TK_WHILE TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES statement  */
-#line 312 "YACC/parser.y"
+#line 313 "YACC/parser.y"
                                                                                       {
                     yyval = novoNo();
                     strcpy(yyval->lexema, "WHILE");
@@ -1609,11 +1611,11 @@ yyreduce:
 
                     
                 }
-#line 1613 "YACC/parser.tab.c"
+#line 1615 "YACC/parser.tab.c"
     break;
 
   case 36: /* retorno_decl: TK_RETORNO TK_PONTO_VIRGULA  */
-#line 326 "YACC/parser.y"
+#line 327 "YACC/parser.y"
                                               {
                     yyval = novoNo();
                     yyval->tipono = Statement;
@@ -1623,11 +1625,11 @@ yyreduce:
 
                     
                 }
-#line 1627 "YACC/parser.tab.c"
+#line 1629 "YACC/parser.tab.c"
     break;
 
   case 37: /* retorno_decl: TK_RETORNO expressao TK_PONTO_VIRGULA  */
-#line 335 "YACC/parser.y"
+#line 336 "YACC/parser.y"
                                                         {
                     yyval = novoNo();
                     yyval->tipono = Statement;
@@ -1639,11 +1641,11 @@ yyreduce:
 
                     
                 }
-#line 1643 "YACC/parser.tab.c"
+#line 1645 "YACC/parser.tab.c"
     break;
 
   case 38: /* expressao: var TK_ATRIBUICAO expressao  */
-#line 348 "YACC/parser.y"
+#line 349 "YACC/parser.y"
                                           {
                 yyval = novoNo();
                 strcpy(yyval->lexema, "=");
@@ -1656,20 +1658,20 @@ yyreduce:
 
                 
             }
-#line 1660 "YACC/parser.tab.c"
+#line 1662 "YACC/parser.tab.c"
     break;
 
   case 39: /* expressao: simples_expressao  */
-#line 360 "YACC/parser.y"
+#line 361 "YACC/parser.y"
                                 {
                 yyval = yyvsp[0];
 
             }
-#line 1669 "YACC/parser.tab.c"
+#line 1671 "YACC/parser.tab.c"
     break;
 
   case 40: /* var: TK_ID  */
-#line 366 "YACC/parser.y"
+#line 367 "YACC/parser.y"
             {
         yyval = novoNo();
         yyval->tipono = Expressao;
@@ -1682,11 +1684,11 @@ yyreduce:
         
 
     }
-#line 1686 "YACC/parser.tab.c"
+#line 1688 "YACC/parser.tab.c"
     break;
 
   case 41: /* var: TK_ID TK_ABRE_COLCHETES expressao TK_FECHA_COLCHETES  */
-#line 378 "YACC/parser.y"
+#line 379 "YACC/parser.y"
                                                            {
         yyval = novoNo();
         yyval->tipono = Expressao;
@@ -1700,11 +1702,11 @@ yyreduce:
 
         
     }
-#line 1704 "YACC/parser.tab.c"
+#line 1706 "YACC/parser.tab.c"
     break;
 
   case 42: /* simples_expressao: soma_expressao relacional soma_expressao  */
-#line 393 "YACC/parser.y"
+#line 394 "YACC/parser.y"
                                                                {
                         yyval = yyvsp[-1];
                         yyval->tipono = Expressao;
@@ -1714,85 +1716,85 @@ yyreduce:
                         addFilho(yyval, yyvsp[-2]);
                         addFilho(yyval, yyvsp[0]);
                     }
-#line 1718 "YACC/parser.tab.c"
+#line 1720 "YACC/parser.tab.c"
     break;
 
   case 43: /* simples_expressao: soma_expressao  */
-#line 402 "YACC/parser.y"
+#line 403 "YACC/parser.y"
                                      {
                         yyval = yyvsp[0];
                     }
-#line 1726 "YACC/parser.tab.c"
+#line 1728 "YACC/parser.tab.c"
     break;
 
   case 44: /* relacional: TK_MENOR_IGUAL  */
-#line 407 "YACC/parser.y"
+#line 408 "YACC/parser.y"
                              {
                 yyval = novoNo();
                 strcpy(yyval->lexema, "<=");
 
                 
             }
-#line 1737 "YACC/parser.tab.c"
+#line 1739 "YACC/parser.tab.c"
     break;
 
   case 45: /* relacional: TK_MENOR  */
-#line 413 "YACC/parser.y"
+#line 414 "YACC/parser.y"
                        {
                 yyval = novoNo();
                 strcpy(yyval->lexema, "<");
 
                 
             }
-#line 1748 "YACC/parser.tab.c"
+#line 1750 "YACC/parser.tab.c"
     break;
 
   case 46: /* relacional: TK_MAIOR  */
-#line 419 "YACC/parser.y"
+#line 420 "YACC/parser.y"
                        {
                 yyval = novoNo();
                 strcpy(yyval->lexema, ">");
 
                 
             }
-#line 1759 "YACC/parser.tab.c"
+#line 1761 "YACC/parser.tab.c"
     break;
 
   case 47: /* relacional: TK_MAIOR_IGUAL  */
-#line 425 "YACC/parser.y"
+#line 426 "YACC/parser.y"
                              {
                 yyval = novoNo();
                 strcpy(yyval->lexema, ">=");
 
                 
             }
-#line 1770 "YACC/parser.tab.c"
+#line 1772 "YACC/parser.tab.c"
     break;
 
   case 48: /* relacional: TK_IGUALDADE  */
-#line 431 "YACC/parser.y"
+#line 432 "YACC/parser.y"
                            {
                 yyval = novoNo();
                 strcpy(yyval->lexema, "==");
 
                 
             }
-#line 1781 "YACC/parser.tab.c"
+#line 1783 "YACC/parser.tab.c"
     break;
 
   case 49: /* relacional: TK_DIFERENTE  */
-#line 437 "YACC/parser.y"
+#line 438 "YACC/parser.y"
                            {
                 yyval = novoNo();
                 strcpy(yyval->lexema, "!=");
 
                 
             }
-#line 1792 "YACC/parser.tab.c"
+#line 1794 "YACC/parser.tab.c"
     break;
 
   case 50: /* soma_expressao: soma_expressao soma termo  */
-#line 445 "YACC/parser.y"
+#line 446 "YACC/parser.y"
                                             {
                     yyval = yyvsp[-1];
                     yyval->tipono = Expressao;
@@ -1802,41 +1804,41 @@ yyreduce:
                     addFilho(yyval, yyvsp[-2]);
                     addFilho(yyval, yyvsp[0]);
                 }
-#line 1806 "YACC/parser.tab.c"
+#line 1808 "YACC/parser.tab.c"
     break;
 
   case 51: /* soma_expressao: termo  */
-#line 454 "YACC/parser.y"
+#line 455 "YACC/parser.y"
                         {
                     yyval = yyvsp[0];
                 }
-#line 1814 "YACC/parser.tab.c"
+#line 1816 "YACC/parser.tab.c"
     break;
 
   case 52: /* soma: TK_MAIS  */
-#line 459 "YACC/parser.y"
+#line 460 "YACC/parser.y"
                   {
             yyval = novoNo();
             strcpy(yyval->lexema, "+");
 
             
         }
-#line 1825 "YACC/parser.tab.c"
+#line 1827 "YACC/parser.tab.c"
     break;
 
   case 53: /* soma: TK_MENOS  */
-#line 465 "YACC/parser.y"
+#line 466 "YACC/parser.y"
                    {
             yyval = novoNo();
             strcpy(yyval->lexema, "-");
 
             
         }
-#line 1836 "YACC/parser.tab.c"
+#line 1838 "YACC/parser.tab.c"
     break;
 
   case 54: /* termo: termo mult fator  */
-#line 473 "YACC/parser.y"
+#line 474 "YACC/parser.y"
                            {
             yyval = yyvsp[-1];
             yyval->tipono = Expressao;
@@ -1846,65 +1848,65 @@ yyreduce:
             addFilho(yyval, yyvsp[-2]);
             addFilho(yyval, yyvsp[0]);
         }
-#line 1850 "YACC/parser.tab.c"
+#line 1852 "YACC/parser.tab.c"
     break;
 
   case 55: /* termo: fator  */
-#line 482 "YACC/parser.y"
+#line 483 "YACC/parser.y"
                 {
             yyval = yyvsp[0];
         }
-#line 1858 "YACC/parser.tab.c"
+#line 1860 "YACC/parser.tab.c"
     break;
 
   case 56: /* mult: TK_MULTIPLICACAO  */
-#line 487 "YACC/parser.y"
+#line 488 "YACC/parser.y"
                            {
             yyval = novoNo();
             strcpy(yyval->lexema, "*");
         
             
         }
-#line 1869 "YACC/parser.tab.c"
+#line 1871 "YACC/parser.tab.c"
     break;
 
   case 57: /* mult: TK_DIVISAO  */
-#line 493 "YACC/parser.y"
+#line 494 "YACC/parser.y"
                      {
             yyval = novoNo();
             strcpy(yyval->lexema, "/");
 
             
         }
-#line 1880 "YACC/parser.tab.c"
+#line 1882 "YACC/parser.tab.c"
     break;
 
   case 58: /* fator: TK_ABRE_PARENTESES expressao TK_FECHA_PARENTESES  */
-#line 501 "YACC/parser.y"
+#line 502 "YACC/parser.y"
                                                            {
             yyval = yyvsp[-1];
         }
-#line 1888 "YACC/parser.tab.c"
+#line 1890 "YACC/parser.tab.c"
     break;
 
   case 59: /* fator: var  */
-#line 504 "YACC/parser.y"
+#line 505 "YACC/parser.y"
               {
             yyval = yyvsp[0];
         }
-#line 1896 "YACC/parser.tab.c"
+#line 1898 "YACC/parser.tab.c"
     break;
 
   case 60: /* fator: ativacao  */
-#line 507 "YACC/parser.y"
+#line 508 "YACC/parser.y"
                    {
             yyval = yyvsp[0];
         }
-#line 1904 "YACC/parser.tab.c"
+#line 1906 "YACC/parser.tab.c"
     break;
 
   case 61: /* fator: TK_NUM  */
-#line 510 "YACC/parser.y"
+#line 511 "YACC/parser.y"
                  {
             yyval = novoNo();
             yyval->tipono = Expressao;
@@ -1916,11 +1918,11 @@ yyreduce:
 
                         
         }
-#line 1920 "YACC/parser.tab.c"
+#line 1922 "YACC/parser.tab.c"
     break;
 
   case 62: /* ativacao: fun_id TK_ABRE_PARENTESES args TK_FECHA_PARENTESES  */
-#line 523 "YACC/parser.y"
+#line 524 "YACC/parser.y"
                                                                  {
                 yyval = yyvsp[-3];
                 yyval->tipono = Expressao;
@@ -1928,27 +1930,27 @@ yyreduce:
                 yyval->expressao = FunCallT;
                 addFilho(yyval, yyvsp[-1]);
             }
-#line 1932 "YACC/parser.tab.c"
+#line 1934 "YACC/parser.tab.c"
     break;
 
   case 63: /* args: arg_lista  */
-#line 532 "YACC/parser.y"
+#line 533 "YACC/parser.y"
                     {
             yyval = yyvsp[0];
         }
-#line 1940 "YACC/parser.tab.c"
+#line 1942 "YACC/parser.tab.c"
     break;
 
   case 64: /* args: %empty  */
-#line 535 "YACC/parser.y"
+#line 536 "YACC/parser.y"
                  {
             yyval = NULL;
         }
-#line 1948 "YACC/parser.tab.c"
+#line 1950 "YACC/parser.tab.c"
     break;
 
   case 65: /* arg_lista: arg_lista TK_VIRGULA expressao  */
-#line 540 "YACC/parser.y"
+#line 541 "YACC/parser.y"
                                              {
                 if(yyvsp[-2] != NULL){
                     yyval = yyvsp[-2];
@@ -1957,19 +1959,19 @@ yyreduce:
                     yyval = yyvsp[0];
                 }
             }
-#line 1961 "YACC/parser.tab.c"
+#line 1963 "YACC/parser.tab.c"
     break;
 
   case 66: /* arg_lista: expressao  */
-#line 548 "YACC/parser.y"
+#line 549 "YACC/parser.y"
                         {
                 yyval = yyvsp[0];
             }
-#line 1969 "YACC/parser.tab.c"
+#line 1971 "YACC/parser.tab.c"
     break;
 
 
-#line 1973 "YACC/parser.tab.c"
+#line 1975 "YACC/parser.tab.c"
 
       default: break;
     }
@@ -2162,7 +2164,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 553 "YACC/parser.y"
+#line 554 "YACC/parser.y"
 
 
 int yyerror(char *message) {
@@ -2202,6 +2204,7 @@ int yyerror(char *message) {
         case TK_DIFERENTE: printf("%s\n", ultimoLexema); break;
         case TK_ABRE_COMENTARIO: printf("%s\n", ultimoLexema); break;
         case TK_FECHA_COMENTARIO: printf("%s\n", ultimoLexema); break;
+        case TK_COMENTARIO_LINHA: printf("%s\n", ultimoLexema); break;
         case TK_ID: printf("%s\n", ultimoLexema); break;
         case TK_NUM: printf("%s\n", ultimoLexema); break;
         case TK_INT: printf("%s\n", ultimoLexema); break;

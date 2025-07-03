@@ -24,12 +24,12 @@ DIGIT [0-9]
 
 %%
 
-"if"      { fprintf(yyout, "TK_IF "); return TK_IF; }
-"else"    { fprintf(yyout, "TK_ELSE "); return TK_ELSE; }
-"int"     { fprintf(yyout, "TK_INT "); return TK_INT; }
-"return"  { fprintf(yyout, "TK_RETORNO "); return TK_RETORNO; }
-"void"    { fprintf(yyout, "TK_VOID "); return TK_VOID; }
-"while"   { fprintf(yyout, "TK_WHILE "); return TK_WHILE; }
+"if"      { return TK_IF; }
+"else"    { return TK_ELSE; }
+"int"     { return TK_INT; }
+"return"  { return TK_RETORNO; }
+"void"    { return TK_VOID; }
+"while"   { return TK_WHILE; }
 
 {DIGIT}{DIGIT}* { 
     
@@ -48,27 +48,28 @@ DIGIT [0-9]
 
 }
 
-"+"       { fprintf(yyout, "+ "); return TK_MAIS; }
-"-"       { fprintf(yyout, "- "); return TK_MENOS; }
-"*"       { fprintf(yyout, "* "); return TK_MULTIPLICACAO; }
-"/"       { fprintf(yyout, "/ "); return TK_DIVISAO; }
-"<"       { fprintf(yyout, "< "); return TK_MENOR; }
-"<="      { fprintf(yyout, "<="); return TK_MENOR_IGUAL; }
-">"       { fprintf(yyout, "> "); return TK_MAIOR; }
-">="      { fprintf(yyout, ">= "); return TK_MAIOR_IGUAL; }
-"=="      { fprintf(yyout, "== "); return TK_IGUALDADE; }
-"!="      { fprintf(yyout, "!= "); return TK_DIFERENTE; }
-"="       { fprintf(yyout, "= "); return TK_ATRIBUICAO; }
-";"       { fprintf(yyout, "; "); return TK_PONTO_VIRGULA; }
-","       { fprintf(yyout, ", "); return TK_VIRGULA; }
-"{"       { fprintf(yyout, "{ "); return TK_ABRE_CHAVES; }
-"}"       { fprintf(yyout, "} "); return TK_FECHA_CHAVES; }
-"["       { fprintf(yyout, "[ "); return TK_ABRE_COLCHETES; }
-"]"       { fprintf(yyout, "] "); return TK_FECHA_COLCHETES; }
-"("       { fprintf(yyout, "( "); return TK_ABRE_PARENTESES; }
-")"       { fprintf(yyout, ") "); return TK_FECHA_PARENTESES; }
-"/*"      { fprintf(yyout, "TK_ABRE_COMENTARIO "); return TK_ABRE_COMENTARIO; }
-"*/"      { fprintf(yyout, "TK_FECHA_COMENTARIO "); return TK_FECHA_COMENTARIO; }
+"+"       { return TK_MAIS; }
+"-"       { return TK_MENOS; }
+"*"       { return TK_MULTIPLICACAO; }
+"/"       { return TK_DIVISAO; }
+"<"       { return TK_MENOR; }
+"<="      { return TK_MENOR_IGUAL; }
+">"       { return TK_MAIOR; }
+">="      { return TK_MAIOR_IGUAL; }
+"=="      { return TK_IGUALDADE; }
+"!="      { return TK_DIFERENTE; }
+"="       { return TK_ATRIBUICAO; }
+";"       { return TK_PONTO_VIRGULA; }
+","       { return TK_VIRGULA; }
+"{"       { return TK_ABRE_CHAVES; }
+"}"       { return TK_FECHA_CHAVES; }
+"["       { return TK_ABRE_COLCHETES; }
+"]"       { return TK_FECHA_COLCHETES; }
+"("       { return TK_ABRE_PARENTESES; }
+")"       { return TK_FECHA_PARENTESES; }
+"/*"      { return TK_ABRE_COMENTARIO; }
+"*/"      { return TK_FECHA_COMENTARIO; }
+"//"      { return TK_COMENTARIO_LINHA; }
 
 <<EOF>> { return ENDFILE; }
 
@@ -87,25 +88,36 @@ DIGIT [0-9]
 TokenType getToken(void) { 
 
     TokenType currentToken;
-    
+    FILE *arq;
+    char* nomeArq = "outputs/Tokens.txt";
+
     if (firstTime) {
         
         firstTime = FALSE;
         yyin = source;
-
         for (int i = 0; i < 5; i++)
             bzero(pilha[i], MAXLEXEMA);	
+        
+        arq = fopen(nomeArq,"w");
     }
 
-    if (!firstTime)
+    if (!firstTime){
         strcpy(ultimoLexema, lexema);
+        
+        arq = fopen(nomeArq, "a");
+        if (arq == NULL) {
+            perror("Erro ao abrir o arquivo"); // Mostra a mensagem de erro do sistema
+            exit(EXIT_FAILURE); // Encerra o programa com código de erro
+        }
+    }
     
     currentToken = yylex();
     
     strncpy(lexema,yytext,MAXTOKENLEN);
     
     fprintf(stdout,"%d: ",linha);
-    printToken(currentToken,lexema);
-
+    fprintf(arq,"%d: ",linha);
+    printToken(currentToken, arq, lexema);
+    fclose(arq);
     return currentToken;
 }

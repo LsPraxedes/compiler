@@ -1,0 +1,39 @@
+INT
+	0 - INT
+		0 - u
+	INT
+		0 - v
+	1 - gcd
+		0 - IF
+			0 - RetornoINT
+				0 - u
+			1 - ==
+				0 - v
+				1 - 0
+			2 - RetornoINT
+				0 - gcd
+					0 - v
+					-
+						0 - u
+						1 - *
+							0 - /
+								0 - u
+								1 - v
+							1 - v
+VOID
+	0 - VOID
+	1 - main
+		0 - INT
+			0 - x
+		INT
+			0 - y
+		=
+			0 - x
+			1 - input
+		=
+			0 - y
+			1 - input
+		output
+			0 - gcd
+				0 - x
+				y

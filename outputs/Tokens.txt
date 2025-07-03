@@ -1,0 +1,71 @@
+1: int
+1: ID: gcd
+1: (
+1: int
+1: ID: u
+1: ,
+1: int
+1: ID: v
+1: )
+2: {
+3: if
+3: (
+3: ID: v
+3: ==
+3: NUM: 0
+3: )
+3: return
+3: ID: u
+3: ;
+4: else
+4: return
+4: ID: gcd
+4: (
+4: ID: v
+4: ,
+4: ID: u
+4: -
+4: ID: u
+4: /
+4: ID: v
+4: *
+4: ID: v
+4: )
+4: ;
+5: }
+7: void
+7: ID: main
+7: (
+7: void
+7: )
+8: {
+8: int
+8: ID: x
+8: ;
+8: int
+8: ID: y
+8: ;
+9: ID: x
+9: =
+9: ID: input
+9: (
+9: )
+9: ;
+9: ID: y
+9: =
+9: ID: input
+9: (
+9: )
+9: ;
+10: ID: output
+10: (
+10: ID: gcd
+10: (
+10: ID: x
+10: ,
+10: ID: y
+10: )
+10: )
+10: ;
+11: }
+11: EOF
