@@ -33,39 +33,39 @@
 4: )
 4: ;
 5: }
-7: void
-7: ID: main
-7: (
-7: void
-7: )
-8: {
-8: int
+6: void
+6: ID: main
+6: (
+6: void
+6: )
+7: {
+7: int
+7: ID: x
+7: ;
+7: int
+7: ID: y
+7: ;
 8: ID: x
+8: =
+8: ID: input
+8: (
+8: )
 8: ;
-8: int
 8: ID: y
+8: =
+8: ID: input
+8: (
+8: )
 8: ;
+9: ID: output
+9: (
+9: ID: gcd
+9: (
 9: ID: x
-9: =
-9: ID: input
-9: (
-9: )
-9: ;
+9: ,
 9: ID: y
-9: =
-9: ID: input
-9: (
+9: )
 9: )
 9: ;
-10: ID: output
-10: (
-10: ID: gcd
-10: (
-10: ID: x
-10: ,
-10: ID: y
-10: )
-10: )
-10: ;
-11: }
-11: EOF
+10: }
+10: EOF

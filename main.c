@@ -5,6 +5,7 @@
 #include "headers/tabelaSimbolos.h"
 #include "headers/codigoIntermediario.h"
 #include "headers/quadruplas.h"
+#include "headers/assembler.h"
 
 int Error = FALSE;
 
@@ -22,7 +23,7 @@ int main(int argc, char **argv){
 
     char escopo[MAXLEXEMA] = "global";
     char nomeInput[120];
-    
+    printf("------------------------------------------\nINICIO_ANALISE_SINTATICA\n\n");
     FILE *arq;
     char* nomeArq = "outputs/AST.txt";
     arq = fopen(nomeArq, "w");
@@ -72,7 +73,10 @@ int main(int argc, char **argv){
         adicionarQuadruplas("(HALT, -, -, -)");
         imprimirQuadruplas(); 
         printTTabela(ttabela);
+        processaQuadruplas(); // Processa as quadruplas geradas
     }
+
+
 
     return 0;
 }
