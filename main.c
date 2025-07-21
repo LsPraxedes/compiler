@@ -6,6 +6,7 @@
 #include "headers/codigoIntermediario.h"
 #include "headers/quadruplas.h"
 #include "headers/assembler.h"
+#include "headers/binario.h"
 
 int Error = FALSE;
 
@@ -74,6 +75,7 @@ int main(int argc, char **argv){
         imprimirQuadruplas(); 
         printTTabela(ttabela);
         processaQuadruplas(); // Processa as quadruplas geradas
+        processaAssembly();
     }
 
 

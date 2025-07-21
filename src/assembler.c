@@ -74,7 +74,6 @@ const char* reg(const char* name, char* buf) {
     strcpy(buf, name);
     return buf;
 }
-
 void processaQuadruplas() {
     FILE *file = fopen("outputs/Quadruplas.txt", "r");
     if (!file) {
@@ -82,54 +81,58 @@ void processaQuadruplas() {
         exit(EXIT_FAILURE);
     }
 
-    // 1ª passagem: registrar labels
+    FILE *assembly_file;
+    char* arq = "outputs/Assembly.txt";
+    assembly_file = fopen(arq, "w");
+    if (assembly_file == NULL) {
+        perror("Erro ao abrir o arquivo");
+        exit(EXIT_FAILURE);
+    }
+
+    // 1ª passagem: registrar labels e funções (código existente)
     LabelInfo labels[MAX_LABELS];
     int label_count = 0;
-    int line_counter = 1;
+    int temp_line_counter = 1;
     char line[256];
 
-    // Salvar posição dos labels
     fseek(file, 0, SEEK_SET);
     while (fgets(line, sizeof(line), file)) {
-        char *start = line;
+        char temp_line[256];
+        strcpy(temp_line, line);
+        
+        char *start = temp_line;
         if (*start == '(') start++;
         size_t len = strlen(start);
         if (len > 0 && start[len - 1] == ')') start[len - 1] = '\0';
 
-        char instruction[64];
-        char *comma = strchr(start, ',');
-        if (comma) {
-            size_t ilen = comma - start;
-            strncpy(instruction, start, ilen);
-            instruction[ilen] = '\0';
-        } else {
-            strncpy(instruction, start, sizeof(instruction) - 1);
-            instruction[sizeof(instruction) - 1] = '\0';
-        }
+        char instruction[64], p1[32];
+        sscanf(start, "%63[^,], %31[^,]", instruction, p1);
 
         if (strcmp(instruction, "LAB") == 0) {
-            // Pega o nome do label
-            char *label_start = comma + 2; // pula ", "
-            char *label_end = strchr(label_start, ',');
-            size_t labellen = label_end ? (size_t)(label_end - label_start) : strlen(label_start);
-            strncpy(labels[label_count].label, label_start, labellen);
-            labels[label_count].label[labellen] = '\0';
-            labels[label_count].line = line_counter;
+            strncpy(labels[label_count].label, p1, MAX_LABEL_LEN - 1);
+            labels[label_count].label[MAX_LABEL_LEN-1] = '\0';
+            labels[label_count].line = temp_line_counter;
             label_count++;
         }
-        line_counter++;
+        if (strcmp(instruction, "FUNC") == 0) {
+             char func_name[32];
+             sscanf(start, "%*[^,], %31[^,]", func_name);
+             adicionarFuncao(func_name, temp_line_counter);
+        }
+        temp_line_counter++;
     }
 
     char ra1_buf[8], ra2_buf[8], ra3_buf[8];
-    const char *ra1;
-    const char *ra2;
-    const char *ra3;
-    int args=0;
-    int vars=0;
+    const char *ra1, *ra2, *ra3;
+    int args = 0;
+    int vars = 0;
 
     // 2ª passagem: processar instruções
     fseek(file, 0, SEEK_SET);
-    line_counter = 1;
+    
+    // NOVO: Contador específico para as linhas de instrução do Assembly gerado.
+    int assembly_line_counter = 1;
+
     while (fgets(line, sizeof(line), file)) {
         line[strcspn(line, "\n")] = 0;
         char *start = line;
@@ -141,132 +144,230 @@ void processaQuadruplas() {
         sscanf(start, "%31[^,], %31[^,], %31[^,], %31[^,]", op, a1, a2, a3);
 
         ra1 = reg(a1, ra1_buf);
-        //printf("%s\n", ra1);
         ra2 = reg(a2, ra2_buf);
         ra3 = reg(a3, ra3_buf);
-        printf("%s:\n", op);
-        // Transformações conforme solicitado
+
         if (strcmp(op, "ASSIGN") == 0) {
             if (strcmp(a3, "-") == 0) {
-                // ASSIGN, rd, rs, -
-                if (a2[0] >= '0' && a2[0] <= '9') // valor imediato
-                    printf("%03d: addi %s, r0, %s\n", line_counter, ra1, a2);
-                else
-                    printf("%03d: add %s, %s, r0\n", line_counter, ra1, ra2);
+                if (a2[0] >= '0' && a2[0] <= '9') {
+                    printf("addi %s, r0, %s\n", ra1, a2);
+                    fprintf(assembly_file, "addi %s, r0, %s\n", ra1, a2);
+                } else {
+                    printf("add %s, r0, %s,\n", ra2, ra1);
+                    fprintf(assembly_file, "add %s, r0, %s\n", ra2, ra1);
+                }
+                assembly_line_counter++;
             }
         } else if (strcmp(op, "ALLOC") == 0) {
-            printf("%03d: addi r30, r30, 1\n", line_counter); // r30 = $sp
-        } else if (strcmp(op, "ADDI") == 0) {
-            printf("%03d: addi %s, %s, %s\n", line_counter, ra1, ra2, a3);
+            printf("addi r30, r30, 1\n");
+            fprintf(assembly_file, "addi r30, r30, 1\n");
+            assembly_line_counter++;
+        } else if (strcmp(op, "ADD") == 0) {
+            printf("add %s, %s, %s\n", ra2, ra3, ra1);
+            fprintf(assembly_file, "add %s, %s, %s\n", ra2, ra3, ra1);
+            assembly_line_counter++;
         } else if (strcmp(op, "SUB") == 0) {
-            printf("%03d: sub %s, %s, %s\n", line_counter, ra1, ra2, ra3);
-        } else if (strcmp(op, "SLT") == 0) {
-            printf("%03d: slt %s, %s, %s\n", line_counter, ra1, ra2, ra3);
+            printf("sub %s, %s, %s\n", ra2, ra3, ra1);
+            fprintf(assembly_file, "sub %s, %s, %s\n", ra2, ra3, ra1);
+            assembly_line_counter++;
         } else if (strcmp(op, "MULT") == 0) {
-            printf("%03d: mult %s, %s, %s\n", line_counter, ra1, ra2, ra3);
+            printf("mult %s, %s, %s\n", ra2, ra3, ra1);
+            fprintf(assembly_file, "mult %s, %s, %s\n", ra2, ra3, ra1);
+            assembly_line_counter++;
         } else if (strcmp(op, "DIV") == 0) {
-            printf("%03d: div %s, %s, %s\n", line_counter, ra1, ra2, ra3);
-        }else if (strcmp(op, "SLT") == 0) {
-            printf("%03d: slt %s, %s, %s\n", line_counter, ra1, ra2, ra3);
-        }else if (strcmp(op, "EQ") == 0) {
-            // EQ, rd, rs, rt  => sub r3, rs, rt / beq r3, r0, label_true / addi rd, r0, 0 / jump label_end / label_true: addi rd, r0, 1 / label_end:
-            // Para simplificação, vamos usar: sub r3, rs, rt / slt r4, r0, r3 / slt r5, r3, r0 / or r6, r4, r5 / xori rd, r6, 1
-            printf("%03d: sub r3, %s, %s\n", line_counter, ra2, ra3); // r3 = rs - rt
-            printf("%03d: slt r4, r0, r3\n", line_counter);                  // r4 = (r3 > 0)
-            printf("%03d: slt r5, r3, r0\n", line_counter);                  // r5 = (r3 < 0)
-            printf("%03d: or r6, r4, r5\n", line_counter);                   // r6 = (r3 != 0)
-            printf("%03d: ADDI %s, r0, 1\n", line_counter, ra1);         // rd = 1
-            printf("%03d: SUB %s, %s, r6\n", line_counter, ra1, ra1);// rd = 1 - (r3 != 0)
-        } else if (strcmp(op, "NEQ") == 0) {
-            // NEQ, rd, rs, rt => sub r3, rs, rt / slt r4, r0, r3 / slt r5, r3, r0 / or rd, r4, r5
-            printf("%03d: sub r3, %s, %s\n", line_counter, ra2, ra3);
-            printf("%03d: slt r4, r0, r3\n", line_counter);
-            printf("%03d: slt r5, r3, r0\n", line_counter);
-            printf("%03d: or %s, r4, r5\n", line_counter, ra1);
-        } else if (strcmp(op, "SLTEQ") == 0) {
-            // SLTEQ, rd, rs, rt => slt r3, rt, rs / ADDI rd, r0, 1 / SUB rd, rd, r3
-            printf("%03d: slt r3, %s, %s\n", line_counter, ra3, ra2);
-            printf("%03d: ADDI %s, r0, 1\n", line_counter, ra1);
-            printf("%03d: SUB %s, %s, r3\n", line_counter, ra1, ra1);
+            printf("div %s, %s, %s\n", ra2, ra3, ra1);
+            fprintf(assembly_file, "div %s, %s, %s\n", ra2, ra3, ra1);
+            assembly_line_counter++;
+        } else if (strcmp(op, "SLT") == 0) {
+            printf("slt %s, %s, %s\n", ra2, ra3, ra1);
+            fprintf(assembly_file, "slt %s, %s, %s\n", ra2, ra3, ra1);
+            assembly_line_counter++;
         } else if (strcmp(op, "SGT") == 0) {
-            // SGT, rd, rs, rt => slt rd, rt, rs
-            printf("%03d: sgt %s, %s, %s\n", line_counter, ra1, ra2, ra3);
+            printf("sgt %s, %s, %s\n", ra2, ra3, ra1);
+            fprintf(assembly_file, "sgt %s, %s, %s\n", ra2, ra3, ra1);
+            assembly_line_counter++;
+        } else if (strcmp(op, "SLL") == 0) {
+            printf("sll %s, %s, %s\n", ra2, ra3, a1);
+            fprintf(assembly_file, "sll %s, %s, %s\n", ra2, ra3, a1);
+            assembly_line_counter++;
+        } else if (strcmp(op, "SRT") == 0) {
+            printf("srt %s, %s, %s\n", ra2, ra3, a1);
+            fprintf(assembly_file, "srt %s, %s, %s\n", ra2, ra3, a1);
+            assembly_line_counter++;
+        } else if (strcmp(op, "ADDI") == 0) {
+            printf("addi %s, %s, %s\n", ra2, ra1, a3);
+            fprintf(assembly_file, "addi %s, %s, %s\n", ra2, ra1, a3);
+            assembly_line_counter++;
+        } else if (strcmp(op, "SUBI") == 0) {
+            printf("subi %s, %s, %s\n", ra2, ra1, a3);
+            fprintf(assembly_file, "subi %s, %s, %s\n", ra2, ra1, a3);
+            assembly_line_counter++;
+        } else if (strcmp(op, "MULTI") == 0) {
+            printf("multi %s, %s, %s\n", ra2, ra1, a3);
+            fprintf(assembly_file, "multi %s, %s, %s\n", ra2, ra1, a3);
+            assembly_line_counter++;
+        } else if (strcmp(op, "DIVI") == 0) {
+            printf("divi %s, %s, %s\n", ra2, ra1, a3);
+            fprintf(assembly_file, "divi %s, %s, %s\n", ra2, ra1, a3);
+            assembly_line_counter++;
+        } else if (strcmp(op, "EQ") == 0) {
+            if (atoi(a3) != 0) {
+                printf("eqi %s, %s, %s\n", ra2, ra1, a3);
+                fprintf(assembly_file, "eqi %s, %s, %s\n", ra2, ra1, a3);
+            } else {
+                printf("eq %s, %s, %s\n", ra2, ra1, ra3);
+                fprintf(assembly_file, "eq %s, %s, %s\n", ra2, ra1, ra3);
+            }
+            assembly_line_counter++;
+        } else if (strcmp(op, "NEQ") == 0) {
+            if (atoi(a3) != 0) {
+                printf("neqi %s, %s, %s\n", ra2, ra1, a3);
+                fprintf(assembly_file, "neqi %s, %s, %s\n", ra2, ra1, a3);
+            } else {
+                printf("neq %s, %s, %s\n", ra2, ra1, ra3);
+                fprintf(assembly_file, "neq %s, %s, %s\n", ra2, ra1, ra3);
+            }
+            assembly_line_counter++;
+        } else if (strcmp(op, "SLTEQ") == 0) {
+            printf("slt r3, %s, %s\n", ra3, ra2);
+            fprintf(assembly_file, "slt r3, %s, %s\n", ra3, ra2);
+            assembly_line_counter++;
+            printf("ADDI %s, r0, 1\n", ra1);
+            fprintf(assembly_file, "ADDI %s, r0, 1\n", ra1);
+            assembly_line_counter++;
+            printf("SUB %s, %s, r3\n", ra1, ra1);
+            fprintf(assembly_file, "SUB %s, %s, r3\n", ra1, ra1);
+            assembly_line_counter++;
         } else if (strcmp(op, "SGTEQ") == 0) {
-            // SGTEQ, rd, rs, rt => slt r3, rs, rt / ADDI rd, r0, 1 / SUB rd, rd, r3
-            printf("%03d: slt r3, %s, %s\n", line_counter, ra2, ra3);
-            printf("%03d: ADDI %s, r0, 1\n", line_counter, ra1);
-            printf("%03d: SUB %s, %s, r3\n", line_counter, ra1, ra1);
+            printf("slt r3, %s, %s\n", ra2, ra3);
+            fprintf(assembly_file, "slt r3, %s, %s\n", ra2, ra3);
+            assembly_line_counter++;
+            printf("ADDI %s, r0, 1\n", ra1);
+            fprintf(assembly_file, "ADDI %s, r0, 1\n", ra1);
+            assembly_line_counter++;
+            printf("SUB %s, %s, r3\n", ra1, ra1);
+            fprintf(assembly_file, "SUB %s, %s, r3\n", ra1, ra1);
+            assembly_line_counter++;
         } else if (strcmp(op, "IFF") == 0) {
-            printf("%03d: beq %s, r0, %s\n", line_counter, ra1, a2);
+            printf("beq %s, r0, %s\n", ra1, a2);
+            fprintf(assembly_file, "beq %s, r0, %s\n", ra1, a2);
+            assembly_line_counter++;
         } else if (strcmp(op, "GOTO") == 0) {
-            printf("%03d: jump %s\n", line_counter, a1);
+            printf("jump %s\n", a1);
+            fprintf(assembly_file, "jump %s\n", a1);
+            assembly_line_counter++;
         } else if (strcmp(op, "LAB") == 0) {
-            printf("%03d: %s:\n", line_counter, a1);
+            printf("%s:\n", a1);
+            fprintf(assembly_file, "%s:\n", a1);
         } else if (strcmp(op, "LOAD") == 0) {
             if (strchr(a2, '[')) {
-                // LOAD, rd, array[rs], -
                 char array[32], index[32];
                 sscanf(a2, "%31[^[][%31[^]]", array, index);
-                printf("%03d: add r3, %s, %s\n", line_counter, reg(array, ra1_buf), reg(index, ra2_buf)); // r3 como temporário
-                printf("%03d: lw %s, 0(r3)\n", line_counter, ra1);
+                printf("add r3, %s, %s\n", reg(array, ra1_buf), reg(index, ra2_buf));
+                fprintf(assembly_file, "add r3, %s, %s\n", reg(array, ra1_buf), reg(index, ra2_buf));
+                assembly_line_counter++;
+                printf("lw %s, 0(r3)\n", ra1);
+                fprintf(assembly_file, "lw %s, 0(r3)\n", ra1);
+                assembly_line_counter++;
             } else {
-                // LOAD, rd, var, -
-                printf("%03d: lw %s, 0(r29)\n", line_counter, ra1); // r29 = $fp
+                printf("lw r29, %s, %d\n", ra1, vars - 1);
+                fprintf(assembly_file, "lw r29, %s, %d\n", ra1, vars - 1);
+                assembly_line_counter++;
             }
         } else if (strcmp(op, "SW") == 0) {
             if (strchr(a1, '[')) {
-                // SW, array[rt], rs, -
                 char array[32], index[32];
                 sscanf(a1, "%31[^[][%31[^]]", array, index);
-                printf("%03d: add r3, %s, %s\n", line_counter, reg(array, ra1_buf), reg(index,ra2_buf)); // r3 como temporário
-                printf("%03d: sw %s, 0(r3)\n", line_counter, reg(a2, ra2_buf));
+                printf("add r3, %s, %s\n", reg(array, ra1_buf), reg(index, ra2_buf));
+                fprintf(assembly_file, "add r3, %s, %s\n", reg(array, ra1_buf), reg(index, ra2_buf));
+                assembly_line_counter++;
+                printf("sw %s, 0(r3)\n", reg(a2, ra2_buf));
+                fprintf(assembly_file, "sw %s, 0(r3)\n", reg(a2, ra2_buf));
+                assembly_line_counter++;
             } else {
-                // SW, var, rs, -
-                printf("%03d: sw %s, 0(r29)\n", line_counter,reg(a2, ra2_buf));
+                printf("sw %s, r29, 0\n", reg(a2, ra2_buf));
+                fprintf(assembly_file, "sw %s, r29, 0\n", reg(a2, ra2_buf));
+                assembly_line_counter++;
             }
         } else if (strcmp(op, "FUNC") == 0) {
-            if(strcmp(a2, "main") != 0){
-                adicionarFuncao(a2, line_counter);
-                printf("%03d: %s:\n", line_counter, a2);
-                printf("%03d: sw r29, 1(r31)\n", line_counter); // r30 = $sp
-                printf("%03d: addi r30, r30, 1\n", line_counter);
-            }
-            else {
-                printf("%03d: main:\n", line_counter);
+            printf("%s:\n", a2);
+            fprintf(assembly_file, "%s:\n", a2);
+            if (strcmp(a2, "main") != 0) {
+                printf("sw r29, r31, 1\n");
+                fprintf(assembly_file, "sw r29, r31, 1\n");
+                assembly_line_counter++;
+                printf("addi r30, r30, 1\n");
+                fprintf(assembly_file, "addi r30, r30, 1\n");
+                assembly_line_counter++;
             }
         } else if (strcmp(op, "PARAM") == 0 && strcmp(a2, "output") != 0) {
-            printf("%03d: sw r29, %d(r2%d)\n", line_counter, args,args); // r30 = $sp
-            printf("%03d: addi r30, r30, 1\n", line_counter);
+            printf("sw r29, r2%d, 0\n", args);
+            fprintf(assembly_file, "sw r29, r2%d, 0\n", args);
+            assembly_line_counter++;
+            printf("addi r30, r30, 1\n");
+            fprintf(assembly_file, "addi r30, r30, 1\n");
+            assembly_line_counter++;
             args++;
         } else if (strcmp(op, "UNPARAM") == 0) {
             args--;
-            printf("%03d: addi r30, r30, -1\n", line_counter);
-            printf("%03d: lw r30, 0(r2%d)\n", line_counter,args); // r30 = $sp;
+            printf("subi r30, r30, 1\n");
+            fprintf(assembly_file, "subi r30, r30, 1\n");
+            assembly_line_counter++;
+            printf("lw r30, r2%d, 0\n", args);
+            fprintf(assembly_file, "lw r30, r2%d, 0\n", args);
+            assembly_line_counter++;
         } else if (strcmp(op, "CALL") == 0) {
-            if(strcmp(a2, "input") == 0) {
-                printf("%03d: input %s\n", line_counter, ra1);
+            if (strcmp(a2, "input") == 0) {
+                printf("input %s\n", ra1);
+                fprintf(assembly_file, "input %s\n", ra1);
+                assembly_line_counter++;
                 vars++;
-            } else if(strcmp(a2, "output") == 0) {
-                printf("%03d: output %s\n", line_counter, ra1);
-            }else{
-                printf("%03d: sw r30, 0(r29)\n", line_counter); // r30 = $sp
-                printf("%03d: addi r29, r30, 0\n", line_counter);
-                printf("%03d: addi r30, r30, 1\n", line_counter); // r30 = $sp
-                for(int i = 0; i < args; i++) {
-                    printf("%03d: sw r2%d, %d(r29)\n", line_counter, i, 2+i); // r2 = $a0, $a1, $a2, ...
+            } else if (strcmp(a2, "output") == 0) {
+                printf("output r28\n");
+                fprintf(assembly_file, "output r28\n");
+                assembly_line_counter++;
+            } else {
+                printf("sw r30, r29, 0\n");
+                fprintf(assembly_file, "sw r30, r29, 0\n");
+                assembly_line_counter++;
+                printf("addi r29, r30, 0\n");
+                fprintf(assembly_file, "addi r29, r30, 0\n");
+                assembly_line_counter++;
+                printf("addi r30, r30, 1\n");
+                fprintf(assembly_file, "addi r30, r30, 1\n");
+                assembly_line_counter++;
+                for (int i = 0; i < args; i++) {
+                    printf("sw r29, r2%d, %d\n", i, 2 + i);
+                    fprintf(assembly_file, "sw r29, r2%d, %d\n", i, 2 + i);
+                    assembly_line_counter++;
                 }
-                printf("%03d: jal %d\n", line_counter, pesquisarFuncTable(a2));
-                printf("%03d: addi r29, r30, 0\n", line_counter);
-                printf("%03d: lw r29, 0(r29)\n", line_counter); // r28 = $v0
+                printf("jal %d\n", pesquisarFuncTable(a2));
+                fprintf(assembly_file, "jal %d\n", pesquisarFuncTable(a2));
+                assembly_line_counter++;
+                printf("addi r29, r30, 0\n");
+                fprintf(assembly_file, "addi r29, r30, 0\n");
+                assembly_line_counter++;
+                printf("lw r29, r29, 0\n");
+                fprintf(assembly_file, "lw r29, r29, 0\n");
+                assembly_line_counter++;
             }
         } else if (strcmp(op, "RET") == 0) {
-            printf("%03d: add r28, %s, r0\n", line_counter, ra1);
-            printf("%03d: jr r31\n", line_counter); // r31 = $ra
+            printf("add r28, %s, r0\n", ra1);
+            fprintf(assembly_file, "add r28, %s, r0\n", ra1);
+            assembly_line_counter++;
+            printf("jr r31\n");
+            fprintf(assembly_file, "jr r31\n");
+            assembly_line_counter++;
         } else if (strcmp(op, "HALT") == 0) {
-            printf("%03d: halt: \n%03d: jump halt\n", line_counter,line_counter);
+            int halt_target_line = assembly_line_counter;
+            printf("halt:\n");
+            fprintf(assembly_file, "halt:\n");
+            printf("jump %d\n", halt_target_line);
+            fprintf(assembly_file, "jump %d\n", halt_target_line);
+            assembly_line_counter++;
         }
-        line_counter++;
     }
     printFuncTable();
     fclose(file);
+    fclose(assembly_file);
 }

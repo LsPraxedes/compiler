@@ -1,0 +1,65 @@
+gcd:
+sw r29, r31, 1
+addi r30, r30, 1
+lw r29, r3, -1
+lw r29, r4, -1
+eq r4, r5, 0
+beq r5, r0, L0
+lw r29, r6, -1
+add r28, r6, r0
+jr r31
+jump L1
+L0:
+div r3, r4, r7
+mult r7, r4, r8
+sub r3, r8, r9
+sw r29, r20, 0
+addi r30, r30, 1
+sw r29, r21, 0
+addi r30, r30, 1
+sw r30, r29, 0
+addi r29, r30, 0
+addi r30, r30, 1
+sw r29, r20, 2
+sw r29, r21, 3
+jal -1
+addi r29, r30, 0
+lw r29, r29, 0
+subi r30, r30, 1
+lw r30, r21, 0
+subi r30, r30, 1
+lw r30, r20, 0
+lw r29, r11, -1
+add r28, r11, r0
+jr r31
+L1:
+main:
+addi r30, r30, 1
+addi r30, r30, 1
+input r13
+lw r29, r12, 0
+add r13, r0, r12
+sw r12, r29, 0
+input r15
+lw r29, r14, 1
+add r15, r0, r14
+sw r14, r29, 0
+sw r29, r20, 0
+addi r30, r30, 1
+sw r29, r21, 0
+addi r30, r30, 1
+sw r30, r29, 0
+addi r29, r30, 0
+addi r30, r30, 1
+sw r29, r20, 2
+sw r29, r21, 3
+jal -1
+addi r29, r30, 0
+lw r29, r29, 0
+subi r30, r30, 1
+lw r30, r21, 0
+subi r30, r30, 1
+lw r30, r20, 0
+output r28
+halt:
+jump 60
