@@ -1,71 +1,154 @@
 1: int
-1: ID: gcd
+1: ID: primo
 1: (
 1: int
-1: ID: u
-1: ,
-1: int
-1: ID: v
+1: ID: n
 1: )
-2: {
-3: if
-3: (
-3: ID: v
-3: ==
-3: NUM: 0
-3: )
-3: return
-3: ID: u
+1: {
+2: int
+2: ID: d
+2: ;
+2: int
+2: ID: count
+2: ;
+3: ID: d
+3: =
+3: NUM: 2
 3: ;
-4: else
-4: return
-4: ID: gcd
-4: (
-4: ID: v
-4: ,
-4: ID: u
-4: -
-4: ID: u
-4: /
-4: ID: v
-4: *
-4: ID: v
-4: )
+4: ID: count
+4: =
+4: NUM: 0
 4: ;
-5: }
-6: void
-6: ID: main
+5: while
+5: (
+5: ID: d
+5: *
+5: ID: d
+5: <
+5: ID: n
+5: +
+5: NUM: 1
+5: )
+5: {
+6: if
 6: (
-6: void
+6: ID: n
+6: /
+6: ID: d
+6: *
+6: ID: d
+6: ==
+6: ID: n
 6: )
-7: {
-7: int
-7: ID: x
+6: {
+7: ID: count
+7: =
+7: ID: count
+7: +
+7: NUM: 0
 7: ;
-7: int
-7: ID: y
-7: ;
-8: ID: x
-8: =
-8: ID: input
-8: (
-8: )
-8: ;
-9: ID: y
+8: }
+8: else
+8: {
+9: ID: count
 9: =
-9: ID: input
-9: (
-9: )
+9: ID: count
+9: +
+9: NUM: 1
 9: ;
-10: ID: output
-10: (
-10: ID: gcd
-10: (
-10: ID: x
-10: ,
-10: ID: y
-10: )
-10: )
-10: ;
-11: }
-11: EOF
+10: }
+11: ID: d
+11: =
+11: ID: d
+11: +
+11: NUM: 1
+11: ;
+12: }
+14: if
+14: (
+14: ID: n
+14: >
+14: NUM: 1
+14: )
+14: {
+15: if
+15: (
+15: ID: count
+15: ==
+15: (
+15: ID: d
+15: -
+15: NUM: 2
+15: )
+15: )
+15: {
+16: return
+16: NUM: 1
+16: ;
+17: }
+17: else
+17: {
+18: return
+18: NUM: 0
+18: ;
+19: }
+20: }
+21: return
+21: NUM: 0
+21: ;
+22: }
+24: void
+24: ID: main
+24: (
+24: void
+24: )
+24: {
+25: int
+25: ID: num
+25: ;
+25: int
+25: ID: zero
+25: ;
+25: int
+25: ID: um
+25: ;
+26: ID: zero
+26: =
+26: NUM: 0
+26: ;
+26: ID: um
+26: =
+26: NUM: 1
+26: ;
+27: ID: num
+27: =
+27: ID: input
+27: (
+27: )
+27: ;
+29: if
+29: (
+29: NUM: 1
+29: ==
+29: ID: primo
+29: (
+29: ID: num
+29: )
+29: )
+29: {
+30: ID: output
+30: (
+30: ID: zero
+30: )
+30: ;
+31: }
+31: else
+31: {
+32: ID: output
+32: (
+32: ID: um
+32: )
+32: ;
+33: }
+35: }
+35: EOF

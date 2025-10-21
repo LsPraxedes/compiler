@@ -1,6 +1,6 @@
    int vet[ 10 ];
 
-   int minloc ( int a[], int low, int high )
+   int minl ( int a[], int low, int high )
    {	int i; int x; int k;
        k = low;
        x = a[low];
@@ -20,7 +20,7 @@
        i = low;
        while (i < high-1){
            int t;
-           k = minloc(a,i,high);
+           k = minl(a,i,high);
            t = a[k];
            a[k] = a[i];
            a[i] = t;

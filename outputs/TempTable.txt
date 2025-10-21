@@ -4,19 +4,27 @@ TABELA DE TEMPORARIOS
 =============================================
 | ID       | RET Func   | Num   | Escopo   |
 =============================================
-| u        | -          | 0     | gcd      |
-| v        | -          | 1     | gcd      |
-| t2       | RET EQ     | 2     | gcd      |
-| u        | -          | 3     | gcd      |
-| t4       | DIV        | 4     | gcd      |
-| t5       | MULT       | 5     | gcd      |
-| t6       | SUB        | 6     | gcd      |
-| t7       | RET gcd    | 7     | gcd      |
-| t7       | -          | 8     | gcd      |
-| x        | -          | 9     | main     |
-| t10      | RET input  | 10    | main     |
-| y        | -          | 11    | main     |
-| t12      | RET input  | 12    | main     |
-| t13      | RET gcd    | 13    | main     |
-| t14      | RET output | 14    | main     |
+| n        | -          | 0     | primo    |
+| d        | -          | 1     | primo    |
+| count    | -          | 2     | primo    |
+| t3       | MULT       | 3     | primo    |
+| t4       | ADDI       | 4     | primo    |
+| t5       | SLT        | 5     | primo    |
+| t6       | DIV        | 6     | primo    |
+| t7       | MULT       | 7     | primo    |
+| t8       | EQ         | 8     | primo    |
+| t9       | ADDI       | 9     | primo    |
+| t10      | ADDI       | 10    | primo    |
+| t11      | ADDI       | 11    | primo    |
+| t12      | SGT        | 12    | primo    |
+| t13      | SUBI       | 13    | primo    |
+| t14      | EQ         | 14    | primo    |
+| 1        | -          | 15    | primo    |
+| 0        | -          | 16    | primo    |
+| zero     | -          | 18    | main     |
+| um       | -          | 19    | main     |
+| num      | -          | 20    | main     |
+| t25      | RET primo  | 25    | main     |
+| 1        | -          | 21    | main     |
+| t22      | EQ         | 22    | main     |
 =============================================

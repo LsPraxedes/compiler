@@ -6,10 +6,12 @@ TABELA DE SIMBOLOS
 ==================================================================
 | 0    | input      | global   | Funcao     | Int        | 0     |
 | 1    | output     | global   | Funcao     | Void       | 0     |
-| 2    | gcd        | global   | Funcao     | Int        | 1     |
-| 3    | u          | gcd      | Variavel   | Int        | 1     |
-| 4    | v          | gcd      | Variavel   | Int        | 1     |
-| 5    | main       | global   | Funcao     | Void       | 6     |
-| 6    | x          | main     | Variavel   | Int        | 7     |
-| 7    | y          | main     | Variavel   | Int        | 7     |
+| 2    | primo      | global   | Funcao     | Int        | 1     |
+| 3    | n          | primo    | Variavel   | Int        | 1     |
+| 4    | d          | primo    | Variavel   | Int        | 2     |
+| 5    | count      | primo    | Variavel   | Int        | 2     |
+| 6    | main       | global   | Funcao     | Void       | 24    |
+| 7    | num        | main     | Variavel   | Int        | 25    |
+| 8    | zero       | main     | Variavel   | Int        | 25    |
+| 9    | um         | main     | Variavel   | Int        | 25    |
 ===================================================================

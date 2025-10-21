@@ -1,6 +1,6 @@
 int gcd (int u, int v)
 {       
-    if (v == 0) return u ;
+    if (v == 0) return u;
     else return gcd(v,u-u/v*v);
 }    
 void main(void)

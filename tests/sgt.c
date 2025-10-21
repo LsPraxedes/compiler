@@ -4,7 +4,8 @@ void main(void)
     x = input(); 
     y = input();
     if (x>y)
-        output(x,y);
+        output(x);
     else
         output(y);
+        
 }

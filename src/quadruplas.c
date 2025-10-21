@@ -7,7 +7,7 @@
 #include "../headers/tabelaSimbolos.h"
 #include "../headers/quadruplas.h"
 
-#define MAX 200
+#define MAX_TEMP 25
 #define MAX_INTERMEDIARIO 1000
 #define MAX_FILHOS 3
 
@@ -33,7 +33,7 @@ tempTab** criarTempTabela(){
         fprintf(stderr, "Erro ao alocar memória para a tabela de símbolos.\n");
         exit(1);
     }
-    for (int i = 0; i < MAX; i++)
+    for (int i = 0; i < MAX_TEMP; i++)
         ttabela[i] = NULL;
 
     return ttabela;
@@ -41,28 +41,44 @@ tempTab** criarTempTabela(){
 
 void inserirTempTab(tempTab** ttabela,char* lexema, char* ret, int num, char* escopo){
     
-    int i;
-    for (i = 0; i < MAX; i++) {
-        if (ttabela[i] == NULL)
+    int i, j;
+    for (i = 0; i < MAX_TEMP; i++) {
+        if(ttabela[i]!=NULL && strcmp(lexema,ttabela[i]->lexema)==0 && strcmp(escopo,ttabela[i]->escopo)==0){
+            printf("Variável temporária '%s' já declarada no escopo '%s'.\n", lexema, escopo);
             break;
+        }
+        if (ttabela[i] == NULL){
+                ttabela[i] = (tempTab*) malloc(sizeof(tempTab));
+            if (ttabela[i] == NULL) {
+                fprintf(stderr, "Erro ao alocar memória para o símbolo '%s'.\n", lexema);
+                exit(1);
+            }
+            break;
+        }
     }
-
-    ttabela[i] = (tempTab*) malloc(sizeof(tempTab));
-    if (ttabela[i] == NULL) {
-        fprintf(stderr, "Erro ao alocar memória para o símbolo '%s'.\n", lexema);
-        exit(1);
+    
+    if(i == MAX_TEMP){
+            for(j=0;j<MAX_TEMP;j++){
+                if(strcmp(escopo,ttabela[j]->escopo)!=0){
+                    strcpy(ttabela[j]->lexema, lexema);
+                    strcpy(ttabela[j]->ret, ret);
+                    ttabela[j]->num = num;
+                    strcpy(ttabela[j]->escopo, escopo);
+                }
+                    
+            }
+    }else{
+        strcpy(ttabela[i]->lexema, lexema);
+        strcpy(ttabela[i]->ret, ret);
+        ttabela[i]->num = num;
+        strcpy(ttabela[i]->escopo, escopo);
     }
-    strcpy(ttabela[i]->lexema, lexema);
-    strcpy(ttabela[i]->ret, ret);
-    ttabela[i]->num = num;
-    strcpy(ttabela[i]->escopo, escopo);
-
 }
 
 int pesquisarTempTab(tempTab** ttabela, char* var, char* escopo){
 
     int i;
-    for(i=0;i<tempCounter; i++){
+    for(i=0;i<MAX; i++){
         if(ttabela[i]->lexema != NULL && strcmp(var,ttabela[i]->lexema)==0 && strcmp(escopo,ttabela[i]->escopo)==0)
             return i;
     }
@@ -117,13 +133,14 @@ void adicionarQuadruplas(const char* formato, ...) {
     vsprintf(quad[contador_quad].instrucao, formato, args);
     va_end(args);
     contador_quad++;
+    printf("Adicionada quadrupla: %s\n", quad[contador_quad - 1].instrucao);
 }
 
 /* Percorre a árvore e gera código intermediário */
 char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
     if (no == NULL)
         return NULL;
-
+    printf("Processando nó: %s %d %d %d\n", no->lexema, no->tipono, no->statement, no->expressao);
     char* result = NULL;
     int processado = 0; // indica se o nó já foi tratado especificamente
     
@@ -156,7 +173,7 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
                 strcpy(temp2, expr);  
               
             if(indice1==-1){
-                adicionarQuadruplas("(LOAD, %s, %s, -)", temp, var);
+                adicionarQuadruplas("(LOAD, %s, %s, %s)", temp, var,escopo);
                 adicionarQuadruplas("(ASSIGN, %s, %s, -)", temp, temp2);
                 adicionarQuadruplas("(SW, %s, %s, -)", var, temp);
             }else{
@@ -240,55 +257,54 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
             char* temp;
             char temp1[10]="", temp2[10]="", temp3[10]="";
             int num_arg=0;
-            if(no->filho[0]!=NULL){
-                num_arg++;
-                if(no->filho[0]->irmao!=NULL){
-                    num_arg++;
-                    if(no->filho[0]->irmao->irmao!=NULL){
-                        param = gerarQuadruplas(ttabela, no->filho[0]->irmao, escopo);
-                        int indice = pesquisarTempTab(ttabela, param,escopo);
-                        if(indice==-1){
-                            strcpy(temp1,novoTemp());
-                            inserirTempTab(ttabela, param,"-", tempCounter-1,escopo);
-                            adicionarQuadruplas("(LOAD, %s, %s, -)", temp1,param);
-                        }else{
-                            sprintf(temp1, "t%d", ttabela[indice]->num);
-                        }
-                        adicionarQuadruplas("(PARAM, %s, %s, -)", temp1, no->lexema);
-                        no->filho[0]->irmao->irmao=NULL;
-                        num_arg++;
-                    }
-                    param = gerarQuadruplas(ttabela, no->filho[0]->irmao, escopo);
-                    int indice2 = pesquisarTempTab(ttabela, param,escopo);
-                    if(indice2==-1){
-                        strcpy(temp2,novoTemp());
-                        inserirTempTab(ttabela, param,"-", tempCounter-1,escopo);
-                        adicionarQuadruplas("(LOAD, %s, %s, -)", temp2,param);
-                    }else{
-                        sprintf(temp2, "t%d", ttabela[indice2]->num);
-                    }
-                    adicionarQuadruplas("(PARAM, %s, %s, -)", temp2, no->lexema);
-                    no->filho[0]->irmao=NULL;
-                }
-                param = gerarQuadruplas(ttabela, no->filho[0], escopo);
-                int indice3 = pesquisarTempTab(ttabela, param,escopo);
-                if(indice3==-1){
-                        strcpy(temp3,novoTemp());
-                        inserirTempTab(ttabela, param,"-", tempCounter-1,escopo);
-                        adicionarQuadruplas("(LOAD, %s, %s, -)", temp3,param);
-                }else{
-                    sprintf(temp3, "t%d", ttabela[indice3]->num);
-                }
-                adicionarQuadruplas("(PARAM, %s, %s, -)", temp3, no->lexema);
-
-            }
-
-            temp = novoTemp();
-            char ID[10] = "RET ";
-            strcat(ID, no->lexema);
-            inserirTempTab(ttabela, temp,ID, tempCounter-1,escopo);
-            adicionarQuadruplas("(CALL, %s, %s, %d)", temp,no->lexema, num_arg);
             if(strcmp(no->lexema,"output")!=0){
+                if(no->filho[0]!=NULL){
+                    num_arg++;
+                    if(no->filho[0]->irmao!=NULL){
+                        num_arg++;
+                        if(no->filho[0]->irmao->irmao!=NULL){
+                            param = gerarQuadruplas(ttabela, no->filho[0]->irmao, escopo);
+                            int indice = pesquisarTempTab(ttabela, param,escopo);
+                            if(indice==-1){
+                                strcpy(temp1,novoTemp());
+                                inserirTempTab(ttabela, param,"-", tempCounter-1,escopo);
+                                adicionarQuadruplas("(LOAD, %s, %s, %s)", temp1,param,escopo);
+                            }else{
+                                sprintf(temp1, "t%d", ttabela[indice]->num);
+                            }
+                            adicionarQuadruplas("(PARAM, %s, %s, -)", temp1, no->lexema);
+                            no->filho[0]->irmao->irmao=NULL;
+                            num_arg++;
+                        }
+                        param = gerarQuadruplas(ttabela, no->filho[0]->irmao, escopo);
+                        int indice2 = pesquisarTempTab(ttabela, param,escopo);
+                        if(indice2==-1){
+                            strcpy(temp2,novoTemp());
+                            inserirTempTab(ttabela, param,"-", tempCounter-1,escopo);
+                            adicionarQuadruplas("(LOAD, %s, %s, %s)", temp2,param,escopo);
+                        }else{
+                            sprintf(temp2, "t%d", ttabela[indice2]->num);
+                        }
+                        adicionarQuadruplas("(PARAM, %s, %s, -)", temp2, no->lexema);
+                        no->filho[0]->irmao=NULL;
+                    }
+                    param = gerarQuadruplas(ttabela, no->filho[0], escopo);
+                    int indice3 = pesquisarTempTab(ttabela, param,escopo);
+                    if(indice3==-1){
+                            strcpy(temp3,novoTemp());
+                            inserirTempTab(ttabela, param,"-", tempCounter-1,escopo);
+                            adicionarQuadruplas("(LOAD, %s, %s, %s)", temp3,param,escopo);
+                    }else{
+                        sprintf(temp3, "t%d", ttabela[indice3]->num);
+                    }
+                    adicionarQuadruplas("(PARAM, %s, %s, -)", temp3, no->lexema);
+
+                }
+                temp = "t25";
+                char ID[10] = "RET ";
+                strcat(ID, no->lexema);
+                inserirTempTab(ttabela, temp,ID, 25,escopo);
+                adicionarQuadruplas("(CALL, %s, %s, %d)", temp,no->lexema, num_arg);
                 if(strcmp(temp3,"\0")!=0){
                     adicionarQuadruplas("(UNPARAM, %s, %s, -)", temp3, no->lexema);
                     if(strcmp(temp2,"\0")!=0){
@@ -298,14 +314,25 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
                         }
                     }
                 }
-            }
+            } else{
+                param = gerarQuadruplas(ttabela, no->filho[0], escopo);
+                int indice3 = pesquisarTempTab(ttabela, param,escopo);
+                if(indice3==-1){
+                        strcpy(temp3,novoTemp());
+                        inserirTempTab(ttabela, param,"-", tempCounter-1,escopo);
+                        adicionarQuadruplas("(LOAD, %s, %s, %s)", temp3,param,escopo);
+                }else{
+                    sprintf(temp3, "t%d", ttabela[indice3]->num);
+                }
+                adicionarQuadruplas("(CALL, %s, %s, 1)", temp3, no->lexema);
+                }
+            
             result = temp;
             processado = 1;
         }
-        else if (no->expressao == IdT) {
+        else if (no->expressao == IdT || no->expressao == ConstanteT) {
             // Nó identificador ou literal
             
-                
                 result = no->lexema;
                 processado = 1;
 
@@ -334,7 +361,7 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
                 if(indice2==-1){
                     strcpy(temp,novoTemp());
                     inserirTempTab(ttabela, no->lexema,"-", tempCounter-1,escopo);
-                    adicionarQuadruplas("(LOAD, %s, %s, -)", temp, no->lexema);
+                    adicionarQuadruplas("(LOAD, %s, %s, %s)", temp, no->lexema, escopo);
                 }else{
                     sprintf(temp, "t%d", ttabela[indice2]->num);
                 }
@@ -366,7 +393,7 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
                     if(indice2==-1){
                         strcpy(temp2,novoTemp());
                         inserirTempTab(ttabela, right,"-", tempCounter-1,escopo);
-                        adicionarQuadruplas("(LOAD, %s, %s, -)", temp2, right);
+                        adicionarQuadruplas("(LOAD, %s, %s, %s)", temp2, right, escopo);
                     }else{
                         sprintf(temp2, "t%d", ttabela[indice2]->num);
                     }
@@ -379,22 +406,22 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
             char *temp3 = novoTemp();
             if(strcmp(no->lexema, "<")==0){
                 adicionarQuadruplas("(SLT, %s, %s, %s)", temp3, temp, temp2);
-                inserirTempTab(ttabela,temp3,"RET SLT", tempCounter-1, escopo);
+                inserirTempTab(ttabela,temp3,"SLT", tempCounter-1, escopo);
             }else if(strcmp(no->lexema, "==")==0){
                 adicionarQuadruplas("(EQ, %s, %s, %s)", temp3, temp, temp2);
-                inserirTempTab(ttabela,temp3,"RET EQ", tempCounter-1, escopo);
+                inserirTempTab(ttabela,temp3,"EQ", tempCounter-1, escopo);
             }else if(strcmp(no->lexema, "<=")==0){
                 adicionarQuadruplas("(SLTEQ, %s, %s, %s)", temp3, temp, temp2);
-                inserirTempTab(ttabela,temp3,"RET SLTEQ", tempCounter-1, escopo);
+                inserirTempTab(ttabela,temp3,"SLTEQ", tempCounter-1, escopo);
             }else if(strcmp(no->lexema, ">")==0){
                 adicionarQuadruplas("(SGT, %s, %s, %s)", temp3, temp, temp2);
-                inserirTempTab(ttabela,temp3,"RET SGT", tempCounter-1, escopo);
+                inserirTempTab(ttabela,temp3,"SGT", tempCounter-1, escopo);
             }else if(strcmp(no->lexema, ">=")==0){
                 adicionarQuadruplas("(SGTEQ, %s, %s, %s)", temp3, temp, temp2);
-                inserirTempTab(ttabela,temp3,"RET SGTEQ", tempCounter-1, escopo);
+                inserirTempTab(ttabela,temp3,"SGTEQ", tempCounter-1, escopo);
             }else if(strcmp(no->lexema, "!=")==0){
                 adicionarQuadruplas("(NEQ, %s, %s, %s)", temp3, temp, temp2);
-                inserirTempTab(ttabela,temp3,"RET NEQ", tempCounter-1, escopo);
+                inserirTempTab(ttabela,temp3,"NEQ", tempCounter-1, escopo);
             }
 
             result = temp3; 
@@ -420,7 +447,7 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
             adicionarQuadruplas("(FUNC, %s, %s, -)", no->lexema,no->filho[1]->lexema);
             gerarQuadruplas(ttabela, no->filho[0], no->filho[1]->lexema); // Processa os argumentos
             gerarQuadruplas(ttabela, no->filho[1]->filho[0], no->filho[1]->lexema); // Processa o corpo
-            adicionarQuadruplas("(END, %s, -, -)\n", no->filho[1]->lexema);
+            adicionarQuadruplas("(END, %s, -, -)", no->filho[1]->lexema);
             processado = 1;
         }
         else if (no->statement == IfT) {
@@ -451,9 +478,21 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
         else if (no->statement == RetornoINTT || no->statement == RetornoVOIDT) {
             char* result = gerarQuadruplas(ttabela, no->filho[0], escopo);
             char* temp = novoTemp();
-            inserirTempTab(ttabela, result,"-",tempCounter-1,escopo);
-            adicionarQuadruplas("(LOAD, %s, %s, -)", temp, result);
-            adicionarQuadruplas("(RET, %s, -, -)", temp);
+            int indice = pesquisarTempTab(ttabela, result, escopo);
+            int retfunc = 1;
+            if(indice == -1) {
+                inserirTempTab(ttabela, result, "-", tempCounter-1, escopo);
+                adicionarQuadruplas("(LOAD, %s, %s, %s)", temp, result, escopo);
+            } else{
+                sprintf(temp, "t%d", ttabela[indice]->num);
+            }
+
+            if(indice != -1 && strcmp(strtok(ttabela[indice]->ret," "), "RET")==0) 
+                retfunc = 0;
+            printf("RETORNO: %s\n", temp);
+            
+            
+            adicionarQuadruplas("(RET%d, %s, -, -)", retfunc, temp);
             processado = 1;
         }
         else if(no->statement == DeclVarT){
@@ -469,7 +508,7 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
             strcat(left,expr);
             strcat(left,"]");
             inserirTempTab(ttabela, left,"-", tempCounter-1, escopo);
-            adicionarQuadruplas("(LOAD, %s, %s, -)", temp, left);
+            adicionarQuadruplas("(LOAD, %s, %s, %s)", temp, left, escopo);
             processado = 1;
         }
         else if(no->statement == VetorParametroT || no->statement == VarParametroT){
@@ -477,7 +516,7 @@ char* gerarQuadruplas(tempTab** ttabela, NoArvore* no, char* escopo) {
             char *temp = novoTemp();
             inserirTempTab(ttabela, left,"-",tempCounter-1,escopo);
             adicionarQuadruplas("(ARG, %s, %s, -)", no->lexema, left);
-            adicionarQuadruplas("(LOAD, %s, %s, -)", temp, left);
+            adicionarQuadruplas("(LOAD, %s, %s, %s)", temp, left, escopo);
             processado = 1;
         }
     }
